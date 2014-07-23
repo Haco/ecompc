@@ -1,0 +1,43 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<ROOT>
+		<type>array</type>
+		<el>
+			<chf>
+				<TCEforms>
+					<label>CHF [SFr.]</label>
+					<config>
+						<type>input</type>
+						<size>22</size>
+						<eval>double2</eval>
+						<default>0.00</default>
+					</config>
+				</TCEforms>
+			</chf>
+			<gbp>
+				<TCEforms>
+					<label>GBP [£]</label>
+					<config>
+						<type>input</type>
+						<size>22</size>
+						<eval>double2</eval>
+						<default>0.00</default>
+					</config>
+				</TCEforms>
+			</gbp>
+			<usd>
+				<TCEforms>
+					<label>USD [$]</label>
+					<config>
+						<type>input</type>
+						<size>22</size>
+						<eval>double2</eval>
+						<default>0.00</default>
+					</config>
+				</TCEforms>
+			</usd>
+		</el>
+	</ROOT>
+</T3DataStructure>

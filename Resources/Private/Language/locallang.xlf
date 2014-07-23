@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-07-01T14:36:00Z" product-name="ecompc">
+		<header/>
+		<body>
+			<trans-unit id="tx_ecompc_domain_model_configuration">
+				<source>Configuration</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_configuration.frontend_label">
+				<source>Frontend Label</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_configuration.sku">
+				<source>Sku</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_configuration.configuration_code_suffix">
+				<source>Configuration Code Suffix</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_configuration.configuration_code_prefix">
+				<source>Configuration Code Prefix</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_configuration.price">
+				<source>Price</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_configuration.options">
+				<source>Options</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_configuration.available_packages">
+				<source>Available Packages</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option">
+				<source>Option</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.backend_label">
+				<source>Backend Label</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.frontend_label">
+				<source>Frontend Label</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.configuration_code_segment">
+				<source>Configuration Code Segment</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.image">
+				<source>Image</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.hint_text">
+				<source>Hint Text</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.price">
+				<source>Price</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.price_percental">
+				<source>Price Percental</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.configuration_package">
+				<source>Configuration Package</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.dependency">
+				<source>Dependency</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package">
+				<source>Package</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.backend_label">
+				<source>Backend Label</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.frontend_label">
+				<source>Frontend Label</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.prompt">
+				<source>Prompt</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.hint_text">
+				<source>Hint Text</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.image">
+				<source>Image</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.visible_in_frontend">
+				<source>Visible In Frontend</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.multiple_select">
+				<source>Multiple Select</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.default_option">
+				<source>Default Option</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_dependency">
+				<source>Dependency</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_dependency.mode">
+				<source>Mode</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_dependency.options">
+				<source>Options</source>
+			</trans-unit>
+
+
+
+			<!-- USER GENERATED FE-TRANSLATIONS -->
+			<trans-unit id="404.no_config_found">
+				<source>No configurations found!</source>
+			</trans-unit>
+			<trans-unit id="404.dbl_config_found">
+				<source>It seems like you got more than one configurator on current page. This error occurs because only one configurator per page is allowed!</source>
+			</trans-unit>
+			<trans-unit id="price.inclusive">
+				<source>incl.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

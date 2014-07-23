@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-07-01T14:36:00Z" product-name="ecompc">
+		<header/>
+		<body>
+			<trans-unit id="backend_label.description">
+				<source>Label used for BE-admins.</source>
+			</trans-unit>
+			<trans-unit id="frontend_label.description">
+				<source>Label for frontend display</source>
+			</trans-unit>
+			<trans-unit id="prompt.description">
+				<source>User prompt.</source>
+			</trans-unit>
+			<trans-unit id="hint_text.description">
+				<source>Hint for the user.</source>
+			</trans-unit>
+			<trans-unit id="image.description">
+				<source>An image visualizing current package.</source>
+			</trans-unit>
+			<trans-unit id="visible_in_frontend.description">
+				<source>Enables the package to be displayed in frontend. Otherwise if a default option is set an input with type="hidden" will be rendered.</source>
+			</trans-unit>
+			<trans-unit id="multiple_select.description">
+				<source>Enable multiple select.</source>
+			</trans-unit>
+			<trans-unit id="default_option.description">
+				<source>Set a default option, used for invisible fields only.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,4 @@
+#cat=basic//10;type=string;label=Super User: The Master Chief!
+superUser = 0
+#cat=basic//10;type=string;label=Distributor login FE-user group
+distFeUserGroup = 0

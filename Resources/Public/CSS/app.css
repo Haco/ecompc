@@ -1,0 +1,17 @@
+#tx-ecompc-canvas .ecom-configurator-arrow-right {
+	display: block;
+	float: right;
+	height: 1em;
+	width: 20px;
+}
+
+#tx-ecompc-canvas .ecom-configurator-package-state {
+	display: block;
+	float: left;
+	height: 100%;
+	width: 20px;
+}
+
+#tx-ecompc-canvas .ecom-configurator-package-state.checked {
+	background-color: #006600;
+}

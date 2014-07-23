@@ -1,0 +1,116 @@
+config.tx_extbase {
+	persistence {
+		enableAutomaticCacheClearing = 1
+		updateReferenceIndex = 0
+		classes {
+			S3b0\Ecompc\Domain\Model\Content {
+				mapping {
+					tableName = tt_content
+					columns {
+						bodytext.mapOnProperty = bodytext
+						tx_ecompc_type.mapOnProperty = ecompcType
+						tx_ecompc_packages.mapOnProperty = ecompcPackages
+						tx_ecompc_configurations.mapOnProperty = ecompcConfigurations
+					}
+				}
+			}
+		}
+	}
+}
+plugin.tx_ecompc {
+	view {
+		templateRootPath = {$plugin.tx_ecompc.view.templateRootPath}
+		partialRootPath = {$plugin.tx_ecompc.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_ecompc.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_ecompc.persistence.storagePid}
+	}
+	features {
+		# uncomment the following line to enable the new Property Mapper.
+		# rewrittenPropertyMapper = 1
+	}
+	settings {
+		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->reset;Standard->selectRegion
+		currency {
+			default {
+				long = {$plugin.tx_ecompc.constants.currency.default.long}
+				short = {$plugin.tx_ecompc.constants.currency.default.short}
+				symbol = {$plugin.tx_ecompc.constants.currency.default.symbol}
+				region = {$plugin.tx_ecompc.constants.currency.default.region}
+				llRef = {$plugin.tx_ecompc.constants.currency.default.llRef}
+				flagIcon = {$plugin.tx_ecompc.constants.currency.default.flagIcon}
+				exchange = 1.0
+			}
+			# Activate additional currencies (key matches thos of flexform array key!)
+			chf {
+				long = Schweizerfranken / franc suisse / franco svizzero
+				short = CHF
+				symbol = SFr.
+				region = Switzerland
+				llRef = LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.chf.region
+				flagIcon = EXT:ecompc/Resources/Public/Images/Flags/CHE.png
+				#exchange = 1.0
+			}
+			gbp {
+				long = Pound Sterling
+				short = GBP
+				symbol = £
+				region = United Kingdom
+				llRef = LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.gbp.region
+				flagIcon = EXT:ecompc/Resources/Public/Images/Flags/GBR.png
+				prependCurrency = 1
+				#exchange = 1.0
+			}
+			usd {
+				long = United States Dollar
+				short = USD
+				symbol = $
+				region = United States
+				llRef = LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.usd.region
+				flagIcon = EXT:ecompc/Resources/Public/Images/Flags/USA.png
+				prependCurrency = 1
+				#exchange = 1.0
+			}
+		}
+	}
+}
+
+page.includeCSSLibs {
+	ecompc = EXT:ecompc/Resources/Public/CSS/app.css
+	ecompc.import = 1
+}
+
+plugin.tx_ecompc._CSS_DEFAULT_STYLE (
+	textarea.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+
+	input.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+
+	.tx-ecompc table {
+		border-collapse:separate;
+		border-spacing:10px;
+	}
+
+	.tx-ecompc table th {
+		font-weight:bold;
+	}
+
+	.tx-ecompc table td {
+		vertical-align:top;
+	}
+
+	.typo3-messages .message-error {
+		color:red;
+	}
+
+	.typo3-messages .message-ok {
+		color:green;
+	}
+
+)

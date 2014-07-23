@@ -1,0 +1,10 @@
+<f:for each="{options}" as="option">
+	<div>
+		<f:if condition="{sp}">
+			<span style="float: right;">[ <f:financial.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{option.localizedPrice}</f:financial.currency> ]</span>
+		</f:if>
+		<f:link.action action="setOption" arguments="{option:option,redirectAction:ms}">{option.frontendLabel} [{option.configurationCodeSegment}]</f:link.action>
+	</div>
+</f:for>
+
+<f:if condition="{ms}"><f:link.action action="index">Confirm Selection</f:link.action></f:if>

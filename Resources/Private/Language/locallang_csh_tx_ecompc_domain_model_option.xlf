@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-07-01T14:36:00Z" product-name="ecompc">
+		<header/>
+		<body>
+			<trans-unit id="backend_label.description">
+				<source>Label used for BE-admins.</source>
+			</trans-unit>
+			<trans-unit id="frontend_label.description">
+				<source>Label for frontend display</source>
+			</trans-unit>
+			<trans-unit id="configuration_code_segment.description">
+				<source>Segment to add to config code, once the option has been chosen.</source>
+			</trans-unit>
+			<trans-unit id="image.description">
+				<source>An image visualizing current option.</source>
+			</trans-unit>
+			<trans-unit id="hint_text.description">
+				<source>Hint for the user.</source>
+			</trans-unit>
+			<trans-unit id="price.description">
+				<source>The option price to add to base configuration price in default currency, defined in TS.</source>
+			</trans-unit>
+			<trans-unit id="price_percental.description">
+				<source>Percentage to add to current configuration price.</source>
+			</trans-unit>
+			<trans-unit id="configuration_package.description">
+				<source>Corresponding Package</source>
+			</trans-unit>
+			<trans-unit id="dependency.description">
+				<source>Dependencies on other options either in explicit allow or explicit deny mode.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
