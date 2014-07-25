@@ -191,7 +191,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
 		// Fetch packages
 		$list = CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal('tx_ecompc_packages'), TRUE);
-		$packages = $this->packageRepository->findByUidList($list);
+		$packages = $this->packageRepository->findPackagesByUidList($list);
 		if ($packages) {
 			$setActive = true;
 			foreach ($packages as $package) {
@@ -199,20 +199,19 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$package->setActive($setActive);
 					$setActive = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']);
 				}
-				$selectedOptions = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']) ? $this->optionRepository->findByUidList($this->selectedConfiguration['packages'][$package->getUid()]) : null;
+				$selectedOptions = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']) ? $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()]) : null;
 				$package->setSelectedOptions($selectedOptions);
 			}
 		}
 
 		// Get process / config code
-		$printable = $this->packageRepository->findPrintableByUidList($list);
-		$process = count((array) $this->selectedConfiguration['packages']) / count($printable);
-		if ($process === 1) {
+		$visible = $this->packageRepository->findVisiblePackagesByUidList($list);
+		$process = count((array) $this->selectedConfiguration['packages']) / count($visible);
+		if ($process === 1)
 			$this->view->assign('configurationResult', $this->getConfigurationResult());
-		}
 
 		$this->view->assignMultiple(array(
-			'packages' => $printable,
+			'packages' => $packages,
 			'process' => $process
 		));
 	}
@@ -349,7 +348,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**********************************
-	 ******* NON-ACTION FUNCTIONS *****
+	 ******** NON-ACTION METHODS ******
 	 **********************************/
 
 	/**
@@ -403,7 +402,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Fetch selected options for current package
 		$selectedOptions = null;
 		if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages'])) {
-			$selectedOptions = $this->optionRepository->findByUidList($this->selectedConfiguration['packages'][$package->getUid()]);
+			$selectedOptions = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()]);
 		}
 
 		// Include pricing for enabled users!
@@ -465,7 +464,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			if ($packages = $option->getDependency()->getPackages()) {
 				$checkAgainstArray = array();
 				foreach ($packages as $package) {
-					if ($selectedOptions = $this->optionRepository->findByUidList($configuration['packages'][$package->getUid()])) {
+					if ($selectedOptions = $this->optionRepository->findOptionsByUidList($configuration['packages'][$package->getUid()])) {
 						foreach ($selectedOptions as $selectedOption) {
 							// @modes {0 : explicit deny, 1 : explicit allow}
 							$checkAgainstArray[] = $dependency->getMode() === 0 ? !$dependency->getPackageOptions($package)->contains($selectedOption) : $dependency->getPackageOptions($package)->contains($selectedOption);
@@ -502,7 +501,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	public function setSelectedOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage &$objectStorage, array $selectedConfiguration) {
 		if (count($selectedConfiguration['options'])) {
 			$objectStorage->removeAll($objectStorage);
-			if ($options = $this->optionRepository->findByUidList($selectedConfiguration['options'])) {
+			if ($options = $this->optionRepository->findOptionsByUidList($selectedConfiguration['options'])) {
 				foreach ($options as $option)
 					$objectStorage->attach($option);
 			}
@@ -564,11 +563,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		/**
 		 * @param \S3b0\Ecompc\Domain\Model\Package $package
 		 */
-		foreach ($this->packageRepository->findByUidList(CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal('tx_ecompc_packages'), true)) as $package) {
+		foreach ($this->packageRepository->findPackagesByUidList(CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal('tx_ecompc_packages'), true)) as $package) {
 			if (!$package->isVisibleInFrontend()) {
 				$code .= '<span class="ecompc-syntax-help">' . $package->getDefaultOption()->getConfigurationCodeSegment() . '</span>';
 				continue;
-			} elseif ($options = $this->optionRepository->findByUidList($this->selectedConfiguration['packages'][$package->getUid()])) {
+			} elseif ($options = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()])) {
 				foreach ($options as $option) {
 					$code .= '<span class="ecompc-syntax-help" title="' . $option->getFrontendLabel() . '">' . $option->getConfigurationCodeSegment() . '</span>';
 				}

@@ -49,7 +49,7 @@ class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function findByUidList(array $list) {
+	public function findPackagesByUidList(array $list) {
 		if (!sizeof($list))
 			return NULL;
 
@@ -64,7 +64,7 @@ class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function findPrintableByUidList(array $list) {
+	public function findVisiblePackagesByUidList(array $list) {
 		if (!sizeof($list))
 			return NULL;
 

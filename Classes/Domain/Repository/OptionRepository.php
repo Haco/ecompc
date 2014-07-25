@@ -58,7 +58,7 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function findByUidList(array $list) {
+	public function findOptionsByUidList(array $list) {
 		if (!sizeof($list))
 			return NULL;
 
