@@ -204,11 +204,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			}
 		}
 
-		// Get process / config code
+		// Get process
 		$visible = $this->packageRepository->findVisiblePackagesByUidList($list);
 		$process = count((array) $this->selectedConfiguration['packages']) / count($visible);
 		if ($process === 1)
-			$this->view->assign('configurationResult', $this->getConfigurationResult());
+			$this->view->assign('configurationResult', $this->getConfigurationResult()); // Get configuration code | SKU
 
 		$this->view->assignMultiple(array(
 			'packages' => $packages,
@@ -301,15 +301,21 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			array('selectPackageOptions', null, null, array('package' => $option->getConfigurationPackage()))
 		);
 
-		// Remove other (package) options from selectedOptions
-		if ($packageOptions = $this->optionRepository->findByConfigurationPackage($option->getConfigurationPackage())) {
-			foreach ($packageOptions as $singlePackageOption) {
-				if ($this->selectedOptions->contains($singlePackageOption)) $this->selectedOptions->detach($singlePackageOption);
+		if (!$option->getConfigurationPackage()->isMultipleSelect()) {
+			// Remove all (package) options from selectedOptions
+			if ($packageOptions = $this->optionRepository->findByConfigurationPackage($option->getConfigurationPackage())) {
+				foreach ($packageOptions as $singlePackageOption) {
+					if ($this->selectedOptions->contains($singlePackageOption)) $this->selectedOptions->detach($singlePackageOption);
+				}
 			}
+			// Remove all (package) options + remove package from configuration array
+			$configuration['options'] = array_diff($configuration['options'], $this->optionRepository->getPackageOptionsUidList($option->getConfigurationPackage()));
+			unset($configuration['packages'][$option->getConfigurationPackage()->getUid()]);
+		} else {
+			// Remove option from configuration array
+			$configuration['options'] = array_diff($configuration['options'], [$option->getUid()]);
+			unset($configuration['packages'][$option->getConfigurationPackage()->getUid()][$option->getUid()]);
 		}
-		// Remove other (package) options + remove package from configuration array
-		$configuration['options'] = array_diff($configuration['options'], $this->optionRepository->getPackageOptionsUidList($option->getConfigurationPackage()));
-		unset($configuration['packages'][$option->getConfigurationPackage()->getUid()]);
 
 		// Add selected option to selection
 		$this->selectedOptions->detach($option);
