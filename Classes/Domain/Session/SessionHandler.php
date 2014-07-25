@@ -8,7 +8,12 @@
 
 namespace S3b0\Ecompc\Domain\Session;
 
-
+/**
+ * SessionHandler
+ *
+ * @package S3b0
+ * @subpackage Ecompc
+ */
 class SessionHandler {
 
 	/**

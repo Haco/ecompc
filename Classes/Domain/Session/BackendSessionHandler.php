@@ -8,7 +8,12 @@
 
 namespace S3b0\Ecompc\Domain\Session;
 
-
+/**
+ * BackendSessionHandler
+ *
+ * @package S3b0
+ * @subpackage Ecompc
+ */
 class BackendSessionHandler extends \S3b0\Ecompc\Domain\Session\SessionHandler {
 
 	/**

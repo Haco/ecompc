@@ -29,6 +29,9 @@ namespace S3b0\Ecompc\Domain\Model;
 
 /**
  * Option
+ *
+ * @package S3b0
+ * @subpackage Ecompc
  */
 class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
@@ -107,6 +110,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var \S3b0\Ecompc\Domain\Model\Dependency
 	 */
 	protected $dependency = NULL;
+
+	/**
+	 * selected
+	 *
+	 * @var boolean
+	 */
+	protected $selected = FALSE;
 
 	/**
 	 * Returns the backendLabel
@@ -316,6 +326,34 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setDependency(\S3b0\Ecompc\Domain\Model\Dependency $dependency) {
 		$this->dependency = $dependency;
+	}
+
+	/**
+	 * Returns the selected
+	 *
+	 * @return boolean $selected
+	 */
+	public function getSelected() {
+		return $this->selected;
+	}
+
+	/**
+	 * Sets the selected
+	 *
+	 * @param boolean $selected
+	 * @return void
+	 */
+	public function setSelected($selected) {
+		$this->selected = $selected;
+	}
+
+	/**
+	 * Returns the boolean state of selected
+	 *
+	 * @return boolean
+	 */
+	public function isSelected() {
+		return $this->selected;
 	}
 
 }

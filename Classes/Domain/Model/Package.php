@@ -29,6 +29,9 @@ namespace S3b0\Ecompc\Domain\Model;
 
 /**
  * Package
+ *
+ * @package S3b0
+ * @subpackage Ecompc
  */
 class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
@@ -80,6 +83,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var boolean
 	 */
 	protected $multipleSelect = FALSE;
+
+	/**
+	 * active
+	 *
+	 * @var boolean
+	 */
+	protected $active = FALSE;
 
 	/**
 	 * defaultOption
@@ -267,6 +277,34 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * Returns the active (state)
+	 *
+	 * @return boolean $active
+	 */
+	public function getActive() {
+		return $this->active;
+	}
+
+	/**
+	 * Sets the active
+	 *
+	 * @param boolean $active
+	 * @return void
+	 */
+	public function setActive($active) {
+		$this->active = $active;
+	}
+
+	/**
+	 * Returns the boolean state of active
+	 *
+	 * @return boolean
+	 */
+	public function isActive() {
+		return $this->active;
+	}
+
+	/**
 	 * Returns the defaultOption
 	 *
 	 * @return \S3b0\Ecompc\Domain\Model\Option $defaultOption
@@ -288,20 +326,24 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Adds a selectedOption
 	 *
-	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOptions
+	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOption
 	 * @return void
 	 */
-	public function addSelectedOption(\S3b0\Ecompc\Domain\Model\Option $selectedOptions) {
-		$this->selectedOptions->attach($selectedOptions);
+	public function addSelectedOption(\S3b0\Ecompc\Domain\Model\Option $selectedOption) {
+		if ($this->selectedOptions === null) {
+			$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+
+		$this->selectedOptions->attach($selectedOption);
 	}
 
 	/**
 	 * Removes a selectedOption
 	 *
-	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOptionsToRemove The Option to be removed
+	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOptionToRemove The Option to be removed
 	 * @return void
 	 */
-	public function removeSelectedOption(\S3b0\Ecompc\Domain\Model\Option $selectedOptionsToRemove) {
+	public function removeSelectedOption(\S3b0\Ecompc\Domain\Model\Option $selectedOptionToRemove) {
 		$this->selectedOptions->detach($selectedOptionsToRemove);
 	}
 
@@ -311,6 +353,10 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions
 	 */
 	public function getSelectedOptions() {
+		if ($this->selectedOptions === null) {
+			$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+
 		return $this->selectedOptions;
 	}
 

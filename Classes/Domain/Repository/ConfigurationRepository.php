@@ -28,7 +28,10 @@ namespace S3b0\Ecompc\Domain\Repository;
  ***************************************************************/
 
 /**
- * The repository for Packages
+ * The repository for Configurations
+ *
+ * @package S3b0
+ * @subpackage Ecompc
  */
 class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
@@ -53,6 +56,30 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 		$query = $this->createQuery();
 		return $query->matching(
 			$query->in('uid', $list)
+		)->execute();
+	}
+
+	/**
+	 * Returns configurations containing latest options selected! @use for SKU-based configurators
+	 *
+	 * @param int                                          $uid
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions
+	 *
+	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 */
+	public function findByTtContentUidExcludingSelectedOptions($uid = 0, \TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions) {
+		if (!$uid)
+			return NULL;
+
+		$query = $this->createQuery();
+
+		$constraint = array($query->equals('tt_content_uid', $uid));
+		foreach ($selectedOptions as $option) {
+			$constraint[] = $query->contains('options', $option);
+		}
+
+		return $query->matching(
+			$query->logicalAnd($constraint)
 		)->execute();
 	}
 

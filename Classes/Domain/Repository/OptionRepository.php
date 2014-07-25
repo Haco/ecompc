@@ -26,15 +26,22 @@ namespace S3b0\Ecompc\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
- * The repository for Packages
+ * The repository for Options
+ *
+ * @package S3b0
+ * @subpackage Ecompc
  */
 class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
+	/**
+	 * Sets the default orderings
+	 *
+	 * @var array $defaultOrderings
+	 */
 	protected $defaultOrderings = array(
-		'sorting' => QueryInterface::ORDER_ASCENDING
+		'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
 	);
 
 	/**
@@ -59,6 +66,24 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		return $query->matching(
 			$query->in('uid', $list)
 		)->execute();
+	}
+
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 * @param integer                           $mode
+	 *
+	 * @return array|string
+	 */
+	public function getPackageOptionsUidList(\S3b0\Ecompc\Domain\Model\Package $package, $mode = 1) {
+		$query = $this->createQuery();
+
+		$return = array();
+		if ($result = $query->matching($query->equals('configuration_package', $package))->execute()) {
+			foreach ($result as $row)
+				$return[] = $row->getUid();
+		}
+
+		return $mode === 1 ? $return : implode(',', $return);
 	}
 
 }

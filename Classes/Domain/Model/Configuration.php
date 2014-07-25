@@ -29,6 +29,9 @@ namespace S3b0\Ecompc\Domain\Model;
 
 /**
  * Configuration
+ *
+ * @package S3b0
+ * @subpackage Ecompc
  */
 class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 

@@ -29,6 +29,9 @@ namespace S3b0\Ecompc\Domain\Repository;
 
 /**
  * The repository for Packages
+ *
+ * @package S3b0
+ * @subpackage Ecompc
  */
 class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 

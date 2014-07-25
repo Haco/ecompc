@@ -17,7 +17,7 @@
 			</table>
 		</div>
 	</f:if>
-	<f:if condition="{0: global.action} == {0: 'index'}">
+	<f:if condition="{0:action} == {0:'index'}">
 		<f:then><div class="tx-ecompc-config-header-instructions">{instructions -> f:format.html()}</div></f:then>
 		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink">Back</f:link.action></f:else>
 	</f:if>

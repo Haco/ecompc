@@ -24,7 +24,10 @@ Otherwise your changes will be overwritten the next time you save the extension 
 				<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-arrow-right">&nbsp;</f:link.action>
 				<div class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}">&nbsp;</div>
 				<div class="ecom-configurator-package-select">
-					<f:link.action action="selectPackageOptions" arguments="{package : package}" class="tx-ecompc-configure-package" id="tx-ecompc-configure-package-{package.uid}"> {package.frontendLabel}</f:link.action><br />
+					<f:if condition="{package.active}">
+						<f:then><f:link.action action="selectPackageOptions" arguments="{package : package}" class="tx-ecompc-configure-package" id="tx-ecompc-configure-package-{package.uid}"> {package.frontendLabel}</f:link.action><br /></f:then>
+						<f:else> {package.frontendLabel}<br /></f:else>
+					</f:if>
 					<f:if condition="{package.selectedOptions}">
 						<f:then>Your choice: <f:render partial="Package/ListSelectedOptions" arguments="{selected:package.selectedOptions}" /></f:then>
 						<f:else><span class="ecom-configurator-package-prompt">{package.prompt}</span></f:else>
@@ -37,5 +40,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 </div>
 
 <f:link.action action="reset">Reset</f:link.action>
+
+<f:if condition="{configurationResult}">Your configuration code: <strong>{configurationResult -> f:format.html()}</strong></f:if>
 
 </f:section>

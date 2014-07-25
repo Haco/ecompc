@@ -29,6 +29,9 @@ namespace S3b0\Ecompc\Domain\Model;
 
 /**
  * Dependency
+ *
+ * @package S3b0
+ * @subpackage Ecompc
  */
 class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 

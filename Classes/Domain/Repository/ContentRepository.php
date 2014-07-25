@@ -28,7 +28,10 @@ namespace S3b0\Ecompc\Domain\Repository;
  ***************************************************************/
 
 /**
- * The repository for Packages
+ * The repository for Contents (extending tt_content repo)
+ *
+ * @package S3b0
+ * @subpackage Ecompc
  */
 class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 

@@ -25,6 +25,12 @@ namespace S3b0\Ecompc\Domain\Model;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+/**
+ * Content
+ *
+ * @package S3b0
+ * @subpackage Ecompc
+ */
 class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**

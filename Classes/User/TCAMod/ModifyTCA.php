@@ -235,7 +235,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 					$setAll[] .= '$(\'' . $rowId . '\').removeClassName(\'c-unselectedItem\');$(\'' . $rowId . '\').addClassName(\'c-selectedItem\');';
 					$unSetAll[] = $this->elName($PA['itemFormElName'] . '[' . $p[5] . ']') . '.checked=0;';
 					$unSetAll[] .= '$(\'' . $rowId . '\').removeClassName(\'c-selectedItem\');$(\'' . $rowId . '\').addClassName(\'c-unselectedItem\');';
-					$restoreCmd[] = $this->elName($PA['itemFormElName'] . '[' . $p[5] . ']') . '.checked=' . ($sM ? 1 : 0) . ';' . '$(\'' . $rowId . '\').removeClassName(\'c-selectedItem\');$(\'' . $rowId . '\').removeClassName(\'c-unselectedItem\');' . '$(\'' . $rowId . '\').addClassName(\'c-' . ($sM ? '' : 'un') . 'selectedItem\');';
+//					$restoreCmd[] = $this->elName($PA['itemFormElName'] . '[' . $p[5] . ']') . '.checked=' . ($sM ? 1 : 0) . ';' . '$(\'' . $rowId . '\').removeClassName(\'c-selectedItem\');$(\'' . $rowId . '\').removeClassName(\'c-unselectedItem\');' . '$(\'' . $rowId . '\').addClassName(\'c-' . ($sM ? '' : 'un') . 'selectedItem\');';
 					// Check if some help text is available
 					// Since TYPO3 4.5 help text is expected to be an associative array
 					// with two key, "title" and "description"
@@ -291,10 +291,10 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		<table border="0" cellpadding="0" cellspacing="0" class="typo3-TCEforms-select-checkbox">' . $tableHead . '<tbody>' . implode('', $tRows) . '</tbody>
 		</table>
 		';
-		// Add revert icon
-		if (is_array($restoreCmd)) {
-			$item .= '<a href="#" onclick="' . implode('', $restoreCmd) . ' return false;' . '">' . BackendUtility\IconUtility::getSpriteIcon('actions-edit-undo', array('title' => htmlspecialchars($this->getLL('l_revertSelection')))) . '</a>';
-		}
+//		// Add revert icon
+//		if (is_array($restoreCmd)) {
+//			$item .= '<a href="#" onclick="' . implode('', $restoreCmd) . ' return false;' . '">' . BackendUtility\IconUtility::getSpriteIcon('actions-edit-undo', array('title' => htmlspecialchars($this->getLL('l_revertSelection')))) . '</a>';
+//		}
 		return $item;
 	}
 
@@ -318,7 +318,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 
 			foreach ($PA['items'] as $item) {
 				$data = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_option', $item[1], '*');
-				if (!sizeof($data) || $data['configuration_package'] === $referringOption['configuration_package'] || $data['pid'] !== $referringOption['pid'] || !CoreUtility\GeneralUtility::inList(implode(',', $packages), $data['configuration_package'])) continue;
+				if (!sizeof($data) || $data['pid'] !== $referringOption['pid'] || !CoreUtility\GeneralUtility::inList(implode(',', $packages), $data['configuration_package'])) continue;
 
 				$item[2] = 'clear.gif';
 				$configurationPackages[0]['label'] = '-- not assigned --';

@@ -8,7 +8,12 @@
 
 namespace S3b0\Ecompc\Domain\Session;
 
-
+/**
+ * FrontendSessionHandler
+ *
+ * @package S3b0
+ * @subpackage Ecompc
+ */
 class FrontendSessionHandler extends \S3b0\Ecompc\Domain\Session\SessionHandler {
 
 	/**

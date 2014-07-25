@@ -120,7 +120,7 @@ return array(
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'tx_ecompc_domain_model_package',
-				'foreign_table_where' => 'AND NOT tx_ecompc_domain_model_package.uid=(SELECT configuration_package FROM tx_ecompc_domain_model_option WHERE uid=###REC_FIELD_ref_option###) AND tx_ecompc_domain_model_package.sorting < (SELECT sorting FROM tx_ecompc_domain_model_package WHERE uid=(SELECT configuration_package FROM tx_ecompc_domain_model_option WHERE uid=###REC_FIELD_ref_option###)) AND tx_ecompc_domain_model_package.pid=###REC_FIELD_pid### AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => 'AND tx_ecompc_domain_model_package.sorting <= (SELECT sorting FROM tx_ecompc_domain_model_package WHERE uid=(SELECT configuration_package FROM tx_ecompc_domain_model_option WHERE uid=###REC_FIELD_ref_option###)) AND tx_ecompc_domain_model_package.pid=###REC_FIELD_pid### AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)',
 				'MM' => 'tx_ecompc_dependency_package_mm',
 				'size' => 10,
 				'autoSizeMax' => 30,
