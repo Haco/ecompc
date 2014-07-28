@@ -231,6 +231,10 @@ return array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 22,
+				'range' => array(
+					'lower' => 0,
+					'upper' => 100
+				),
 				'eval' => 'double2'
 			)
 		),

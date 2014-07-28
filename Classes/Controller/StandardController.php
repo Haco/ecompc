@@ -57,6 +57,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $selectedConfiguration = array();
 
 	/**
+	 * @var array
+	 */
+	protected $selectedConfigurationPrice = array();
+
+	/**
 	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|array|null
 	 */
 	protected $selectableConfigurations = NULL;
@@ -145,6 +150,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->setSelectedOptions($this->selectedOptions, $this->selectedConfiguration);
 		// Set selectable configurations
 		$this->setSelectableConfigurations($this->selectableConfigurations);
+		// Get configuration price
+		$this->selectedConfigurationPrice = $this->showPricing ? $this->getConfigurationPrice() : array();
 	}
 
 	/**
@@ -162,7 +169,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'action' => $this->request->getControllerActionName(), // current action
 			'instructions' => $this->cObj->getFieldVal('bodytext'), // short instructions for user
 			'currencySetup' => $this->settings['currency'][$this->feSession->get('currency')], // fetch currency TS
-			'pricing' => $this->showPricing ? $this->getConfigurationPrice() : NULL // current configuration price
+			'pricing' => $this->selectedConfigurationPrice // current configuration price
 		));
 	}
 
@@ -386,6 +393,17 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$localizedPrice = $package->isMultipleSelect() || !$selectedOptions ? floatval($priceList[$this->feSession->get('currency')]['vDEF']) : floatval(floatval($priceList[$this->feSession->get('currency')]['vDEF'] - $selectedPriceList[$this->feSession->get('currency')]['vDEF']));
 				}
 				$option->setLocalizedPrice($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : $localizedPrice);
+				// Calculate percental pricing [ONLY working on packages WITHOUT multipleSelect() flag set]
+				if (!$option->getLocalizedPrice() && $option->getPricePercental() && !$package->isMultipleSelect()) {
+					if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages']) && !($selectedOptions && in_array($option, $selectedOptions->toArray()))) {
+						$selectedOption = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()])->getFirst();
+						$configurationPrice = floatval($this->selectedConfigurationPrice[1] / ($selectedOption->getPricePercental() / 100 + 1));
+						$selectedOptionPrice = floatval($this->selectedConfigurationPrice[1] - $configurationPrice);
+						$option->setLocalizedPrice(floatval($configurationPrice * ($option->getPricePercental() / 100) - $selectedOptionPrice));
+					} else {
+						$option->setLocalizedPrice($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : floatval($this->selectedConfigurationPrice[1] * ($option->getPricePercental() / 100)));
+					}
+				}
 			}
 		}
 
@@ -532,6 +550,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
 						$priceList = $option->getPriceList();
 						$price = floatval($priceList[$this->feSession->get('currency')]['vDEF']);
+					}
+					// Calculate percental pricing
+					if (!$price && $option->getPricePercental()) {
+						$price = floatval($config * ($option->getPricePercental() / 100));
 					}
 					$config += $price;
 				}
