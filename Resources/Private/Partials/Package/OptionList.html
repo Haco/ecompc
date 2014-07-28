@@ -4,10 +4,7 @@
 			<span style="float: right;">[ <f:financial.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{option.localizedPrice}</f:financial.currency> ]</span>
 		</f:if>
 		<div class="ecom-configurator-checkbox {f:if(condition:'{option.selected}',then:'checked',else:'unchecked')}"></div>
-		<f:if condition="{option.selected}">
-			<f:then><f:link.action action="unsetOption" arguments="{option:option,redirectAction:1}" class="ecom-configurator-select-package-option option">{option.frontendLabel}{f:if(condition:option.configurationCodeSegment,then:'[{option.configurationCodeSegment}]')}</f:link.action></f:then>
-			<f:else><f:link.action action="setOption" arguments="{option:option,redirectAction:ms}" class="ecom-configurator-select-package-option option">{option.frontendLabel}{f:if(condition:option.configurationCodeSegment,then:'[{option.configurationCodeSegment}]')}</f:link.action></f:else>
-		</f:if>
+		<f:link.action action="setOption" arguments="{option:option,redirectAction:ms,unset:option.selected}" class="ecom-configurator-select-package-option option">{option.frontendLabel}{f:if(condition:option.configurationCodeSegment,then:'[{option.configurationCodeSegment}]')}</f:link.action>
 	</div>
 	<div class="clearfix"></div>
 </f:for>
