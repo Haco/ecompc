@@ -67,7 +67,7 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function findByTtContentUidExcludingSelectedOptions($uid = 0, \TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions) {
+	public function findByTtContentUidApplyingSelectedOptions($uid = 0, \TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions) {
 		if (!$uid)
 			return NULL;
 

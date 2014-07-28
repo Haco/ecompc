@@ -37,8 +37,12 @@ use TYPO3\CMS\Extbase\Utility as ExtbaseUtility;
  */
 class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
+	CONST ttc_field_type = 'tx_ecompc_type';
+	CONST ttc_field_packages = 'tx_ecompc_packages';
+	CONST ttc_field_configurations = 'tx_ecompc_configurations';
+
 	/**
-	 * @var null
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer|null
 	 */
 	protected $cObj = NULL;
 
@@ -106,14 +110,6 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $feSession;
 
 	/**
-	 * Frontend- or Backend-Session
-	 * The type of session is set automatically in initializeAction().
-	 *
-	 * @var \S3b0\Ecompc\Domain\Session\SessionHandler
-	 */
-	protected $session;
-
-	/**
 	 * Constructs the controller.
 	 */
 	public function __construct() {
@@ -134,13 +130,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Get Extension configuration (set @Extension Manager)
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ecompc']);
 		// Get distributors frontend user groups (set @Extension Manager)
-		$distFeUserGroups = CoreUtility\GeneralUtility::intExplode(',', $extConf['distFeUserGroup'], true);
+		$distFeUserGroups = CoreUtility\GeneralUtility::intExplode(',', $extConf['distFeUserGroup'], TRUE);
 		// Set price flag (displays pricing if true)
 		$this->showPricing = (is_array($GLOBALS['TSFE']->fe_user->groupData['uid'])) && count(array_intersect($distFeUserGroups, $GLOBALS['TSFE']->fe_user->groupData['uid'])) ?: FALSE;
-
 		// Fetch content object (tt_content)
 		$this->cObj = $this->configurationManager->getContentObject();
-
 		// Frontend-Session
 		$this->feSession->setStorageKey($this->request->getControllerExtensionName() . $this->request->getPluginName());
 		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
@@ -184,12 +178,12 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.dbl_config_found', $this->extensionName));
 
 		// Failure if no configuration has been found
-		if (!CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal('tx_ecompc_configurations')))
+		if (!CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal(self::ttc_field_configurations)))
 			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_config_found', $this->extensionName) . ' [ttc:#' . $this->cObj->getFieldVal('uid') . '@pid:#' . $this->cObj->getFieldVal('pid') . ']');
 
 		// Check for currency when distributor is logged in
 		if ($this->showPricing) {
-			if (!$this->feSession->get('currency') && !$currency && $this->checkForCurrencies($this->settings) === true) {
+			if (!$this->feSession->get('currency') && !$currency && $this->checkForCurrencies($this->settings) === TRUE) {
 				$this->redirect('selectRegion'); // Add redirect for region selection - influencing currency display
 			} elseif (!$this->feSession->get('currency') && $currency && array_key_exists($currency, (array) $this->settings['currency'])) {
 				$this->feSession->store('currency', $currency); // Store region selection
@@ -197,31 +191,29 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			}
 		}
 
+		$process = 0;
 		// Fetch packages
-		$list = CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal('tx_ecompc_packages'), TRUE);
-		$packages = $this->packageRepository->findPackagesByUidList($list);
-		if ($packages) {
-			$setActive = true;
+		$list = CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal(self::ttc_field_packages), TRUE);
+		if ($packages = $this->packageRepository->findPackagesByUidList($list)) {
+			$isActive = TRUE;
 			foreach ($packages as $package) {
 				if ($package->isVisibleInFrontend()) {
-					$package->setActive($setActive);
-					$setActive = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']);
+					$package->setActive($isActive);
+					$isActive = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']);
 				}
 				$selectedOptions = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']) ? $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()]) : NULL;
 				$package->setSelectedOptions($selectedOptions);
 			}
+			// Get process state update (ratio of selected to visible packages) => float from 0 to 1 (*100 = %)
+			$visiblePackages = $this->packageRepository->findVisiblePackagesByUidList($list);
+			$process = count((array) $this->selectedConfiguration['packages']) / count($visiblePackages);
 		}
 
-		// Get process
-		$visible = $this->packageRepository->findVisiblePackagesByUidList($list);
-		$process = count((array) $this->selectedConfiguration['packages']) / count($visible);
 		if ($process === 1)
 			$this->view->assign('configurationResult', $this->getConfigurationResult()); // Get configuration code | SKU
 
-		$this->view->assignMultiple(array(
-			'packages' => $packages,
-			'process' => $process
-		));
+		$this->view->assign('packages', $packages);
+		$this->view->assign('process', $process);
 	}
 
 	/**
@@ -231,21 +223,19 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function selectPackageOptionsAction(\S3b0\Ecompc\Domain\Model\Package $package) {
-		$this->view->assignMultiple(array(
-			'package' => $package,
-			'options' => $this->getPackageOptions($package)
-		));
+		$this->view->assign('package', $package);
+		$this->view->assign('options', $this->getPackageOptions($package));
 	}
 
 	/**
 	 * action setOption
 	 *
-	 * @todo  preselect packages if only one option possible!
 	 * @param \S3b0\Ecompc\Domain\Model\Option $option
+	 * @param int                              $unset           Identifier to unset option!
 	 * @param int                              $redirectAction
 	 * @return void
 	 */
-	public function setOptionAction(\S3b0\Ecompc\Domain\Model\Option $option, $redirectAction = 0) {
+	public function setOptionAction(\S3b0\Ecompc\Domain\Model\Option $option, $unset = 0, $redirectAction = 0) {
 		$configuration = $this->selectedConfiguration;
 		$redirect = array(
 			array('index', NULL, NULL, array()),
@@ -254,7 +244,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
 		// Modify (options of) package that already EXISTS
 		if (array_key_exists($option->getConfigurationPackage()->getUid(), (array) $configuration['packages'])) {
-			// For those packages NOT supporting multipleSelect mode unset current corresponding selection
+			// For packages NOT supporting multipleSelect unset current selection
 			if (!$option->getConfigurationPackage()->isMultipleSelect()) {
 				// Remove other (package) options from selectedOptions
 				if ($packageOptions = $this->optionRepository->findByConfigurationPackage($option->getConfigurationPackage())) {
@@ -262,23 +252,35 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 						if ($this->selectedOptions->contains($singlePackageOption)) $this->selectedOptions->detach($singlePackageOption);
 					}
 				}
-				// Remove other (package) options + remove package from configuration array
-				$configuration['options'] = array_diff($configuration['options'], $this->optionRepository->getPackageOptionsUidList($option->getConfigurationPackage()));
+				// Remove all options + package from configuration array
+				$configuration['options'] = array_diff((array) $configuration['options'], $this->optionRepository->getPackageOptionsUidList($option->getConfigurationPackage()));
 				unset($configuration['packages'][$option->getConfigurationPackage()->getUid()]);
 			}
-			// Add options to package selection
-			if (!in_array($option->getUid(), (array) $configuration['options'])) {
+			// Remove option from configuration array
+			if ($unset) {
+				$configuration['options'] = array_diff((array) $configuration['options'], [$option->getUid()]);
+				if ($option->getConfigurationPackage()->isMultipleSelect()) {
+					$configuration['packages'][$option->getConfigurationPackage()->getUid()] = array_diff((array) $configuration['packages'][$option->getConfigurationPackage()->getUid()], [$option->getUid()]);
+					if (count($configuration['packages'][$option->getConfigurationPackage()->getUid()]) === 0)
+						unset($configuration['packages'][$option->getConfigurationPackage()->getUid()]);
+				}
+			} else {
+				// Add options to package selection
+				if (!in_array($option->getUid(), (array) $configuration['options'])) {
+					$configuration['options'][] = $option->getUid();
+					$configuration['packages'][$option->getConfigurationPackage()->getUid()][] = $option->getUid();
+				}
+			}
+		} else {
+			if (!$unset) {
+				// Add options to NEW package
 				$configuration['options'][] = $option->getUid();
 				$configuration['packages'][$option->getConfigurationPackage()->getUid()][] = $option->getUid();
 			}
-		} else {
-			// Add options to NEW package
-			$configuration['options'][] = $option->getUid();
-			$configuration['packages'][$option->getConfigurationPackage()->getUid()][] = $option->getUid();
 		}
 
 		// Add selected option to selection
-		$this->selectedOptions->attach($option);
+		$unset ? $this->selectedOptions->detach($option) : $this->selectedOptions->attach($option);
 		// Run the dependency check if other packages next to current got options chosen
 		foreach ($this->selectedOptions as $selectedOption) {
 			if (!$this->checkOptionDependencies($selectedOption, $configuration)) {
@@ -288,52 +290,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			}
 		}
 
-		$this->feSession->store($this->configurationSessionStorageKey, $configuration); // Store configuration in fe_session_data
-		list($actionName, $controllerName, $extensionName, $arguments) = $redirect[$redirectAction]; // Set params for $this->redirect() method
-		$this->redirect($actionName, $controllerName, $extensionName, $arguments);
-	}
-
-	/**
-	 * action unsetOption
-	 *
-	 * @param \S3b0\Ecompc\Domain\Model\Option $option
-	 * @param int                              $redirectAction
-	 * @return void
-	 */
-	public function unsetOptionAction(\S3b0\Ecompc\Domain\Model\Option $option, $redirectAction = 0) {
-		$configuration = $this->selectedConfiguration;
-		$redirect = array(
-			array('index', NULL, NULL, array()),
-			array('selectPackageOptions', NULL, NULL, array('package' => $option->getConfigurationPackage()))
-		);
-
-		if (!$option->getConfigurationPackage()->isMultipleSelect()) {
-			// Remove all (package) options from selectedOptions
-			if ($packageOptions = $this->optionRepository->findByConfigurationPackage($option->getConfigurationPackage())) {
-				foreach ($packageOptions as $singlePackageOption) {
-					if ($this->selectedOptions->contains($singlePackageOption)) $this->selectedOptions->detach($singlePackageOption);
-				}
-			}
-			// Remove all (package) options + remove package from configuration array
-			$configuration['options'] = array_diff($configuration['options'], $this->optionRepository->getPackageOptionsUidList($option->getConfigurationPackage()));
-			unset($configuration['packages'][$option->getConfigurationPackage()->getUid()]);
-		} else {
-			// Remove option from configuration array
-			$configuration['options'] = array_diff($configuration['options'], [$option->getUid()]);
-			unset($configuration['packages'][$option->getConfigurationPackage()->getUid()][$option->getUid()]);
-		}
-
-		// Add selected option to selection
-		$this->selectedOptions->detach($option);
-		// Run the dependency check if other packages next to current got options chosen
-		foreach ($this->selectedOptions as $selectedOption) {
-			if (!$this->checkOptionDependencies($selectedOption, $configuration)) {
-				// if ($this->selectedOptions->contains($selectedOption)) $this->selectedOptions->detach($selectedOption); // not necessary in this place since ObjectStorage will be refilled after redirect leaving $selectedOption as of session configuration. Just listed to show regular complete process.
-				$configuration['options'] = array_diff($configuration['options'], $option->getConfigurationPackage()->isMultipleSelect() ? $this->optionRepository->getPackageOptionsUidList($selectedOption->getConfigurationPackage()) : [$selectedOption->getUid()]);
-				unset($configuration['packages'][$selectedOption->getConfigurationPackage()->getUid()]);
-			}
-		}
-
+#		// Prepared autoFill. Still some issues, especially regarding traversing as of DC!
+#		if ($this->settings['auto_set'])
+#			$this->autoSetOptions($configuration);
 		$this->feSession->store($this->configurationSessionStorageKey, $configuration); // Store configuration in fe_session_data
 		list($actionName, $controllerName, $extensionName, $arguments) = $redirect[$redirectAction]; // Set params for $this->redirect() method
 		$this->redirect($actionName, $controllerName, $extensionName, $arguments);
@@ -356,7 +315,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function selectRegionAction() {
-		$this->view->assign('currencies', $this->checkForCurrencies($this->settings, true));
+		$this->view->assign('currencies', $this->checkForCurrencies($this->settings, TRUE));
 	}
 
 	/**********************************
@@ -461,7 +420,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		foreach ($selectableOptions as $option) {
 			if ($this->checkOptionDependencies($option, $this->selectedConfiguration)) {
 				if ($this->selectedOptions && in_array($option, $this->selectedOptions->toArray()))
-					$option->setSelected(true);
+					$option->setSelected(TRUE);
 				$result[] = $option;
 			}
 		}
@@ -475,8 +434,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return boolean
 	 */
 	public function checkOptionDependencies(\S3b0\Ecompc\Domain\Model\Option $option, array $configuration) {
-		if (!$option->getDependency()) return true;
-		$check = true;
+		if (!$option->getDependency()) return TRUE;
+		$check = TRUE;
 
 		if ($dependency = $option->getDependency()) {
 			if ($packages = $option->getDependency()->getPackages()) {
@@ -497,6 +456,30 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**
+	 * autoSetOptions
+	 *
+	 * @param array $configuration
+	 * @return void
+	 */
+	public function autoSetOptions(array &$configuration) {
+		if ($packages = $this->packageRepository->findPackagesByUidList(CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal(self::ttc_field_packages), TRUE))) {
+			foreach ($packages as $package) {
+				if (array_key_exists($package->getUid(), (array) $configuration['packages']))
+					continue;
+
+				if ($packageOptions = $this->getPackageOptions($package)) {
+					if (count($packageOptions) === 1) {
+						// Add option to NEW package
+						$configuration['options'][] = $packageOptions[0]->getUid();
+						$configuration['packages'][$package->getUid()][] = $packageOptions[0]->getUid();
+						$this->selectedOptions->attach($packageOptions[0]);
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Fetching selectable configurations
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|array|null $current actual setting
@@ -506,8 +489,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->getFieldVal('uid'));
 
 		// Overwrite for SKU-based configurations
-		if (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal('tx_ecompc_type')) !== 1) {
-			$current = $this->configurationRepository->findByTtContentUidExcludingSelectedOptions($this->cObj->getFieldVal('uid'), $this->selectedOptions);
+		if (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal(self::ttc_field_type)) !== 1) {
+			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getFieldVal('uid'), $this->selectedOptions);
 		}
 	}
 
@@ -534,7 +517,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	public function getConfigurationPrice() {
 		$base = $config = 0.00;
 
-		if (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal('tx_ecompc_type')) === 1 && $this->selectableConfigurations) {
+		if (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal(self::ttc_field_type)) === 1 && $this->selectableConfigurations) {
 			$base = $this->selectableConfigurations->getFirst()->getPrice();
 			if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
 				$priceList = $this->selectableConfigurations->getFirst()->getPriceList();
@@ -564,7 +547,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
 	public function getConfigurationResult() {
-		switch (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal('tx_ecompc_type'))) {
+		switch (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal(self::ttc_field_type))) {
 			// In case of dynamic configurations get first configuration record
 			case 1:
 				return $this->buildConfigurationCode($this->selectableConfigurations->getFirst());
@@ -593,7 +576,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		/**
 		 * @param \S3b0\Ecompc\Domain\Model\Package $package
 		 */
-		foreach ($this->packageRepository->findPackagesByUidList(CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal('tx_ecompc_packages'), true)) as $package) {
+		foreach ($this->packageRepository->findPackagesByUidList(CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal(self::ttc_field_packages), TRUE)) as $package) {
 			if (!$package->isVisibleInFrontend()) {
 				$code .= '<span class="ecompc-syntax-help">' . $package->getDefaultOption()->getConfigurationCodeSegment() . '</span>';
 				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
