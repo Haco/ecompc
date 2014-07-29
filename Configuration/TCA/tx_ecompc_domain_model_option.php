@@ -217,7 +217,7 @@ return array(
 		'price' => array(
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_option.price',
+			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.price',
 			'config' => array(
 				'type' => 'input',
 				'size' => 22,
@@ -227,7 +227,7 @@ return array(
 		'price_percental' => array(
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_option.price_percental',
+			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.price_percental',
 			'config' => array(
 				'type' => 'input',
 				'size' => 22,

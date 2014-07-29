@@ -92,11 +92,11 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $priceList = '';
 
 	/**
-	 * localizedPrice
+	 * priceOutput
 	 *
 	 * @var float
 	 */
-	protected $localizedPrice = 0.0;
+	protected $priceOutput = 0.0;
 	/**
 	 * Corresponding Package
 	 *
@@ -238,7 +238,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return float $pricePercental
 	 */
 	public function getPricePercental() {
-		return $this->pricePercental;
+		return $this->pricePercental / 100;
 	}
 
 	/**
@@ -272,22 +272,22 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the localizedPrice
+	 * Returns the priceOutput
 	 *
-	 * @return float $localizedPrice
+	 * @return float $priceOutput
 	 */
-	public function getLocalizedPrice() {
-		return $this->localizedPrice;
+	public function getPriceOutput() {
+		return $this->priceOutput;
 	}
 
 	/**
-	 * Sets the localizedPrice
+	 * Sets the priceOutput
 	 *
-	 * @param float $localizedPrice
+	 * @param float $priceOutput
 	 * @return void
 	 */
-	public function setLocalizedPrice($localizedPrice) {
-		$this->localizedPrice = $localizedPrice;
+	public function setPriceOutput($priceOutput) {
+		$this->priceOutput = $priceOutput;
 	}
 
 	/**
@@ -354,6 +354,14 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function isSelected() {
 		return $this->selected;
+	}
+
+	public function getPriceInCurrency($currency = 'default') {
+		if ($currency === 'default')
+			return $this->getPrice();
+
+		$priceList = $this->getPriceList();
+		return strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
 	}
 
 }

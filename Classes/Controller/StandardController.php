@@ -338,7 +338,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @internal
 	 * @return boolean|array
 	 */
-	final static public function checkForCurrencies(array $settings, $returnFiltered = FALSE) {
+	final public static function checkForCurrencies(array $settings, $returnFiltered = FALSE) {
 		if (!array_key_exists('currency', $settings))
 			return FALSE;
 
@@ -386,23 +386,19 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Include pricing for enabled users!
 		if ($this->showPricing) {
 			foreach ($processOptions as $option) {
-				$localizedPrice = $package->isMultipleSelect() || !$selectedOptions ? $option->getPrice() : floatval($option->getPrice() - $selectedOptions->getFirst()->getPrice());
-				if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
-					$priceList = $option->getPriceList();
-					$selectedPriceList =  !$selectedOptions ?: $selectedOptions->getFirst()->getPriceList(); // if !$package->isMultipleSelect() we need this for calculating price difference!
-					$localizedPrice = $package->isMultipleSelect() || !$selectedOptions ? floatval($priceList[$this->feSession->get('currency')]['vDEF']) : floatval(floatval($priceList[$this->feSession->get('currency')]['vDEF'] - $selectedPriceList[$this->feSession->get('currency')]['vDEF']));
-				}
-				$option->setLocalizedPrice($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : $localizedPrice);
-				// Calculate percental pricing [ONLY working on packages WITHOUT multipleSelect() flag set]
-				if (!$option->getLocalizedPrice() && $option->getPricePercental() && !$package->isMultipleSelect()) {
+				if ($package->isPercentPricing()) {
+					// Calculate percental pricing [ONLY working on packages WITHOUT multipleSelect() flag set]
 					if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages']) && !($selectedOptions && in_array($option, $selectedOptions->toArray()))) {
 						$selectedOption = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()])->getFirst();
-						$configurationPrice = floatval($this->selectedConfigurationPrice[1] / ($selectedOption->getPricePercental() / 100 + 1));
+						$configurationPrice = floatval($this->selectedConfigurationPrice[1] / ($selectedOption->getPricePercental() + 1));
 						$selectedOptionPrice = floatval($this->selectedConfigurationPrice[1] - $configurationPrice);
-						$option->setLocalizedPrice(floatval($configurationPrice * ($option->getPricePercental() / 100) - $selectedOptionPrice));
+						$option->setPriceOutput(floatval($configurationPrice * $option->getPricePercental() - $selectedOptionPrice));
 					} else {
-						$option->setLocalizedPrice($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : floatval($this->selectedConfigurationPrice[1] * ($option->getPricePercental() / 100)));
+						$option->setPriceOutput($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : floatval($this->selectedConfigurationPrice[1] * $option->getPricePercental()));
 					}
+				} else {
+					$priceOutput = $package->isMultipleSelect() || !$selectedOptions ? $option->getPriceInCurrency($this->feSession->get('currency')) : floatval($option->getPriceInCurrency($this->feSession->get('currency')) - $selectedOptions->getFirst()->getPriceInCurrency($this->feSession->get('currency')));
+					$option->setPriceOutput($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : $priceOutput);
 				}
 			}
 		}
@@ -546,14 +542,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			$config = $base;
 			if ($this->selectedOptions) {
 				foreach ($this->selectedOptions as $option) {
-					$price = $option->getPrice();
-					if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
-						$priceList = $option->getPriceList();
-						$price = floatval($priceList[$this->feSession->get('currency')]['vDEF']);
-					}
-					// Calculate percental pricing
-					if (!$price && $option->getPricePercental()) {
-						$price = floatval($config * ($option->getPricePercental() / 100));
+					if ($option->getConfigurationPackage()->isPercentPricing()) {
+						$price = floatval($config * $option->getPricePercental());
+					} else {
+						$price = $option->getPriceInCurrency($this->feSession->get('currency'));
 					}
 					$config += $price;
 				}
