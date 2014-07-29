@@ -87,6 +87,27 @@ $extendTca = array(
 				'enableCascadingDelete' => 1
 			),
 		),
+	),
+	'tx_' . $extKey . '_base_price' => array(
+		'l10n_mode' => 'exclude',
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.price',
+		'config' => array(
+			'type' => 'input',
+			'size' => 30,
+			'eval' => 'double2'
+		)
+	),
+	'tx_' . $extKey . '_base_price_list' => array(
+		'l10n_mode' => 'exclude',
+		'exclude' => 1,
+		'label' => '',
+		'config' => array(
+			'type' => 'flex',
+			'ds' => array(
+				'default' => 'FILE:EXT:ecompc/Configuration/FlexForms/price_list.xml'
+			)
+		)
 	)
 );
 
@@ -98,8 +119,9 @@ if (TYPO3_MODE === 'BE') {
 $GLOBALS['TCA']['tt_content']['ctrl']['requestUpdate'] .= ', tx_' . $extKey . '_type';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $extendTca, 1);
 $pluginSignature = str_replace('_','',$extKey) . '_configurator';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'tx_' . $extKey . '_type;;tx_ecompc, tx_' . $extKey . '_configurations, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.extended, bodytext;LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang_db.xlf:bodytext_formlabel;;richtext:rte_transform[flag=rte_enabled|mode=ts_css], rte_enabled';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'tx_' . $extKey . '_type;;tx_ecompc, tx_' . $extKey . '_configurations, --div--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tabs.pricing, tx_' . $extKey . '_base_price;;tx_ecompc_pricing, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.extended, bodytext;LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang_db.xlf:bodytext_formlabel;;richtext:rte_transform[flag=rte_enabled|mode=ts_css], rte_enabled';
 $GLOBALS['TCA']['tt_content']['palettes']['tx_ecompc'] = array('showitem' => 'tx_' . $extKey . '_packages');
+$GLOBALS['TCA']['tt_content']['palettes']['tx_ecompc_pricing'] = array('showitem' => 'tx_' . $extKey . '_base_price_list');
 //\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature, 'FILE:EXT:' . $extKey . '/Configuration/FlexForms/flexform_configurator.xml');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, 'Configuration/TypoScript', 'Product Configurator');

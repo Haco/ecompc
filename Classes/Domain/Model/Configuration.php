@@ -64,20 +64,6 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $configurationCodePrefix = '';
 
 	/**
-	 * price
-	 *
-	 * @var float
-	 */
-	protected $price = 0.0;
-
-	/**
-	 * priceList
-	 *
-	 * @var string
-	 */
-	protected $priceList = '';
-
-	/**
 	 * Configuration Options (used for article number based configurators)
 	 *
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
@@ -178,45 +164,6 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setConfigurationCodePrefix($configurationCodePrefix) {
 		$this->configurationCodePrefix = $configurationCodePrefix;
-	}
-
-	/**
-	 * Returns the price
-	 *
-	 * @return float $price
-	 */
-	public function getPrice() {
-		return $this->price;
-	}
-
-	/**
-	 * Sets the price
-	 *
-	 * @param float $price
-	 * @return void
-	 */
-	public function setPrice($price) {
-		$this->price = $price;
-	}
-
-	/**
-	 * Returns the priceList
-	 *
-	 * @return string $priceList
-	 */
-	public function getPriceList() {
-		$convArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->priceList);
-		return $convArray['data']['sDEF']['lDEF'];
-	}
-
-	/**
-	 * Sets the priceList
-	 *
-	 * @param string $priceList
-	 * @return void
-	 */
-	public function setPriceList($priceList) {
-		$this->priceList = $priceList;
 	}
 
 	/**

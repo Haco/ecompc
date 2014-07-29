@@ -46,7 +46,7 @@
 				<source>Config Code Prefix</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_configuration.price">
-				<source>Price</source>
+				<source>Price [in default currency]</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_configuration.options">
 				<source>Options</source>
@@ -134,6 +134,9 @@
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_dependency.options">
 				<source>Options</source>
+			</trans-unit>
+			<trans-unit id="tabs.pricing">
+				<source>Pricing</source>
 			</trans-unit>
 
 			<!-- DEFAULT CURRENCY REGIONS -->

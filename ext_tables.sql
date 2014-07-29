@@ -4,7 +4,9 @@
 CREATE TABLE tt_content (
 	tx_ecompc_type int(11) DEFAULT '0' NOT NULL,
 	tx_ecompc_packages text,
-	tx_ecompc_configurations int(11) unsigned DEFAULT '0'
+	tx_ecompc_configurations int(11) unsigned DEFAULT '0',
+	tx_ecompc_base_price double(11,2) DEFAULT '0.00' NOT NULL,
+	tx_ecompc_base_price_list text NOT NULL,
 );
 
 #
@@ -21,8 +23,6 @@ CREATE TABLE tx_ecompc_domain_model_configuration (
 	sku varchar(255) DEFAULT '' NOT NULL,
 	configuration_code_suffix varchar(255) DEFAULT '' NOT NULL,
 	configuration_code_prefix varchar(255) DEFAULT '' NOT NULL,
-	price double(11,2) DEFAULT '0.00' NOT NULL,
-	price_list text NOT NULL,
 	options int(11) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,

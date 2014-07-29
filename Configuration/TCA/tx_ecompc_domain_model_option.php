@@ -37,12 +37,12 @@ return array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, configuration_code_segment, image, hint_text, price, price_percental, configuration_package, dependency',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;2, configuration_package, configuration_code_segment, --div--;' . $extTranslationPath . 'tabs.referral, image, dependency, --div--;LLL:EXT:cms/locallang_tca.xlf:pages.tabs.extended, --palette--;;3, price_list, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;2, configuration_package, configuration_code_segment, --div--;' . $extTranslationPath . 'tabs.referral, image, dependency, --div--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tabs.pricing, --palette--;;3, price_list, --div--;LLL:EXT:cms/locallang_tca.xlf:pages.tabs.extended, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
 		'2' => array('showitem' => 'backend_label'),
-		'3' => array('showitem' => 'price, price_percental;;4', 'canNotCollapse' => 1)
+		'3' => array('showitem' => 'price, price_percental', 'canNotCollapse' => 1)
 	),
 	'columns' => array(
 

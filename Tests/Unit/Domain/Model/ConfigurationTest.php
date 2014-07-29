@@ -143,31 +143,6 @@ class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function getPriceReturnsInitialValueForFloat() {
-		$this->assertSame(
-			0.0,
-			$this->subject->getPrice()
-		);
-	}
-
-	/**
-	 * @test
-	 */
-	public function setPriceForFloatSetsPrice() {
-		$this->subject->setPrice(3.14159265);
-
-		$this->assertAttributeEquals(
-			3.14159265,
-			'price',
-			$this->subject,
-			'',
-			0.000000001
-		);
-	}
-
-	/**
-	 * @test
-	 */
 	public function getOptionsReturnsInitialValueForOption() {
 		$newObjectStorage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$this->assertEquals(

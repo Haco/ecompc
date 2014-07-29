@@ -54,6 +54,20 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $ecompcConfigurations = NULL;
 
 	/**
+	 * ecompcBasePrice
+	 *
+	 * @var float
+	 */
+	protected $ecompcBasePrice = 0.0;
+
+	/**
+	 * ecompcBasePriceList
+	 *
+	 * @var string
+	 */
+	protected $ecompcBasePriceList = '';
+
+	/**
 	 * __construct
 	 */
 	public function __construct() {
@@ -89,6 +103,34 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param int $ecompcType
+	 * @return void
+	 */
+	public function setEcompcType($ecompcType) {
+		$this->ecompcType = $ecompcType;
+	}
+
+	/**
+	 * Adds a Package
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 * @return void
+	 */
+	public function addEcompcPackage(\S3b0\Ecompc\Domain\Model\Package $package) {
+		$this->ecompcPackages->attach($package);
+	}
+
+	/**
+	 * Removes a Package
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 * @return void
+	 */
+	public function removeEcompcPackage(\S3b0\Ecompc\Domain\Model\Package $package) {
+		$this->ecompcPackages->detach($package);
+	}
+
+	/**
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $ecompcPackages
 	 */
 	public function getEcompcPackages() {
@@ -96,10 +138,84 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $ecompcPackages
+	 * @return void
+	 */
+	public function setEcompcPackages($ecompcPackages) {
+		$this->ecompcPackages = $ecompcPackages;
+	}
+
+	/**
+	 * Adds a Configuration
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration
+	 * @return void
+	 */
+	public function addEcompcConfiguration(\S3b0\Ecompc\Domain\Model\Configuration $configuration) {
+		$this->ecompcConfigurations->attach($configuration);
+	}
+
+	/**
+	 * Removes a Configuration
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration
+	 * @return void
+	 */
+	public function removeEcompcConfiguration(\S3b0\Ecompc\Domain\Model\Configuration $configuration) {
+		$this->ecompcConfigurations->detach($configuration);
+	}
+
+	/**
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration> $ecompcConfigurations
 	 */
 	public function getEcompcConfigurations() {
 		return $this->ecompcConfigurations;
+	}
+
+	/**
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration> $ecompcConfigurations
+	 */
+	public function setEcompcConfigurations($ecompcConfigurations) {
+		$this->ecompcConfigurations = $ecompcConfigurations;
+	}
+
+	/**
+	 * Returns the ecompcBasePrice
+	 *
+	 * @return float $ecompcBasePrice
+	 */
+	public function getEcompcBasePrice() {
+		return $this->ecompcBasePrice;
+	}
+
+	/**
+	 * Sets the ecompcBasePrice
+	 *
+	 * @param float $ecompcBasePrice
+	 * @return void
+	 */
+	public function setEcompcBasePrice($ecompcBasePrice) {
+		$this->ecompcBasePrice = $ecompcBasePrice;
+	}
+
+	/**
+	 * Returns the ecompcBasePriceList
+	 *
+	 * @return string $ecompcBasePriceList
+	 */
+	public function getEcompcBasePriceList() {
+		$convArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->ecompcBasePriceList);
+		return $convArray['data']['sDEF']['lDEF'];
+	}
+
+	/**
+	 * Sets the ecompcBasePriceList
+	 *
+	 * @param string $ecompcBasePriceList
+	 * @return void
+	 */
+	public function setEcompcBasePriceList($ecompcBasePriceList) {
+		$this->ecompcBasePriceList = $ecompcBasePriceList;
 	}
 
 }

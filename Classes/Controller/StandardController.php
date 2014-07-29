@@ -176,7 +176,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * action index
 	 *
-	 * @param  null|string $currency
+	 * @param  string $currency
 	 * @return void
 	 *
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -532,26 +532,24 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return array
 	 */
 	public function getConfigurationPrice() {
-		$base = $config = 0.00;
+		$cObj = $this->contentRepository->findByUid($this->cObj->data['uid']);
 
-		if (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal(self::ttc_field_type)) === 1 && $this->selectableConfigurations) {
-			$base = $this->selectableConfigurations->getFirst()->getPrice();
-			if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
-				$priceList = $this->selectableConfigurations->getFirst()->getPriceList();
-				$base = floatval($priceList[$this->feSession->get('currency')]['vDEF']);
-			}
+		$base = $cObj->getEcompcBasePrice();
+		if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
+			$priceList = $cObj->getEcompcBasePriceList();
+			$base = floatval($priceList[$this->feSession->get('currency')]['vDEF']);
+		}
 
-			// Get configuration price
-			$config = $base;
-			if ($this->selectedOptions) {
-				foreach ($this->selectedOptions as $option) {
-					if ($option->getConfigurationPackage()->isPercentPricing()) {
-						$price = floatval($config * $option->getPricePercental());
-					} else {
-						$price = $option->getPriceInCurrency($this->feSession->get('currency'));
-					}
-					$config += $price;
+		// Get configuration price
+		$config = $base;
+		if ($this->selectedOptions) {
+			foreach ($this->selectedOptions as $option) {
+				if ($option->getConfigurationPackage()->isPercentPricing()) {
+					$price = floatval($config * $option->getPricePercental());
+				} else {
+					$price = $option->getPriceInCurrency($this->feSession->get('currency'));
 				}
+				$config += $price;
 			}
 		}
 
@@ -574,6 +572,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				if ($this->selectableConfigurations->count() !== 1) {
 					$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
 				} else {
+					$this->view->assign('requestFormAdditionalParams', json_decode(sprintf($this->settings['requestForm']['addParam'], $this->selectableConfigurations->getFirst()->getSku()), TRUE));
 					return $this->selectableConfigurations->getFirst()->getSku();
 				}
 		}

@@ -30,20 +30,19 @@ return array(
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
-		'searchFields' => 'frontend_label,sku,configuration_code_suffix,configuration_code_prefix,price,options,',
+		'searchFields' => 'frontend_label,sku,configuration_code_suffix,configuration_code_prefix,options,',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ecompc') . 'Configuration/TCA/Configuration.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_configuration.gif'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, frontend_label, sku, configuration_code_suffix, configuration_code_prefix, price, options',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, frontend_label, sku, configuration_code_suffix, configuration_code_prefix, options',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, frontend_label;;2, price;;3, --div--;' . $extTranslationPath . 'tabs.referral, options, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, frontend_label;;2, --div--;' . $extTranslationPath . 'tabs.referral, options, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
-		'2' => array('showitem' => 'sku, configuration_code_prefix, configuration_code_suffix', 'canNotCollapse' => 1),
-		'3' => array('showitem' => 'price_list')
+		'2' => array('showitem' => 'sku, configuration_code_prefix, configuration_code_suffix', 'canNotCollapse' => 1)
 	),
 	'columns' => array(
 
@@ -180,27 +179,6 @@ return array(
 				'size' => 10,
 				'eval' => 'trim'
 			),
-		),
-		'price' => array(
-			'l10n_mode' => 'exclude',
-			'exclude' => 1,
-			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.price',
-			'config' => array(
-				'type' => 'input',
-				'size' => 30,
-				'eval' => 'double2'
-			)
-		),
-		'price_list' => array(
-			'l10n_mode' => 'exclude',
-			'exclude' => 1,
-			'label' => '',
-			'config' => array(
-				'type' => 'flex',
-				'ds' => array(
-					'default' => 'FILE:EXT:ecompc/Configuration/FlexForms/price_list.xml'
-				)
-			)
 		),
 		'options' => array(
 			'displayCond' => 'REC:NEW:false',
