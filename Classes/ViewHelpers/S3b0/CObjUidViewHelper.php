@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Fluid\ViewHelpers;
+namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
 
 
 /***************************************************************
