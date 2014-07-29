@@ -46,7 +46,7 @@ return array(
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
-		'2' => array('showitem' => 'default_option, visible_in_frontend, multiple_select', 'canNotCollapse' => 1),
+		'2' => array('showitem' => 'default_option, visible_in_frontend, multiple_select, percent_pricing', 'canNotCollapse' => 1),
 		'3' => array('showitem' => 'backend_label')
 	),
 	'columns' => array(
@@ -229,9 +229,20 @@ return array(
 			)
 		),
 		'multiple_select' => array(
+			'displayCond' => 'FIELD:percent_pricing:REQ:false',
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.multiple_select',
+			'config' => array(
+				'type' => 'check',
+				'default' => 0
+			)
+		),
+		'percent_pricing' => array(
+			'displayCond' => 'FIELD:multiple_select:REQ:false',
+			'l10n_mode' => 'exclude',
+			'exclude' => 1,
+			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.percent_pricing',
 			'config' => array(
 				'type' => 'check',
 				'default' => 0

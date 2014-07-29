@@ -111,6 +111,9 @@
 			<trans-unit id="tx_ecompc_domain_model_package.multiple_select">
 				<source>Multiple Select</source>
 			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.percent_pricing">
+				<source>Use percental pricing</source>
+			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_package.default_option">
 				<source>Default Option</source>
 			</trans-unit>

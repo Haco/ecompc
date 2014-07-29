@@ -78,6 +78,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $visibleInFrontend = FALSE;
 
 	/**
+	 * percentPricing
+	 *
+	 * @var boolean
+	 */
+	protected $percentPricing = FALSE;
+
+	/**
 	 * multipleSelect
 	 *
 	 * @var boolean
@@ -246,6 +253,34 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function isVisibleInFrontend() {
 		return $this->visibleInFrontend;
+	}
+
+	/**
+	 * Returns the usePercentPricing
+	 *
+	 * @return boolean $percentPricing
+	 */
+	public function getPercentPricing() {
+		return $this->isMultipleSelect() ? FALSE : $this->percentPricing;
+	}
+
+	/**
+	 * Sets the percentPricing
+	 *
+	 * @param boolean $percentPricing
+	 * @return void
+	 */
+	public function setPercentPricing($percentPricing) {
+		$this->percentPricing = $this->isMultipleSelect() ? FALSE : $percentPricing;
+	}
+
+	/**
+	 * Returns the boolean state of percentPricing
+	 *
+	 * @return boolean
+	 */
+	public function isPercentPricing() {
+		return $this->isMultipleSelect() ? FALSE : $this->percentPricing;
 	}
 
 	/**

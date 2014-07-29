@@ -119,6 +119,7 @@ CREATE TABLE tx_ecompc_domain_model_package (
 	visible_in_frontend tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	multiple_select tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	default_option int(11) unsigned DEFAULT '0',
+	percent_pricing tinyint(1) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

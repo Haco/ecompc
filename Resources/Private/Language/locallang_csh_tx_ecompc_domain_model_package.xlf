@@ -24,6 +24,9 @@
 			<trans-unit id="multiple_select.description">
 				<source>Enable multiple select.</source>
 			</trans-unit>
+			<trans-unit id="percent_pricing.description">
+				<source>Use percental pricing instead of static!</source>
+			</trans-unit>
 			<trans-unit id="default_option.description">
 				<source>Set a default option, used for invisible fields only.</source>
 			</trans-unit>
