@@ -356,12 +356,20 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		return $this->selected;
 	}
 
-	public function getPriceInCurrency($currency = 'default') {
+	/**
+	 * @param string $currency
+	 * @param float  $exchange
+	 *
+	 * @return float
+	 */
+	public function getPriceInCurrency($currency = 'default', $exchange = 0.00) {
 		if ($currency === 'default')
 			return $this->getPrice();
 
 		$priceList = $this->getPriceList();
-		return strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
+		$price = strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
+
+		return $price ?: $this->getPrice() ? $this->getPrice() * $exchange : 0.00;
 	}
 
 }

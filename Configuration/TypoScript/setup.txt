@@ -50,7 +50,6 @@ plugin.tx_ecompc {
 				region = {$plugin.tx_ecompc.constants.currency.default.region}
 				llRef = {$plugin.tx_ecompc.constants.currency.default.llRef}
 				flagIcon = {$plugin.tx_ecompc.constants.currency.default.flagIcon}
-				exchange = 1.0
 			}
 			# Activate additional currencies (key matches thos of flexform array key!)
 			chf {
@@ -60,7 +59,7 @@ plugin.tx_ecompc {
 				region = Switzerland
 				llRef = LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.chf.region
 				flagIcon = EXT:ecompc/Resources/Public/Images/Flags/CHE.png
-				#exchange = 1.0
+				exchange = 1.21
 			}
 			gbp {
 				long = Pound Sterling
@@ -70,7 +69,7 @@ plugin.tx_ecompc {
 				llRef = LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.gbp.region
 				flagIcon = EXT:ecompc/Resources/Public/Images/Flags/GBR.png
 				prependCurrency = 1
-				#exchange = 1.0
+				exchange = 0.79
 			}
 			usd {
 				long = United States Dollar
@@ -80,7 +79,7 @@ plugin.tx_ecompc {
 				llRef = LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.usd.region
 				flagIcon = EXT:ecompc/Resources/Public/Images/Flags/USA.png
 				prependCurrency = 1
-				#exchange = 1.0
+				exchange = 1.34
 			}
 		}
 		requestForm {

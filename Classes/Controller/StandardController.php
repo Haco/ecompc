@@ -77,6 +77,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $showPricing = FALSE;
 
 	/**
+	 * @var array
+	 */
+	protected $currencySetup = array();
+
+	/**
 	 * configurationRepository
 	 *
 	 * @var \S3b0\Ecompc\Domain\Repository\ConfigurationRepository
@@ -143,13 +148,15 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Frontend-Session
 		$this->feSession->setStorageKey($this->request->getControllerExtensionName() . $this->request->getPluginName());
 		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
-		$this->configurationSessionStorageKey .= $this->cObj->data['uid'];
+		$this->configurationSessionStorageKey .= '-c' . $this->cObj->data['uid'];
 		// Get current configuration (Array: keys=package|values=option)
 		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey) ?: array();
 		// Get selected options
 		$this->setSelectedOptions($this->selectedOptions, $this->selectedConfiguration);
 		// Set selectable configurations
 		$this->setSelectableConfigurations($this->selectableConfigurations);
+		// Fetch currency configuration from TS
+		$this->currencySetup = $this->settings['currency'][$this->feSession->get('currency')];
 		// Get configuration price
 		$this->selectedConfigurationPrice = $this->showPricing ? $this->getConfigurationPrice() : array();
 	}
@@ -168,7 +175,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'sp' => $this->showPricing, // checks whether prices are displayed or not!
 			'action' => $this->request->getControllerActionName(), // current action
 			'instructions' => $this->cObj->getFieldVal('bodytext'), // short instructions for user
-			'currencySetup' => $this->settings['currency'][$this->feSession->get('currency')], // fetch currency TS
+			'currencySetup' => $this->currencySetup, // fetch currency TS
 			'pricing' => $this->selectedConfigurationPrice // current configuration price
 		));
 	}
@@ -197,7 +204,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				$this->redirect('selectRegion'); // Add redirect for region selection - influencing currency display
 			} elseif (!$this->feSession->get('currency') && $currency && array_key_exists($currency, (array) $this->settings['currency'])) {
 				$this->feSession->store('currency', $currency); // Store region selection
-				$this->initializeView(); // Recall initializeView() to set currency (session var) depending values/arrays
+				$this->currencySetup = $this->settings['currency'][$currency];
+				$this->view->assign('currencySetup', $this->currencySetup);
 			}
 		}
 
@@ -304,7 +312,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 #		if ($this->settings['auto_set'])
 #			$this->autoSetOptions($configuration);
 		$this->feSession->store($this->configurationSessionStorageKey, $configuration); // Store configuration in fe_session_data
-		list($actionName, $controllerName, $extensionName, $arguments) = $redirect[$redirectAction]; // Set params for $this->redirect() method
+		list($actionName, $controllerName, $extensionName, $arguments) = $redirect[$unset ?: $redirectAction]; // Set params for $this->redirect() method
 		$this->redirect($actionName, $controllerName, $extensionName, $arguments);
 	}
 
@@ -400,7 +408,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 						$option->setPriceOutput($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : floatval($this->selectedConfigurationPrice[1] * $option->getPricePercental()));
 					}
 				} else {
-					$priceOutput = $package->isMultipleSelect() || !$selectedOptions ? $option->getPriceInCurrency($this->feSession->get('currency')) : floatval($option->getPriceInCurrency($this->feSession->get('currency')) - $selectedOptions->getFirst()->getPriceInCurrency($this->feSession->get('currency')));
+					$priceOutput = $package->isMultipleSelect() || !$selectedOptions ? $option->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currencySetup['exchange'])) : $option->getPriceInCurrency($this->feSession->get('currency')) - $selectedOptions->getFirst()->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currencySetup['exchange']));
 					$option->setPriceOutput($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : $priceOutput);
 				}
 			}
@@ -538,6 +546,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
 			$priceList = $cObj->getEcompcBasePriceList();
 			$base = floatval($priceList[$this->feSession->get('currency')]['vDEF']);
+			if (!$base && $this->currencySetup['exchange']) {
+				$base = $cObj->getEcompcBasePrice() * floatval($this->currencySetup['exchange']);
+			}
 		}
 
 		// Get configuration price
@@ -547,7 +558,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				if ($option->getConfigurationPackage()->isPercentPricing()) {
 					$price = floatval($config * $option->getPricePercental());
 				} else {
-					$price = $option->getPriceInCurrency($this->feSession->get('currency'));
+					$price = $option->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currencySetup['exchange']));
 				}
 				$config += $price;
 			}
