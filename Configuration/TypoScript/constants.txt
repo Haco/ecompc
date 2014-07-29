@@ -27,5 +27,13 @@ plugin.tx_ecompc {
 			# cat=plugin.tx_ecompc//b5; type=string; label=Locallang reference for region
 			llRef = LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.eur.region
 		}
+		requestForm {
+			# cat=plugin.tx_ecompc//a1; type=int; label=Form pid:Page uid for request form
+			pid = 0
+			# cat=plugin.tx_ecompc//a2; type=string; label=AdditionalParam:JSON Array with placeholder %s
+			addParam = {"tx_powermail_pi1":{"field":{"1":"%s"}}}
+			# cat=plugin.tx_ecompc//a3; type=options[,_top,_blank]; label=Target
+			target = _blank
+		}
 	}
 }

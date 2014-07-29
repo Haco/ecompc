@@ -176,8 +176,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * action index
 	 *
-	 * @param  string $currency
+	 * @param  null|string $currency
 	 * @return void
+	 *
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
 	public function indexAction($currency = NULL) {
 		// Avoid duplicate cObjects containing current plugin
@@ -566,10 +569,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			case 1:
 				return $this->buildConfigurationCode($this->selectableConfigurations->getFirst());
 				break;
-			// Otherwise fetch all configuration records @todo fetch SKU
+			// Otherwise fetch all configuration records
 			default:
 				if ($this->selectableConfigurations->count() !== 1) {
-					$this->throwStatus(404, NULL, 'Something went terribly wrong! Please contact your system administrator for assistance.');
+					$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
 				} else {
 					return $this->selectableConfigurations->getFirst()->getSku();
 				}
@@ -602,8 +605,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				}
 			}
 		}
-		// @todo transmit to mailform|powermail|other
-		$this->feSession->store($this->configurationSessionStorageKey . ':res', sprintf($wrapper, $plain));
+//		$this->feSession->store($this->configurationSessionStorageKey . ':res', sprintf($wrapper, $plain));
+		$this->view->assign('requestFormAdditionalParams', json_decode(sprintf($this->settings['requestForm']['addParam'], sprintf($wrapper, $plain)), TRUE));
 
 		return sprintf($wrapper, $code);
 	}

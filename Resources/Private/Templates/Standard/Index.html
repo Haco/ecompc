@@ -41,6 +41,9 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <f:link.action action="reset">Reset</f:link.action>
 
-<f:if condition="{configurationResult}">Your configuration code: <strong>{configurationResult -> f:format.html()}</strong></f:if>
+<f:if condition="{configurationResult}">
+	Your configuration code: <strong>{configurationResult -> f:format.html()}</strong>
+	<f:link.page pageUid="{settings.requestForm.pid}" target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}">test</f:link.page>
+</f:if>
 
 </f:section>

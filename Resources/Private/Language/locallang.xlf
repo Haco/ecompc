@@ -103,6 +103,9 @@
 			<trans-unit id="404.dbl_config_found">
 				<source>It seems like you got more than one configurator on current page. This error occurs because only one configurator per page is allowed!</source>
 			</trans-unit>
+			<trans-unit id="404.no_unique_sku_found">
+				<source>Something went wrong! Please contact your system administrator for assistance. [@mSKU]</source>
+			</trans-unit>
 			<trans-unit id="price.inclusive">
 				<source>incl.</source>
 			</trans-unit>

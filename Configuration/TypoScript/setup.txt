@@ -73,6 +73,11 @@ plugin.tx_ecompc {
 				#exchange = 1.0
 			}
 		}
+		requestForm {
+			pid = {$plugin.tx_ecompc.constants.requestForm.pid}
+			addParam = {$plugin.tx_ecompc.constants.requestForm.addParam}
+			target = {$plugin.tx_ecompc.constants.requestForm.target}
+		}
 	}
 }
 
