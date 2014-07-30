@@ -32,18 +32,15 @@ use TYPO3\CMS\Extbase\Utility as ExtbaseUtility;
 /**
  * PackageController
  *
+ * @todo user group controls for packages/options
  * @todo re-configuration by releasing few dependencies… we´ll see
  * @package S3b0
  * @subpackage Ecompc
  */
 class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
-	CONST ttc_field_type = 'tx_ecompc_type';
-	CONST ttc_field_packages = 'tx_ecompc_packages';
-	CONST ttc_field_configurations = 'tx_ecompc_configurations';
-
 	/**
-	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer|null
+	 * @var \S3b0\Ecompc\Domain\Model\Content|null
 	 */
 	protected $cObj = NULL;
 
@@ -145,11 +142,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Set price flag (displays pricing if true)
 		$this->showPricing = (is_array($GLOBALS['TSFE']->fe_user->groupData['uid'])) && count(array_intersect($distFeUserGroups, $GLOBALS['TSFE']->fe_user->groupData['uid'])) ?: FALSE;
 		// Fetch content object (tt_content)
-		$this->cObj = $this->configurationManager->getContentObject();
+		$this->cObj = $this->contentRepository->findByUid($this->configurationManager->getContentObject()->data['uid']);
 		// Frontend-Session
 		$this->feSession->setStorageKey($this->request->getControllerExtensionName() . $this->request->getPluginName());
 		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
-		$this->configurationSessionStorageKey .= '-c' . $this->cObj->data['uid'];
+		$this->configurationSessionStorageKey .= '-c' . $this->cObj->getUid();
 		// Get current configuration (Array: keys=package|values=option)
 		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey) ?: array();
 		// Get selected options
@@ -175,7 +172,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->view->assignMultiple(array(
 			'sp' => $this->showPricing, // checks whether prices are displayed or not!
 			'action' => $this->request->getControllerActionName(), // current action
-			'instructions' => $this->cObj->getFieldVal('bodytext'), // short instructions for user
+			'instructions' => $this->cObj->getBodytext(), // short instructions for user
 			'currencySetup' => $this->currencySetup, // fetch currency TS
 			'pricing' => $this->selectedConfigurationPrice // current configuration price
 		));
@@ -196,8 +193,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.dbl_config_found', $this->extensionName));
 
 		// Failure if no configuration has been found
-		if (!CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal(self::ttc_field_configurations)))
-			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_config_found', $this->extensionName) . ' [ttc:#' . $this->cObj->getFieldVal('uid') . '@pid:#' . $this->cObj->getFieldVal('pid') . ']');
+		if (!$this->cObj->getEcompcConfigurations())
+			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_config_found', $this->extensionName) . ' [ttc:#' . $this->cObj->getUid() . '@pid:#' . $this->cObj->getPid() . ']');
 
 		// Check for currency when distributor is logged in
 		if ($this->showPricing) {
@@ -212,7 +209,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
 		$process = 0;
 		// Fetch packages
-		if ($packages = $this->contentRepository->findByUid($this->cObj->data['uid'])->getEcompcPackages()) {
+		if ($packages = $this->cObj->getEcompcPackages()) {
 			$visiblePackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 			$isActive = TRUE;
 			foreach ($packages as $package) {
@@ -428,7 +425,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$selectableOptions = $this->optionRepository->findByConfigurationPackage($package)->toArray(); // Set basic settings
 
 		// Parse configurations, if any | @case SKU (default)
-		if (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal('tx_ecompc_type')) !== 1 && $this->selectableConfigurations) {
+		if ($this->cObj->getEcompcType() !== 1 && $this->selectableConfigurations) {
 			$selectableOptions = array();
 			foreach ($this->selectableConfigurations as $configuration) {
 				if ($configurationOptions = $configuration->getOptions()) {
@@ -488,7 +485,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function autoSetOptions(array &$configuration) {
-		if ($packages = $this->contentRepository->findByUid($this->cObj->data['uid'])->getEcompcPackages()) {
+		if ($packages = $this->cObj->getEcompcPackages()) {
 			foreach ($packages as $package) {
 				if (array_key_exists($package->getUid(), (array) $configuration['packages']))
 					continue;
@@ -512,11 +509,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	protected function setSelectableConfigurations(&$current = NULL) {
-		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->getFieldVal('uid'));
+		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->getUid());
 
 		// Overwrite for SKU-based configurations
-		if (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal(self::ttc_field_type)) !== 1) {
-			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getFieldVal('uid'), $this->selectedOptions);
+		if ($this->cObj->getEcompcType() !== 1) {
+			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedOptions);
 		}
 	}
 
@@ -541,14 +538,12 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return array
 	 */
 	public function getConfigurationPrice() {
-		$cObj = $this->contentRepository->findByUid($this->cObj->data['uid']);
-
-		$base = $cObj->getEcompcBasePrice();
+		$base = $this->cObj->getEcompcBasePrice();
 		if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
-			$priceList = $cObj->getEcompcBasePriceList();
+			$priceList = $this->cObj->getEcompcBasePriceList();
 			$base = floatval($priceList[$this->feSession->get('currency')]['vDEF']);
 			if (!$base && $this->currencySetup['exchange']) {
-				$base = $cObj->getEcompcBasePrice() * floatval($this->currencySetup['exchange']);
+				$base = $this->cObj->getEcompcBasePrice() * floatval($this->currencySetup['exchange']);
 			}
 		}
 
@@ -574,7 +569,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
 	public function getConfigurationResult() {
-		switch (CoreUtility\MathUtility::convertToPositiveInteger($this->cObj->getFieldVal(self::ttc_field_type))) {
+		switch ($this->cObj->getEcompcType()) {
 			// In case of dynamic configurations get first configuration record
 			case 1:
 				return $this->buildConfigurationCode($this->selectableConfigurations->getFirst());
@@ -582,7 +577,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			// Otherwise fetch all configuration records
 			default:
 				if ($this->selectableConfigurations->count() !== 1) {
-					$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
+					#$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
 				} else {
 					$this->view->assignMultiple(array(
 						'requestFormAdditionalParams' => json_decode(
@@ -603,6 +598,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * set configuration code
 	 *
+	 * @todo summary on site/for request
 	 * @param  \S3b0\Ecompc\Domain\Model\Configuration $configuration
 	 * @return string
 	 */
@@ -613,7 +609,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$code = '';
 		$plain = '';
 
-		foreach ($this->contentRepository->findByUid($this->cObj->data['uid'])->getEcompcPackages() as $package) {
+		foreach ($this->cObj->getEcompcPackages() as $package) {
 			if (!$package->isVisibleInFrontend()) {
 				$code .= sprintf($segmentWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getConfigurationCodeSegment());
 				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
