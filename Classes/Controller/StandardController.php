@@ -32,6 +32,7 @@ use TYPO3\CMS\Extbase\Utility as ExtbaseUtility;
 /**
  * PackageController
  *
+ * @todo re-configuration by releasing few dependencies… we´ll see
  * @package S3b0
  * @subpackage Ecompc
  */
@@ -211,20 +212,20 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
 		$process = 0;
 		// Fetch packages
-		$list = CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal(self::ttc_field_packages), TRUE);
-		if ($packages = $this->packageRepository->findPackagesByUidList($list)) {
+		if ($packages = $this->contentRepository->findByUid($this->cObj->data['uid'])->getEcompcPackages()) {
+			$visiblePackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 			$isActive = TRUE;
 			foreach ($packages as $package) {
 				if ($package->isVisibleInFrontend()) {
 					$package->setActive($isActive);
+					$visiblePackages->attach($package);
 					$isActive = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']);
 				}
 				$selectedOptions = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']) ? $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()]) : NULL;
 				$package->setSelectedOptions($selectedOptions);
 			}
 			// Get process state update (ratio of selected to visible packages) => float from 0 to 1 (*100 = %)
-			$visiblePackages = $this->packageRepository->findVisiblePackagesByUidList($list);
-			$process = count((array) $this->selectedConfiguration['packages']) / count($visiblePackages);
+			$process = count((array) $this->selectedConfiguration['packages']) / $visiblePackages->count();
 		}
 
 		if ($process === 1)
@@ -308,7 +309,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			}
 		}
 
-#		// Prepared autoFill. Still some issues, especially regarding traversing as of DC!
+#		// Prepared autoFill. Still some issues, especially regarding traversing as of dependency checks!
 #		if ($this->settings['auto_set'])
 #			$this->autoSetOptions($configuration);
 		$this->feSession->store($this->configurationSessionStorageKey, $configuration); // Store configuration in fe_session_data
@@ -487,7 +488,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function autoSetOptions(array &$configuration) {
-		if ($packages = $this->packageRepository->findPackagesByUidList(CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal(self::ttc_field_packages), TRUE))) {
+		if ($packages = $this->contentRepository->findByUid($this->cObj->data['uid'])->getEcompcPackages()) {
 			foreach ($packages as $package) {
 				if (array_key_exists($package->getUid(), (array) $configuration['packages']))
 					continue;
@@ -524,7 +525,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @param array $selectedConfiguration
 	 * @return void
 	 */
-	public function setSelectedOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage &$objectStorage, array $selectedConfiguration) {
+	protected function setSelectedOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage &$objectStorage, array $selectedConfiguration) {
 		if (count($selectedConfiguration['options'])) {
 			$objectStorage->removeAll($objectStorage);
 			if ($options = $this->optionRepository->findOptionsByUidList($selectedConfiguration['options'])) {
@@ -583,7 +584,17 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				if ($this->selectableConfigurations->count() !== 1) {
 					$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
 				} else {
-					$this->view->assign('requestFormAdditionalParams', json_decode(sprintf($this->settings['requestForm']['addParam'], $this->selectableConfigurations->getFirst()->getSku()), TRUE));
+					$this->view->assignMultiple(array(
+						'requestFormAdditionalParams' => json_decode(
+							sprintf(
+								$this->settings['requestForm']['addParam'],
+								$this->selectableConfigurations->getFirst()->getSku(),
+								$this->selectableConfigurations->getFirst()->getFrontendLabel()
+							),
+							TRUE
+						),
+						'configurationResultLabel' => $this->selectableConfigurations->getFirst()->getFrontendLabel()
+					));
 					return $this->selectableConfigurations->getFirst()->getSku();
 				}
 		}
@@ -597,26 +608,31 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function buildConfigurationCode(\S3b0\Ecompc\Domain\Model\Configuration $configuration) {
 		$wrapper = $configuration->getConfigurationCodePrefix() . '%s' . $configuration->getConfigurationCodeSuffix();
+		$segmentWrapper = '<span class="ecompc-syntax-help" title="%1$s">%2$s</span>';
 
 		$code = '';
 		$plain = '';
-		/**
-		 * @param \S3b0\Ecompc\Domain\Model\Package $package
-		 */
-		foreach ($this->packageRepository->findPackagesByUidList(CoreUtility\GeneralUtility::intExplode(',', $this->cObj->getFieldVal(self::ttc_field_packages), TRUE)) as $package) {
+
+		foreach ($this->contentRepository->findByUid($this->cObj->data['uid'])->getEcompcPackages() as $package) {
 			if (!$package->isVisibleInFrontend()) {
-				$code .= '<span class="ecompc-syntax-help">' . $package->getDefaultOption()->getConfigurationCodeSegment() . '</span>';
+				$code .= sprintf($segmentWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getConfigurationCodeSegment());
 				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
-				continue;
 			} elseif ($options = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()])) {
 				foreach ($options as $option) {
-					$code .= '<span class="ecompc-syntax-help" title="' . $option->getFrontendLabel() . '">' . $option->getConfigurationCodeSegment() . '</span>';
+					$code .= sprintf($segmentWrapper, $option->getConfigurationPackage()->getFrontendLabel(), $option->getConfigurationCodeSegment());
 					$plain .= $option->getConfigurationCodeSegment();
 				}
 			}
 		}
-//		$this->feSession->store($this->configurationSessionStorageKey . ':res', sprintf($wrapper, $plain));
-		$this->view->assign('requestFormAdditionalParams', json_decode(sprintf($this->settings['requestForm']['addParam'], sprintf($wrapper, $plain)), TRUE));
+
+		$this->view->assign('requestFormAdditionalParams', json_decode(
+			sprintf(
+				$this->settings['requestForm']['addParam'],
+				sprintf($wrapper, $plain),
+				$configuration->getFrontendLabel()
+			),
+			TRUE
+		));
 
 		return sprintf($wrapper, $code);
 	}

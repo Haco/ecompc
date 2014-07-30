@@ -1,4 +1,6 @@
-
+<!--
+	TODO: Add process bar using {process}-var
+-->
 <f:layout name="Default" />
 
 This Template is responsible for creating a table of domain objects.
@@ -17,6 +19,11 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <f:flashMessages renderMode="div" />
 
 <div class="tx-ecompc-index">
+	<progress value="{process}" max="1">
+		<div class="progress-bar">
+			<span style="width: {f:s3b0.calculation(expressionString:'{process}*100') -> f:format.number(decimals:0)}%"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>%</span>
+		</div>
+	</progress> <f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>% done
 
 	<f:for each="{packages}" as="package">
 		<f:if condition="{package.visibleInFrontend}">
@@ -42,8 +49,11 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <f:link.action action="reset">Reset</f:link.action>
 
 <f:if condition="{configurationResult}">
-	Your configuration code: <strong>{configurationResult -> f:format.html()}</strong>
-	<f:link.page pageUid="{settings.requestForm.pid}" target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}">test</f:link.page>
+	<div class="ecom-configurator-result">
+		<f:if condition="{configurationResultLabel}">{configurationResultLabel}<br /></f:if>
+		Your configuration code: <strong>{configurationResult -> f:format.raw()}</strong>
+		<br /><f:link.page pageUid="{settings.requestForm.pid}" target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}">c2a</f:link.page>
+	</div>
 </f:if>
 
 </f:section>

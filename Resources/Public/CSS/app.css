@@ -90,3 +90,41 @@
 #tx-ecompc-canvas .ecom-configurator-checkbox.checked {
 	background: #006600;
 }
+
+
+/* Styling an indeterminate progress bar */
+
+#tx-ecompc-canvas progress:not(value) {
+	/* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
+}
+
+/**
+ * PROGRESS styles
+ */
+#tx-ecompc-canvas progress[value] {
+	appearance: none;
+	background-color: #f3f3f3;
+	border: none;
+	/*box-shadow: 1px 1px 25px #c0c0c0;*/
+	color: #0083cb;
+	height: 5px;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+
+/* Fallback technique styles */
+#tx-ecompc-canvas .progress-bar {
+	background-color: transparent;
+	height: 5px;
+	overflow: hidden;
+	position: fixed;
+	width: 500px;
+}
+
+#tx-ecompc-canvas .progress-bar span {
+	background-color: #0083cb;
+	display: block;
+	text-indent: -9999px;
+}
