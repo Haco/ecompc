@@ -27,7 +27,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<f:for each="{packages}" as="package">
 		<f:if condition="{package.visibleInFrontend}">
-			<div>
+			<div class="ecom-configurator-package-box">
 				<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-arrow-right">&nbsp;</f:link.action>
 				<div class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}">&nbsp;</div>
 				<div class="ecom-configurator-package-select">
