@@ -34,11 +34,24 @@ body {
 	background: linear-gradient(to bottom,  #edefee 0%,#dce3e3 100%); /* W3C */
 	border-bottom: 1px solid #cdd9d8;
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefee', endColorstr='#dce3e3',GradientType=0 ); /* IE6-9 */
-	padding: 10px 20px;
+	padding: 10px 15px;
+	min-height: 50px;
 	margin-bottom: 2px;
 }
 #tx-ecompc-canvas .ecom-configurator-package-select {
+	margin-left: 120px;
+}
 
+#tx-ecompc-canvas .ecom-configurator-package-select > a.tx-ecompc-configure-package,
+#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-inactive {
+	font-size: 1.3em;
+	color: black;
+	font-weight: bold;
+}
+
+#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+	color: grey;
+	display: block;
 }
 
 #tx-ecompc-canvas .ecom-configurator-arrow-right {
@@ -50,14 +63,16 @@ body {
 
 #tx-ecompc-canvas .ecom-configurator-package-state {
 	display: block;
-	
-	height: 100%;
+	border-right: 1px solid #BBB;
+	height: 50px;
 	width: 80px;
-	border-right: 1px solid grey;
+	float: left;
+	margin: 0;
+	background: white;
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-state.checked {
-	background-color: #006600;
+	background-color: grey;
 }
 
 /**

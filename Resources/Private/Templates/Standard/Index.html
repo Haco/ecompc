@@ -29,15 +29,15 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		<f:if condition="{package.visibleInFrontend}">
 			<div class="ecom-configurator-package-box">
 				<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-arrow-right">&nbsp;</f:link.action>
-				<div class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}">&nbsp;</div>
+				<p class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}">&nbsp;</p>
 				<div class="ecom-configurator-package-select">
 					<f:if condition="{package.active}">
-						<f:then><f:link.action action="selectPackageOptions" arguments="{package : package}" class="tx-ecompc-configure-package" id="tx-ecompc-configure-package-{package.uid}"> {package.frontendLabel}</f:link.action><br /></f:then>
-						<f:else> {package.frontendLabel}<br /></f:else>
+						<f:then><f:link.action action="selectPackageOptions" arguments="{package : package}" class="tx-ecompc-configure-package" id="tx-ecompc-configure-package-{package.uid}"> {package.frontendLabel}</f:link.action></f:then>
+						<f:else><span class="tx-ecompc-configure-package-inactive">{package.frontendLabel}</span></f:else>
 					</f:if>
 					<f:if condition="{package.selectedOptions}">
-						<f:then>Your choice: <f:render partial="Package/ListSelectedOptions" arguments="{selected:package.selectedOptions}" /></f:then>
-						<f:else><span class="ecom-configurator-package-prompt">{package.prompt}</span></f:else>
+						<f:then><span class="ecom-configurator-package-addon ecom-configurator-package-your-choice">Your choice: <f:render partial="Package/ListSelectedOptions" arguments="{selected:package.selectedOptions}" /></span></f:then>
+						<f:else><span class="ecom-configurator-package-addon ecom-configurator-package-prompt">{package.prompt}</span></f:else>
 					</f:if>
 				</div>
 			</div>
