@@ -88,13 +88,30 @@ body {
 	background-color: #ffff00;
 	cursor: help;
 }
+#tx-ecompc-canvas .ecom-configurator-reset-button {
+	display: block;
+	color: grey;
+	margin-top: 0.5em;
+}
+#tx-ecompc-canvas .ecom-configurator-result {
+	margin: 2em 0;
+	text-align: center;
+}
+#tx-ecompc-canvas .ecom-configurator-result h2 {
+	color: #0083cb;
+}
+#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+	font-size: 1.5em;
+	color: grey;
+}
 
 /**
  * Package Boxes => index action
  */
 #tx-ecompc-canvas .ecom-configurator-process-number {
 	color: #0083cb;
-	font-size: 1.3em;
+	font-size: 1.2em;
+	text-align: center;
 }
 #tx-ecompc-canvas .ecom-configurator-package-box {
 	display: block;
@@ -256,12 +273,6 @@ body {
 	text-indent: -9999px;
 }
 
-@media (max-width: 468px) {
-	#tx-ecompc-canvas .ecom-configurator-select-package-option-price,
-	#tx-ecompc-canvas .ecom-configurator-select-package-option-info {
-		padding: 0px 5px;
-	}
-}
 
 @media (max-width: 768px) {
 	#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-instructions {
@@ -273,9 +284,46 @@ body {
 		float: none;
 		margin-top: 1em;
 	}
-
 	#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
 		padding-left: 0;
 		padding-right: 40px;
+	}
+	#tx-ecompc-canvas .ecom-configurator-result h2 {
+		font-size: 1.7em;
+		font-weight: normal;
+	}
+	#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+		font-size: 1em;
+		font-weight: normal;
+	}
+	#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
+		font-size: 1.2em;
+	}
+	#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+		font-size: 1em;
+	}
+}
+
+@media (max-width: 468px) {
+	#tx-ecompc-canvas .ecom-configurator-select-package-option-price,
+	#tx-ecompc-canvas .ecom-configurator-select-package-option-info {
+		padding: 0px 5px;
+	}
+	#tx-ecompc-canvas .ecom-configurator-result h2 {
+		font-size: 1.4em;
+		font-weight: normal;
+	}
+	#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+		font-size: 0.8em;
+		font-weight: normal;
+	}
+	#tx-ecompc-canvas .ecom-configurator-arrow-right {
+		display: none;
+	}
+	#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
+		font-size: 1em;
+	}
+	#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+		font-size: 0.9em;
 	}
 }
