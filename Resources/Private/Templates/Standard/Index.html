@@ -21,11 +21,11 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <div class="tx-ecompc-index">
 	<progress value="{process}" max="1">
 		<div class="progress-bar">
-			<span style="width: {f:s3b0.calculation(expressionString:'{process}*100') -> f:format.number(decimals:0)}%"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>%</span>
+			<span><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>%</span>
 		</div>
 	</progress>
 
-	<p class="ecom-configurator-process-number"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>% done</p>
+	<p class="ecom-configurator-process-number">&raquo;&nbsp;&nbsp;<f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>% done</p>
 
 	<f:for each="{packages}" as="package">
 

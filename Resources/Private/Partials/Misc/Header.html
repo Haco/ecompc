@@ -1,6 +1,10 @@
 <div class="tx-ecompc-configurator-head">
+	<f:if condition="{0:action} == {0:'index'}">
+		<f:then><div class="tx-ecompc-config-header-instructions">{instructions -> f:format.html()}</div></f:then>
+		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink action-button-default left-arrow">Back to selection</f:link.action></f:else>
+	</f:if>
 	<f:if condition="{sp}">
-		<div style="float: right;">
+		<div class="tx-ecompc-config-header-price-table">
 			<table>
 				<thead>
 				<tr>
@@ -17,9 +21,5 @@
 			</table>
 		</div>
 	</f:if>
-	<f:if condition="{0:action} == {0:'index'}">
-		<f:then><div class="tx-ecompc-config-header-instructions">{instructions -> f:format.html()}</div></f:then>
-		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink">Back</f:link.action></f:else>
-	</f:if>
+	<div class="clearfix" style="clear: both;"></div>
 </div>
-<div class="clearfix" style="clear: both;"></div>
