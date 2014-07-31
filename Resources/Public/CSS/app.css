@@ -78,6 +78,10 @@ body {
 #tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
 	padding-left: 40px;
 }
+#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-configprice {
+	color: #0083cb;
+	font-weight: bold;
+}
 #tx-ecompc-canvas a {
 	text-decoration: none;
 }

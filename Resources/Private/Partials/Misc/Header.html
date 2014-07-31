@@ -15,7 +15,7 @@
 				<tbody>
 				<tr>
 					<f:if condition="{pricing.0}"><td><f:format.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{pricing.0}</f:format.currency></td></f:if>
-					<f:if condition="{pricing.1}"><td><f:format.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{pricing.1}</f:format.currency></td></f:if>
+					<f:if condition="{pricing.1}"><td><span class="tx-ecompc-config-header-configprice"><f:format.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:if>
 				</tr>
 				</tbody>
 			</table>
