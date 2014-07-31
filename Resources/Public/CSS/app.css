@@ -27,10 +27,13 @@ body {
 
 #tx-ecompc-canvas .ecom-configurator-process-number {
 	color: #0083cb;
+	font-size: 1.3em;
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-box {
-	margin-bottom: 2px;
+	display: block;
+	margin-bottom: 3px;
+	position: relative;
 }
 #tx-ecompc-canvas .ecom-configurator-package-select,
 #tx-ecompc-canvas .ecom-configurator-package-state {
@@ -44,20 +47,21 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefee', endColorstr='#dce3e3',GradientType=0 ); /* IE6-9 */
 	min-height: 50px;
 }
+
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state {
+	background: linear-gradient(to bottom, #0083CB, #0075C2) repeat scroll 0% 0% transparent;
+}
+
 #tx-ecompc-canvas .ecom-configurator-package-select {
-	margin-left: 85px;
+	margin-left: 83px;
 	padding: 10px 15px;
 }
 
-#tx-ecompc-canvas .ecom-configurator-package-select > a.tx-ecompc-configure-package,
-#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-inactive {
+#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
 	font-size: 1.3em;
 	color: black;
 	font-weight: bold;
-}
-
-#tx-ecompc-canvas .ecom-configurator-package-select > a.tx-ecompc-configure-package:hover {
-	color: #0083cb;
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
@@ -65,11 +69,22 @@ body {
 	display: block;
 }
 
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+	color: white;
+}
+
 #tx-ecompc-canvas .ecom-configurator-arrow-right {
-	display: block;
-	float: right;
-	height: 1em;
-	width: 20px;
+	background: url('../Images/blue_arrow_right.png') no-repeat;
+	height: 11px;
+	width: 9px;
+	position: absolute;
+	right: 20px;
+	top: 42%;
+}
+
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-arrow-right {
+	background: url('../Images/white_arrow_right.png') no-repeat;
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-state {
@@ -79,7 +94,7 @@ body {
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-state.checked {
-	background-color: grey;
+	background: grey;
 }
 
 /**
@@ -168,6 +183,7 @@ body {
 	position: fixed;
 	top: 0;
 	width: 100%;
+	z-index: 1;
 }
 
 /* Fallback technique styles */

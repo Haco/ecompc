@@ -1,0 +1,9 @@
+<span class="ecom-configurator-arrow-right">&nbsp;</span>
+<div class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}">&nbsp;</div>
+<div class="ecom-configurator-package-select">
+	<span class="tx-ecompc-configure-package-label">{package.frontendLabel}</span>
+	<f:if condition="{package.selectedOptions}">
+		<f:then><span class="ecom-configurator-package-addon ecom-configurator-package-your-choice">Your choice: <f:render partial="Package/ListSelectedOptions" arguments="{selected:package.selectedOptions}" /></span></f:then>
+		<f:else><span class="ecom-configurator-package-addon ecom-configurator-package-prompt">{package.prompt}</span></f:else>
+	</f:if>
+</div>

@@ -1,3 +1,8 @@
+/*
+* ecom Configurator :: app.js
+* */
+
+
 (function($) {
 	function equalizeHeight() {
 		$('#tx-ecompc-canvas .ecom-configurator-package-select').each(function() {
