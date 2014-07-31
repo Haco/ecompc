@@ -1,21 +1,51 @@
 body {
 	font-family: "Roboto Condensed", sans-serif;
 }
+.divider {
+	border-bottom: 1px solid #CCCCCC;
+	margin: 1em 0;
+}
+#tx-ecompc-canvas .action-button-default {
+	background-color: #edefee; /* Old browsers */
+	background-color: -moz-linear-gradient(top,  #edefee 0%, #dce3e3 100%); /* FF3.6+ */
+	background-color: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#edefee), color-stop(100%,#dce3e3)); /* Chrome,Safari4+ */
+	background-color: -webkit-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* Chrome10+,Safari5.1+ */
+	background-color: -o-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* Opera 11.10+ */
+	background-color: -ms-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* IE10+ */
+	background-color: linear-gradient(to bottom,  #edefee 0%,#dce3e3 100%); /* W3C */
+	background-image: url('../Images/blue_arrow_right.png');
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+	padding: 8px 40px 8px 10px;
+	line-height: 30px;
+	color: #0075c2;
+	text-transform: uppercase;
+	font-size: 1em;
+}
+#tx-ecompc-canvas .action-button-default:hover {
+	background-color: #0083cb; /* Old browsers */
+	background-color: -moz-linear-gradient(top,  #0083cb 0%, #0075c2 100%); /* FF3.6+ */
+	background-color: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0083cb), color-stop(100%,#0075c2)); /* Chrome,Safari4+ */
+	background-color: -webkit-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Chrome10+,Safari5.1+ */
+	background-color: -o-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Opera 11.10+ */
+	background-color: -ms-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* IE10+ */
+	background-color: linear-gradient(to bottom,  #0083cb 0%,#0075c2 100%); /* W3C */
+	background-image: url('../Images/white_arrow_right.png');
+	color: white;
+}
+
 /**
  * INDEX
  */
 #tx-ecompc-canvas div.clearfix {
 	clear: both;
 }
-
 #tx-ecompc-canvas a {
 	text-decoration: none;
 }
-
 #tx-ecompc-canvas .ecompc-syntax-help {
 	padding: 0 2px;
 }
-
 #tx-ecompc-canvas .ecompc-syntax-help[title]:hover {
 	background-color: #ffff00;
 	cursor: help;
@@ -24,15 +54,13 @@ body {
 /**
  * Package Boxes => index action
  */
-
 #tx-ecompc-canvas .ecom-configurator-process-number {
 	color: #0083cb;
 	font-size: 1.3em;
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-box {
 	display: block;
-	margin-bottom: 3px;
+	border-bottom: 2px solid white;
 	position: relative;
 }
 #tx-ecompc-canvas .ecom-configurator-package-select,
@@ -47,33 +75,35 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefee', endColorstr='#dce3e3',GradientType=0 ); /* IE6-9 */
 	min-height: 50px;
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select,
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state {
-	background: linear-gradient(to bottom, #0083CB, #0075C2) repeat scroll 0% 0% transparent;
+	background: #0083cb; /* Old browsers */
+	background: -moz-linear-gradient(top,  #0083cb 0%, #0075c2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0083cb), color-stop(100%,#0075c2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #0083cb 0%,#0075c2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0083cb', endColorstr='#0075c2',GradientType=0 ); /* IE6-9 */
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-select {
-	margin-left: 83px;
+	margin-left: 80px;
+	border-left: 2px solid white;
 	padding: 10px 15px;
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
 	font-size: 1.3em;
 	color: black;
 	font-weight: bold;
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
 	color: grey;
 	display: block;
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.ecom-configurator-package-addon {
 	color: white;
 }
-
 #tx-ecompc-canvas .ecom-configurator-arrow-right {
 	background: url('../Images/blue_arrow_right.png') no-repeat;
 	height: 11px;
@@ -82,17 +112,14 @@ body {
 	right: 20px;
 	top: 42%;
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-arrow-right {
 	background: url('../Images/white_arrow_right.png') no-repeat;
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-state {
 	height: 50px;
 	width: 80px;
 	float: left;
 }
-
 #tx-ecompc-canvas .ecom-configurator-package-state.checked {
 	background: grey;
 }
@@ -108,12 +135,10 @@ body {
 	line-height: 40px;
 	margin-bottom: 5px;
 }
-
 #tx-ecompc-canvas .ecom-configurator-select-package-option.option {
 	margin-left: 45px;
 	padding: 0 10px;
 }
-
 #tx-ecompc-canvas .ecom-configurator-select-package-option.option,
 #tx-ecompc-canvas .ecom-configurator-checkbox {
 	background: #edefee; /* Old browsers */
@@ -126,7 +151,6 @@ body {
 	border-bottom: 1px solid #cdd9d8;
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefee', endColorstr='#dce3e3',GradientType=0 ); /* IE6-9 */
 }
-
 #tx-ecompc-canvas .ecom-configurator-select-package-option.option:hover,
 #tx-ecompc-canvas .ecom-configurator-checkbox:hover {
 	background: #2189cc; /* Old browsers */
@@ -140,7 +164,6 @@ body {
 	color: #ffffff;
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2189cc', endColorstr='#1c7cc4',GradientType=0 ); /* IE6-9 */
 }
-
 #tx-ecompc-canvas .ecom-configurator-checkbox {
 	border: 4px solid #cccccc;
 	display: block;
@@ -150,21 +173,11 @@ body {
 	overflow: hidden;
 	width: 32px;
 }
-
 #tx-ecompc-canvas .ecom-configurator-checkbox.checked {
 	background: #006600;
 }
 
-#tx-ecompc-canvas .ecom-configurator-reset-button {
-
-}
-
-
-
-
-
 /* Styling an indeterminate progress bar */
-
 #tx-ecompc-canvas progress:not(value) {
 	/* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
 }
@@ -185,7 +198,6 @@ body {
 	width: 100%;
 	z-index: 1;
 }
-
 /* Fallback technique styles */
 #tx-ecompc-canvas .progress-bar {
 	background-color: transparent;
@@ -194,7 +206,6 @@ body {
 	position: fixed;
 	width: 500px;
 }
-
 #tx-ecompc-canvas .progress-bar span {
 	background-color: #0083cb;
 	display: block;
