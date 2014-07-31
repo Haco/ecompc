@@ -24,7 +24,16 @@ body {
 /**
  * Package Boxes => index action
  */
+
+#tx-ecompc-canvas .ecom-configurator-process-number {
+	color: #0083cb;
+}
+
 #tx-ecompc-canvas .ecom-configurator-package-box {
+	margin-bottom: 2px;
+}
+#tx-ecompc-canvas .ecom-configurator-package-select,
+#tx-ecompc-canvas .ecom-configurator-package-state {
 	background: #edefee; /* Old browsers */
 	background: -moz-linear-gradient(top,  #edefee 0%, #dce3e3 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#edefee), color-stop(100%,#dce3e3)); /* Chrome,Safari4+ */
@@ -32,14 +41,12 @@ body {
 	background: -o-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #edefee 0%,#dce3e3 100%); /* W3C */
-	border-bottom: 1px solid #cdd9d8;
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefee', endColorstr='#dce3e3',GradientType=0 ); /* IE6-9 */
-	padding: 10px 15px;
 	min-height: 50px;
-	margin-bottom: 2px;
 }
 #tx-ecompc-canvas .ecom-configurator-package-select {
-	margin-left: 120px;
+	margin-left: 85px;
+	padding: 10px 15px;
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-select > a.tx-ecompc-configure-package,
@@ -47,6 +54,10 @@ body {
 	font-size: 1.3em;
 	color: black;
 	font-weight: bold;
+}
+
+#tx-ecompc-canvas .ecom-configurator-package-select > a.tx-ecompc-configure-package:hover {
+	color: #0083cb;
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
@@ -62,13 +73,9 @@ body {
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-state {
-	display: block;
-	border-right: 1px solid #BBB;
 	height: 50px;
 	width: 80px;
 	float: left;
-	margin: 0;
-	background: white;
 }
 
 #tx-ecompc-canvas .ecom-configurator-package-state.checked {
@@ -132,6 +139,13 @@ body {
 #tx-ecompc-canvas .ecom-configurator-checkbox.checked {
 	background: #006600;
 }
+
+#tx-ecompc-canvas .ecom-configurator-reset-button {
+
+}
+
+
+
 
 
 /* Styling an indeterminate progress bar */

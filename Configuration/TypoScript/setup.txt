@@ -98,6 +98,10 @@ page.includeCSSLibs {
 	ecompc.import = 1
 }
 
+page.includeJSFooterlibs {
+	ecompcJS = EXT:ecompc/Resources/Public/JS/app.js
+}
+
 plugin.tx_ecompc._CSS_DEFAULT_STYLE (
 	textarea.f3-form-error {
 		background-color:#FF9F9F;

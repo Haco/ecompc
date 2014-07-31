@@ -23,13 +23,14 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		<div class="progress-bar">
 			<span style="width: {f:s3b0.calculation(expressionString:'{process}*100') -> f:format.number(decimals:0)}%"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>%</span>
 		</div>
-	</progress> <f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>% done
+	</progress>
 
+	<p><span class="ecom-configurator-process-number"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>%</span> done</p>
 	<f:for each="{packages}" as="package">
 		<f:if condition="{package.visibleInFrontend}">
 			<div class="ecom-configurator-package-box">
 				<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-arrow-right">&nbsp;</f:link.action>
-				<p class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}">&nbsp;</p>
+				<div class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}">&nbsp;</div>
 				<div class="ecom-configurator-package-select">
 					<f:if condition="{package.active}">
 						<f:then><f:link.action action="selectPackageOptions" arguments="{package : package}" class="tx-ecompc-configure-package" id="tx-ecompc-configure-package-{package.uid}"> {package.frontendLabel}</f:link.action></f:then>
@@ -46,7 +47,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 </div>
 
-<f:link.action action="reset">Reset</f:link.action>
+<f:link.action action="reset" class="ecom-configurator-reset-button">Reset</f:link.action>
 
 <f:if condition="{configurationResult}">
 	<div class="ecom-configurator-result">
