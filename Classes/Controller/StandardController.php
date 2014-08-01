@@ -32,7 +32,6 @@ use TYPO3\CMS\Extbase\Utility as ExtbaseUtility;
 /**
  * PackageController
  *
- * @todo user group controls for packages/options
  * @todo re-configuration by releasing few dependencies… we´ll see
  * @package S3b0
  * @subpackage Ecompc

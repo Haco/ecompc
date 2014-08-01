@@ -1,6 +1,9 @@
 body {
 	font-family: "Roboto Condensed", sans-serif;
 }
+a:focus {
+	outline: 1px dotted black;
+}
 .divider {
 	border-bottom: 1px solid #CCCCCC;
 	margin: 1em 0;
@@ -26,7 +29,8 @@ body {
 	*display: inline;
 	zoom: 1
 }
-#tx-ecompc-canvas .action-button-default:hover {
+#tx-ecompc-canvas .action-button-default:hover,
+#tx-ecompc-canvas .action-button-default:focus {
 	background-color: #0083cb; /* Old browsers */
 	background-color: -moz-linear-gradient(top,  #0083cb 0%, #0075c2 100%); /* FF3.6+ */
 	background-color: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0083cb), color-stop(100%,#0075c2)); /* Chrome,Safari4+ */
@@ -88,7 +92,8 @@ body {
 #tx-ecompc-canvas .ecompc-syntax-help {
 	padding: 0 2px;
 }
-#tx-ecompc-canvas .ecompc-syntax-help[title]:hover {
+#tx-ecompc-canvas .ecompc-syntax-help[title]:hover,
+#tx-ecompc-canvas .ecompc-syntax-help[title]:focus {
 	background-color: #ffff00;
 	cursor: help;
 }
@@ -138,7 +143,9 @@ body {
 	color: #0083cb;
 }
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state {
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-state {
 	background: #0083cb; /* Old browsers */
 	background: -moz-linear-gradient(top,  #0083cb 0%, #0075c2 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0083cb), color-stop(100%,#0075c2)); /* Chrome,Safari4+ */
@@ -158,7 +165,8 @@ body {
 #tx-ecompc-canvas .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
 	background-image: url("../Images/check_active_64.png");
 }
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
 	background-image: url("../Images/check_active_hover_64.png");
 }
 #tx-ecompc-canvas .ecom-configurator-package-select {
@@ -176,7 +184,9 @@ body {
 	display: block;
 }
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.ecom-configurator-package-addon,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.ecom-configurator-package-addon {
 	color: white;
 }
 #tx-ecompc-canvas .ecom-configurator-arrow-right {
@@ -186,8 +196,10 @@ body {
 	position: absolute;
 	right: 20px;
 	top: 42%;
+	z-index: 5;
 }
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-arrow-right {
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-arrow-right,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-arrow-right {
 	background: url('../Images/white_arrow_right.png') no-repeat;
 }
 #tx-ecompc-canvas .ecom-configurator-package-state {
@@ -195,7 +207,6 @@ body {
 	width: 80px;
 	float: left;
 }
-
 /**
  * @action selectPackageOptions
  */
@@ -212,7 +223,8 @@ body {
 	border-bottom: 2px solid white;
 	padding: 8px;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover {
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus {
 	background: #0083cb;
 }
 #tx-ecompc-canvas .ecom-configurator-select-package-option.option {
@@ -238,7 +250,11 @@ body {
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-checkbox,
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option.option,
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-price,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-info{
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-info,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-checkbox,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option.option,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-price,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-info {
 	color: #ffffff;
 }
 

@@ -1,6 +1,6 @@
-<f:for each="{options}" as="option">
-	<f:link.action action="setOption" arguments="{option:option,redirectAction:ms,unset:option.selected}" class="ecom-configurator-select-package-option-wrap">
-		<span class="ecom-configurator-select-package-option-info">More Info</span>
+<f:for each="{options}" as="option" iteration="optionIterator">
+	<f:link.action action="setOption" arguments="{option:option,redirectAction:ms,unset:option.selected}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}">
+		<f:if condition="{option.hintText}"><span class="ecom-configurator-select-package-option-info">More Info</span></f:if>
 		<f:if condition="{sp}">
 			<span class="ecom-configurator-select-package-option-price">[ <f:s3b0.financial.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{option.priceOutput}</f:s3b0.financial.currency> ]</span>
 		</f:if>

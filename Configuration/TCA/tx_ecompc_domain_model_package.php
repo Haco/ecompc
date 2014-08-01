@@ -33,6 +33,7 @@ return array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
+			'fe_group' => 'fe_group'
 		),
 		'searchFields' => 'backend_label,frontend_label,prompt,hint_text,image,visible_in_frontend,multiple_select,default_option,',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ecompc') . 'Configuration/TCA/Package.php',
@@ -42,7 +43,7 @@ return array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, image, visible_in_frontend, multiple_select, default_option',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;3, prompt, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, image, --palette--;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;3, prompt, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, image, --palette--;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -130,6 +131,32 @@ return array(
 					'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
 				),
 			),
+		),
+		'fe_group' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.fe_group',
+			'config' => array(
+				'type' => 'select',
+				'size' => 7,
+				'maxitems' => 20,
+				'items' => array(
+					array(
+						'LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login',
+						-1
+					),
+					array(
+						'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
+						-2
+					),
+					array(
+						'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
+						'--div--'
+					)
+				),
+				'exclusiveKeys' => '-1,-2',
+				'foreign_table' => 'fe_groups',
+				'foreign_table_where' => 'ORDER BY fe_groups.title'
+			)
 		),
 
 		'backend_label' => array(
