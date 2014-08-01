@@ -237,7 +237,8 @@ body {
 
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-checkbox,
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option.option,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-price {
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-price,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-info{
 	color: #ffffff;
 }
 
