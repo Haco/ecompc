@@ -4,7 +4,7 @@
 		<f:if condition="{sp}">
 			<span class="ecom-configurator-select-package-option-price">[ <f:s3b0.financial.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{option.priceOutput}</f:s3b0.financial.currency> ]</span>
 		</f:if>
-		<div class="ecom-configurator-checkbox {f:if(condition:'{option.selected}',then:'checked',else:'unchecked')}"></div>
+		<div class="ecom-configurator-checkbox {f:if(condition:'{option.selected}',then:'checked',else:'unchecked')}"><span class="ecom-configurator-option-checkbox-image"></span></div>
 		<span class="ecom-configurator-select-package-option option">{option.frontendLabel} {f:if(condition:'{0:\'{option.configurationCodeSegment}\'} != {0:\'\'}',then:'[{option.configurationCodeSegment}]')}</span>
 	</f:link.action>
 	<div class="clearfix"></div>

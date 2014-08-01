@@ -131,8 +131,8 @@ body {
 	background: -o-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #edefee 0%,#dce3e3 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefee', endColorstr='#dce3e3',GradientType=0 ); /* IE6-9 */
 	min-height: 50px;
+	position: relative;
 }
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package span.tx-ecompc-configure-package-label {
 	color: #0083cb;
@@ -146,7 +146,20 @@ body {
 	background: -o-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #0083cb 0%,#0075c2 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0083cb', endColorstr='#0075c2',GradientType=0 ); /* IE6-9 */
+}
+#tx-ecompc-canvas .ecom-configurator-package-checkbox-image {
+	background-image: url("../Images/check_def_64.png");
+	background-repeat: no-repeat;
+	background-position: 50% center;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+#tx-ecompc-canvas .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
+	background-image: url("../Images/check_active_64.png");
+}
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
+	background-image: url("../Images/check_active_hover_64.png");
 }
 #tx-ecompc-canvas .ecom-configurator-package-select {
 	margin-left: 80px;
@@ -181,9 +194,6 @@ body {
 	height: 50px;
 	width: 80px;
 	float: left;
-}
-#tx-ecompc-canvas .ecom-configurator-package-state.checked {
-	background: grey;
 }
 
 /**
@@ -233,19 +243,28 @@ body {
 
 #tx-ecompc-canvas .ecom-configurator-checkbox {
 	border: 4px solid #cccccc;
-	background: #fefefe;
+	background: white;
 	box-shadow: 0 0 2px #CCC inset;
 	display: block;
 	float: left;
 	height: 32px;
 	margin-right: 5px;
 	width: 32px;
+	position: relative;
 }
 #tx-ecompc-canvas .ecom-configurator-checkbox.checked {
 	border-color: #0083cb;
 }
 .ecom-configurator-checkbox.checked+span {
 	color: #0083cb;
+}
+#tx-ecompc-canvas .ecom-configurator-checkbox.checked .ecom-configurator-option-checkbox-image {
+	background-image: url("../Images/check_option_32.png");
+	background-repeat: no-repeat;
+	background-position: 50% center;
+	display: block;
+	width: 100%;
+	height: 100%;
 }
 
 /* Styling an indeterminate progress bar */
