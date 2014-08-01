@@ -134,6 +134,9 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefee', endColorstr='#dce3e3',GradientType=0 ); /* IE6-9 */
 	min-height: 50px;
 }
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package span.tx-ecompc-configure-package-label {
+	color: #0083cb;
+}
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select,
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state {
 	background: #0083cb; /* Old browsers */
@@ -241,6 +244,9 @@ body {
 #tx-ecompc-canvas .ecom-configurator-checkbox.checked {
 	border-color: #0083cb;
 }
+.ecom-configurator-checkbox.checked+span {
+	color: #0083cb;
+}
 
 /* Styling an indeterminate progress bar */
 #tx-ecompc-canvas progress:not(value) {
@@ -331,3 +337,5 @@ body {
 		font-size: 0.9em;
 	}
 }
+
+
