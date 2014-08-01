@@ -1,6 +1,3 @@
-<!--
-	TODO: Add process bar using {process}-var
--->
 <f:layout name="Default" />
 
 This Template is responsible for creating a table of domain objects.
@@ -27,13 +24,13 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<p class="ecom-configurator-process-number"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>% done</p>
 
-	<f:for each="{packages}" as="package">
+	<f:for each="{packages}" as="package" iteration="packageIterator">
 
 		<f:if condition="{package.visibleInFrontend}">
 
 			<f:if condition="{package.active}">
 				<f:then>
-					<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}">
+					<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
 						<f:render partial="Index/Packages" arguments="{package : package}"/>
 					</f:link.action>
 				</f:then>

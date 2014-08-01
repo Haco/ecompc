@@ -1,13 +1,21 @@
 <f:for each="{options}" as="option" iteration="optionIterator">
 	<f:link.action action="setOption" arguments="{option:option,redirectAction:ms,unset:option.selected}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}">
-		<f:if condition="{option.hintText}"><span class="ecom-configurator-select-package-option-info">More Info</span></f:if>
 		<f:if condition="{sp}">
 			<span class="ecom-configurator-select-package-option-price">[ <f:s3b0.financial.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{option.priceOutput}</f:s3b0.financial.currency> ]</span>
+		</f:if>
+		<f:if condition="{option.hintText}">
+			<div class="ecom-configurator-select-package-option-info-wrapper">
+				<span class="ecom-configurator-select-package-option-info">More Info</span>
+			</div>
 		</f:if>
 		<div class="ecom-configurator-checkbox {f:if(condition:'{option.selected}',then:'checked',else:'unchecked')}"><span class="ecom-configurator-option-checkbox-image"></span></div>
 		<span class="ecom-configurator-select-package-option option">{option.frontendLabel} {f:if(condition:'{0:\'{option.configurationCodeSegment}\'} != {0:\'\'}',then:'[{option.configurationCodeSegment}]')}</span>
 	</f:link.action>
+	<span class="ecom-configurator-select-package-option-info-hint-box">
+		<span class="close-popover-x" title="Close Info Box">&times;</span>
+		<f:format.html>{option.hintText}</f:format.html>
+	</span>
 	<div class="clearfix"></div>
 </f:for>
 
-<f:if condition="{ms}"><f:link.action action="index">Confirm Selection</f:link.action></f:if>
+<f:if condition="{ms}"><f:link.action class="action-button-default" action="index">Confirm Selection</f:link.action></f:if>

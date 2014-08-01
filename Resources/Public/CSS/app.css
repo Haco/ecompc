@@ -232,21 +232,58 @@ a:focus {
 	margin-left: 45px;
 	padding: 9px 15px;
 }
-
 #tx-ecompc-canvas .ecom-configurator-select-package-option-price {
 	color: #0083cb;
 	float: right;
 	line-height: 38px;
 	padding: 0px 15px;
 }
-
 #tx-ecompc-canvas .ecom-configurator-select-package-option-info {
-	float: right;
-	line-height: 38px;
 	color: grey;
-	padding: 0px 30px;
+	line-height: 38px;
+	cursor: help;
 }
-
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info:hover {
+	text-decoration: underline;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-wrapper {
+	float: right;
+	padding: 0px 15px;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
+	display: none;
+	opacity: 0;
+	background: white;
+	border: 1px solid #CCC;
+	-webkit-box-shadow: 0 2px 8px #CCC;
+	-moz-box-shadow: 0 2px 8px #CCC;
+	box-shadow: 0 2px 8px #CCC;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	width: 50%;
+	position: absolute;
+	right: 0px;
+	left: 0px;
+	top: 0;
+	margin: 0 auto;
+	padding: 30px;
+	z-index: 100;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box h3 {
+	margin-top: 0;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x {
+	position: absolute;
+	right: 10px;
+	top: 2px;
+	font-size: 140%;
+	cursor: pointer;
+	font-weight: bold;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x:hover {
+	color: #0083cb;
+}
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-checkbox,
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option.option,
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-price,
@@ -257,7 +294,6 @@ a:focus {
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-info {
 	color: #ffffff;
 }
-
 #tx-ecompc-canvas .ecom-configurator-checkbox {
 	border: 4px solid #cccccc;
 	background: white;
