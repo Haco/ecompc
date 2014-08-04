@@ -474,6 +474,15 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			}
 		}
 
+		/**
+		 * SKU based exclusion by selectable configurations
+		 */
+		if ($this->cObj->getEcompcType() !== 1) {
+			if ($selectableConfigurations = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedOptions)) {
+
+			}
+		}
+
 		return $check;
 	}
 
@@ -511,9 +520,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->getUid());
 
 		// Overwrite for SKU-based configurations
-		if ($this->cObj->getEcompcType() !== 1) {
+/*		if ($this->cObj->getEcompcType() !== 1) {
 			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedOptions);
-		}
+		}*/
 	}
 
 	/**

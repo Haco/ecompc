@@ -14,7 +14,6 @@
 	});
 })(jQuery);
 
-
 // Package-OptionList => Popover for hint text
 (function($) {
 	var triggerHint = '#tx-ecompc-canvas .ecom-configurator-select-package-option-info',
@@ -28,7 +27,7 @@
 	function hideHintBox(hintBox) {
 		$(hintBox).fadeOut('fast', function() {
 			$(this).css({'display': 'none', 'opacity': 0, 'top': 0});
-		}).stop(true, true);
+		});
 	}
 	// Popup on click
 	$(triggerHint).on('click', function() {
@@ -41,7 +40,14 @@
 
 		// Calculate position of the hint-box
 		popupHeight = $(currentHintBox).outerHeight();
-		scrollPosition = (windowHeight - popupHeight) / 2;
+		// Check if popup high exceeds window height
+		if (windowHeight <= popupHeight) {
+			// Then set position top 10px
+			scrollPosition = 10;
+		} else {
+			// Else arrange it in center position
+			scrollPosition = (windowHeight - popupHeight) / 2;
+		}
 		// Show Popup
 		currentHintBox.css('display', 'block').animate({'top': scrollPosition, 'opacity': 1}, 'fast');
 
