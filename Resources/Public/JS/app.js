@@ -67,3 +67,19 @@
 		}
 	});
 })(jQuery);
+
+// Review/Summary Configuration Button
+(function($) {
+	var $summaryTable = $('#tx-ecompc-canvas .ecom-configurator-summary-table');
+	$('#tx-ecompc-canvas .ecom-configurator-result-review-config').on('click', function(e) {
+		// Prevent default anchor action
+		e.preventDefault();
+		$summaryTable.fadeToggle('slow');
+		// Scroll in position if the table is not currently hidden
+		if (!$summaryTable.is(':hidden')) {
+			$('html, body').animate({
+				scrollTop: $summaryTable.offset().top
+			}, 'slow');
+		}
+	});
+})(jQuery);

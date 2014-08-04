@@ -134,6 +134,12 @@
 			<trans-unit id="index.package.your_choice">
 				<source>Your choice:</source>
 			</trans-unit>
+			<trans-unit id="index.summary_button">
+				<source>Summary</source>
+			</trans-unit>
+			<trans-unit id="index.summary_button_title">
+				<source>Review your Configuration</source>
+			</trans-unit>
 			<trans-unit id="optionlist.more_info">
 				<source>More Info</source>
 			</trans-unit>

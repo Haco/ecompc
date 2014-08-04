@@ -113,6 +113,19 @@ a:focus {
 	font-size: 1.5em;
 	color: grey;
 }
+#tx-ecompc-canvas .ecom-configurator-summary-table {
+	display: none;
+}
+#tx-ecompc-canvas .ecom-configurator-summary-table > table {
+	width: auto;
+	margin: 0 auto;
+}
+#tx-ecompc-canvas .ecom-configurator-summary-table > table td {
+	padding: 5px 30px;
+}
+#tx-ecompc-canvas .ecom-configurator-result-review-config {
+	margin-right: 1em;
+}
 
 /**
  * Package Boxes => index action
