@@ -3,7 +3,7 @@
 <div class="ecom-configurator-package-select">
 	<span class="tx-ecompc-configure-package-label">{package.frontendLabel}</span>
 	<f:if condition="{package.selectedOptions}">
-		<f:then><span class="ecom-configurator-package-addon ecom-configurator-package-your-choice"><f:translate key="index.package.your_choice" /> <f:render partial="Package/ListSelectedOptions" arguments="{selected:package.selectedOptions}" /></span></f:then>
+		<f:then><span class="ecom-configurator-package-addon ecom-configurator-package-your-choice"><f:translate id="index.package.your_choice" /> <f:render partial="Package/ListSelectedOptions" arguments="{selected:package.selectedOptions}" /></span></f:then>
 		<f:else><span class="ecom-configurator-package-addon ecom-configurator-package-prompt">{package.prompt}</span></f:else>
 	</f:if>
 </div>

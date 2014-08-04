@@ -35,7 +35,7 @@
 		hideHintBox(hintBoxSelector);
 
 		// Setting new vars
-		windowHeight = $(window).height();
+		windowHeight = $(document).height();
 		currentHintBox = $(this).parents('.ecom-configurator-select-package-option-wrap').next('.ecom-configurator-select-package-option-info-hint-box');
 
 		// Calculate position of the hint-box
@@ -43,7 +43,7 @@
 		// Check if popup high exceeds window height
 		if (windowHeight <= popupHeight) {
 			// Then set position top 10px
-			scrollPosition = 10;
+			scrollPosition = 15;
 		} else {
 			// Else arrange it in center position
 			scrollPosition = (windowHeight - popupHeight) / 2;

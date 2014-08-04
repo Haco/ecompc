@@ -22,7 +22,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		</div>
 	</progress>
 
-	<p class="ecom-configurator-process-number"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number><f:translate key="index.x_percent_done" /></p>
+	<p class="ecom-configurator-process-number"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number><f:translate id="index.x_percent_done" /></p>
 
 	<f:for each="{packages}" as="package" iteration="packageIterator">
 
@@ -45,17 +45,17 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	</f:for>
 </div>
-<f:link.action action="reset" class="ecom-configurator-reset-button"><f:translate key="index.reset_configuration" /></f:link.action>
+<f:link.action action="reset" class="ecom-configurator-reset-button"><f:translate id="index.reset_configuration" /></f:link.action>
 <div class="divider"></div>
 
 <f:if condition="{configurationResult}">
 	<div class="ecom-configurator-result">
 		<f:if condition="{configurationResultLabel}">{configurationResultLabel}<br /></f:if>
 		<h2>
-			<f:translate key="index.your_configuration_code" /><br />
+			<f:translate id="index.your_configuration_code" /><br />
 			<small>{configurationResult -> f:format.raw()}</small>
 		</h2>
-		<f:link.page pageUid="{settings.requestForm.pid}" target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}" class="action-button-default"><f:translate key="index.request_your_device" /></f:link.page>
+		<f:link.page pageUid="{settings.requestForm.pid}" target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}" class="action-button-default"><f:translate id="index.request_your_device" /></f:link.page>
 	</div>
 </f:if>
 

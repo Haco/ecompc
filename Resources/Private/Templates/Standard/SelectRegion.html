@@ -16,7 +16,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<f:flashMessages renderMode="div" />
 
-	<h2><f:translate key="selectregion.choose_text" /></h2>
+	<h2><f:translate id="selectregion.choose_text" /></h2>
 
 	<f:for each="{currencies}" as="currency">
 		<f:link.action action="index" arguments="{currency: currency.key}">
@@ -27,6 +27,6 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<div class="clearfix"></div>
 	<p>&nbsp;</p>
-	<aside><small><strong>Note:</strong><f:translate key="selectregion.warning_onetime_text" /></small></aside>
+	<aside><small><strong>Note:</strong><f:translate id="selectregion.warning_onetime_text" /></small></aside>
 
 </f:section>

@@ -110,6 +110,9 @@
 				<source>incl.</source>
 			</trans-unit>
 
+			<trans-unit id="index.header.back_to_selection">
+				<source>Back to selection</source>
+			</trans-unit>
 			<trans-unit id="index.header.base_price">
 				<source>Base price</source>
 			</trans-unit>

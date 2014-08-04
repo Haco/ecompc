@@ -119,6 +119,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $selected = FALSE;
 
 	/**
+	 * persistent
+	 *
+	 * @var boolean
+	 */
+	protected $persistent = FALSE;
+
+	/**
 	 * Returns the backendLabel
 	 *
 	 * @return string $backendLabel
@@ -354,6 +361,34 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function isSelected() {
 		return $this->selected;
+	}
+
+	/**
+	 * Returns the persistent
+	 *
+	 * @return boolean $persistent
+	 */
+	public function getPersistent() {
+		return $this->persistent;
+	}
+
+	/**
+	 * Sets the persistent
+	 *
+	 * @param boolean $persistent
+	 * @return void
+	 */
+	public function setPersistent($persistent) {
+		$this->persistent = $persistent;
+	}
+
+	/**
+	 * Returns the boolean state of persistent
+	 *
+	 * @return boolean
+	 */
+	public function isPersistent() {
+		return $this->persistent;
 	}
 
 	/**

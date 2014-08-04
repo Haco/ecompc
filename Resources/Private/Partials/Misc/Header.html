@@ -1,15 +1,15 @@
 <div class="tx-ecompc-configurator-head">
 	<f:if condition="{0:action} == {0:'index'}">
 		<f:then><div class="tx-ecompc-config-header-instructions">{instructions -> f:format.html()}</div></f:then>
-		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink action-button-default left-arrow">Back to selection</f:link.action></f:else>
+		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink action-button-default left-arrow"><f:translate id="index.header.back_to_selection" /></f:link.action></f:else>
 	</f:if>
 	<f:if condition="{sp}">
 		<div class="tx-ecompc-config-header-price-table">
 			<table>
 				<thead>
 				<tr>
-					<f:if condition="{pricing.0}"><td><f:translate key="index.header.base_price" /></td></f:if>
-					<f:if condition="{pricing.1}"><td><f:translate key="index.header.config_price" /></td></f:if>
+					<f:if condition="{pricing.0}"><td><f:translate id="index.header.base_price" /></td></f:if>
+					<f:if condition="{pricing.1}"><td><f:translate id="index.header.config_price" /></td></f:if>
 				</tr>
 				</thead>
 				<tbody>

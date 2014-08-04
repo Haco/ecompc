@@ -268,7 +268,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					}
 				}
 				// Remove all options + package from configuration array
-				$configuration['options'] = array_diff((array) $configuration['options'], $this->optionRepository->getPackageOptionsUidList($option->getConfigurationPackage()));
+				$configuration['options'] = array_diff((array) $configuration['options'], $this->optionRepository->getPackageOptionsUids($option->getConfigurationPackage()));
 				unset($configuration['packages'][$option->getConfigurationPackage()->getUid()]);
 			}
 			// Remove option from configuration array
@@ -300,7 +300,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		foreach ($this->selectedOptions as $selectedOption) {
 			if (!$this->checkOptionDependencies($selectedOption, $configuration)) {
 				// if ($this->selectedOptions->contains($selectedOption)) $this->selectedOptions->detach($selectedOption); // not necessary in this place since ObjectStorage will be refilled after redirect leaving $selectedOption as of session configuration. Just listed to show regular complete process.
-				$configuration['options'] = array_diff($configuration['options'], $option->getConfigurationPackage()->isMultipleSelect() ? $this->optionRepository->getPackageOptionsUidList($selectedOption->getConfigurationPackage()) : [$selectedOption->getUid()]);
+				$configuration['options'] = array_diff($configuration['options'], $option->getConfigurationPackage()->isMultipleSelect() ? $this->optionRepository->getPackageOptionsUids($selectedOption->getConfigurationPackage()) : [$selectedOption->getUid()]);
 				unset($configuration['packages'][$selectedOption->getConfigurationPackage()->getUid()]);
 			}
 		}
@@ -381,32 +381,26 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
 		// Fetch selectable options for current package
-		$this->getSelectableOptions($package, $processOptions);
+		$this->getSelectablePackageOptions($package, $processOptions);
 		if (!$processOptions)
 			return NULL;
-
-		// Fetch selected options for current package
-		$selectedOptions = NULL;
-		if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages'])) {
-			$selectedOptions = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()]);
-		}
 
 		// Include pricing for enabled users!
 		if ($this->showPricing) {
 			foreach ($processOptions as $option) {
 				if ($package->isPercentPricing()) {
 					// Calculate percental pricing [ONLY working on packages WITHOUT multipleSelect() flag set]
-					if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages']) && !($selectedOptions && in_array($option, $selectedOptions->toArray()))) {
+					if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages']) && !($this->selectedOptions && $this->selectedOptions->contains($option))) {
 						$selectedOption = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()])->getFirst();
 						$configurationPrice = floatval($this->selectedConfigurationPrice[1] / ($selectedOption->getPricePercental() + 1));
 						$selectedOptionPrice = floatval($this->selectedConfigurationPrice[1] - $configurationPrice);
 						$option->setPriceOutput(floatval($configurationPrice * $option->getPricePercental() - $selectedOptionPrice));
 					} else {
-						$option->setPriceOutput($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : floatval($this->selectedConfigurationPrice[1] * $option->getPricePercental()));
+						$option->setPriceOutput($this->selectedOptions && $this->selectedOptions->contains($option) ? 0.00 : floatval($this->selectedConfigurationPrice[1] * $option->getPricePercental()));
 					}
 				} else {
-					$priceOutput = $package->isMultipleSelect() || !$selectedOptions ? $option->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currencySetup['exchange'])) : $option->getPriceInCurrency($this->feSession->get('currency')) - $selectedOptions->getFirst()->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currencySetup['exchange']));
-					$option->setPriceOutput($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : $priceOutput);
+					$priceOutput = $package->isMultipleSelect() || !$this->selectedOptions ? $option->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currencySetup['exchange'])) : $option->getPriceInCurrency($this->feSession->get('currency')) - $this->selectedOptions->getFirst()->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currencySetup['exchange']));
+					$option->setPriceOutput($this->selectedOptions && $this->selectedOptions->contains($option) ? 0.00 : $priceOutput);
 				}
 			}
 		}
@@ -420,17 +414,19 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
 	 * @param array                             $result
 	 */
-	protected function getSelectableOptions(\S3b0\Ecompc\Domain\Model\Package $package, array &$result) {
+	protected function getSelectablePackageOptions(\S3b0\Ecompc\Domain\Model\Package $package, array &$result) {
 		$selectableOptions = $this->optionRepository->findByConfigurationPackage($package)->toArray(); // Set basic settings
 
 		// Parse configurations, if any | @case SKU (default)
 		if ($this->cObj->getEcompcType() !== 1 && $this->selectableConfigurations) {
 			$selectableOptions = array();
-			foreach ($this->selectableConfigurations as $configuration) {
+			foreach ($this->configurationRepository->findByTtContentUid($this->cObj->getUid()) as $configuration) {
 				if ($configurationOptions = $configuration->getOptions()) {
 					foreach ($configurationOptions as $configurationOption) {
-						if ($configurationOption->getConfigurationPackage() === $package)
+						if ($configurationOption->getConfigurationPackage() === $package) {
+#							$configurationOption->setPersistent(TRUE);
 							$selectableOptions[] = $configurationOption;
+						}
 					}
 				}
 			}
@@ -441,7 +437,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$result = array();
 		foreach ($selectableOptions as $option) {
 			if ($this->checkOptionDependencies($option, $this->selectedConfiguration)) {
-				if ($this->selectedOptions && in_array($option, $this->selectedOptions->toArray()))
+				if ($this->selectedOptions && $this->selectedOptions->contains($option))
 					$option->setSelected(TRUE);
 				$result[] = $option;
 			}
@@ -457,29 +453,23 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function checkOptionDependencies(\S3b0\Ecompc\Domain\Model\Option $option, array $configuration) {
 		if (!$option->getDependency()) return TRUE;
-		$check = TRUE;
+		$check = $this->cObj->getEcompcType() === 1 ?: $this->parseSkuTypeSpecials();
 
-		if ($dependency = $option->getDependency()) {
+		/**
+		 * Proceed if first check passed and/or dependency exists
+		 */
+		if ($check && $dependency = $option->getDependency()) {
 			if ($packages = $option->getDependency()->getPackages()) {
 				$checkAgainstArray = array();
 				foreach ($packages as $package) {
-					if ($selectedOptions = $this->optionRepository->findOptionsByUidList($configuration['packages'][$package->getUid()])) {
-						foreach ($selectedOptions as $selectedOption) {
+					if ($packageSelectedOptions = $this->optionRepository->findOptionsByUidList($configuration['packages'][$package->getUid()])) {
+						foreach ($packageSelectedOptions as $selectedOption) {
 							// @modes {0 : explicit deny, 1 : explicit allow}
 							$checkAgainstArray[] = $dependency->getMode() === 0 ? !$dependency->getPackageOptions($package)->contains($selectedOption) : $dependency->getPackageOptions($package)->contains($selectedOption);
 						}
 					}
 				}
 				$check = !in_array(FALSE, $checkAgainstArray);
-			}
-		}
-
-		/**
-		 * SKU based exclusion by selectable configurations
-		 */
-		if ($this->cObj->getEcompcType() !== 1) {
-			if ($selectableConfigurations = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedOptions)) {
-
 			}
 		}
 
@@ -585,6 +575,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			// Otherwise fetch all configuration records
 			default:
 				if ($this->selectableConfigurations->count() !== 1) {
+					// @todo activate error on finish
 					#$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
 				} else {
 					$this->view->assignMultiple(array(
@@ -641,4 +632,24 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		return sprintf($wrapper, $code);
 	}
 
+	/**
+	 * @return mixed
+	 */
+	public function parseSkuTypeSpecials() {
+		$trace = debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+
+		switch ($trace[0]['function']) {
+			case 'checkOptionDependencies':
+				$check = TRUE;
+				if ($selectableConfigurations = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedOptions)) {
+					$checkAgainstArray = array();
+					foreach ($selectableConfigurations as $selectableConfiguration) {
+						$checkAgainstArray[] = $selectableConfiguration->getOptions()->contains($option);
+					}
+					$check = in_array(TRUE, $checkAgainstArray);
+				}
+				return $check;
+				break;
+		}
+	}
 }
