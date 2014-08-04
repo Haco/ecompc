@@ -109,6 +109,49 @@
 			<trans-unit id="price.inclusive">
 				<source>incl.</source>
 			</trans-unit>
+
+			<trans-unit id="index.header.back_to_selection">
+				<source>Back to selection</source>
+			</trans-unit>
+			<trans-unit id="index.header.base_price">
+				<source>Base price</source>
+			</trans-unit>
+			<trans-unit id="index.header.config_price">
+				<source>Config price</source>
+			</trans-unit>
+			<trans-unit id="index.x_percent_done">
+				<source>% done</source>
+			</trans-unit>
+			<trans-unit id="index.reset_configuration">
+				<source>&#187; Reset Configuration</source>
+			</trans-unit>
+			<trans-unit id="index.your_configuration_code">
+				<source>Your Configuration Code</source>
+			</trans-unit>
+			<trans-unit id="index.request_your_device">
+				<source>Request your device</source>
+			</trans-unit>
+			<trans-unit id="index.package.your_choice">
+				<source>Your choice:</source>
+			</trans-unit>
+			<trans-unit id="index.summary_button">
+				<source>Summary</source>
+			</trans-unit>
+			<trans-unit id="index.summary_button_title">
+				<source>Review your Configuration</source>
+			</trans-unit>
+			<trans-unit id="optionlist.more_info">
+				<source>More Info</source>
+			</trans-unit>
+			<trans-unit id="optionlist.confirm_selection">
+				<source>Confirm Selection</source>
+			</trans-unit>
+			<trans-unit id="selectregion.choose_text">
+				<source>Please choose a region/currency</source>
+			</trans-unit>
+			<trans-unit id="selectregion.warning_onetime_text">
+				<source>This is a one time selection! You won´t be able to return and switch currency.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

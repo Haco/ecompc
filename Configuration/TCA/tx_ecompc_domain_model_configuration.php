@@ -29,6 +29,7 @@ return array(
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
+			'fe_group' => 'fe_group'
 		),
 		'searchFields' => 'frontend_label,sku,configuration_code_suffix,configuration_code_prefix,options,',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ecompc') . 'Configuration/TCA/Configuration.php',
@@ -38,7 +39,7 @@ return array(
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, frontend_label, sku, configuration_code_suffix, configuration_code_prefix, options',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, frontend_label;;2, --div--;' . $extTranslationPath . 'tabs.referral, options, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, frontend_label;;2, --div--;' . $extTranslationPath . 'tabs.referral, options, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -130,6 +131,32 @@ return array(
 					'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
 				),
 			),
+		),
+		'fe_group' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.fe_group',
+			'config' => array(
+				'type' => 'select',
+				'size' => 7,
+				'maxitems' => 20,
+				'items' => array(
+					array(
+						'LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login',
+						-1
+					),
+					array(
+						'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
+						-2
+					),
+					array(
+						'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
+						'--div--'
+					)
+				),
+				'exclusiveKeys' => '-1,-2',
+				'foreign_table' => 'fe_groups',
+				'foreign_table_where' => 'ORDER BY fe_groups.title'
+			)
 		),
 
 		'frontend_label' => array(

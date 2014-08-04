@@ -74,7 +74,7 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @return array|string
 	 */
-	public function getPackageOptionsUidList(\S3b0\Ecompc\Domain\Model\Package $package, $mode = 1) {
+	public function getPackageOptionsUids(\S3b0\Ecompc\Domain\Model\Package $package, $mode = 1) {
 		$query = $this->createQuery();
 
 		$return = array();

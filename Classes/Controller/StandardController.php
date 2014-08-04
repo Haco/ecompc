@@ -1,7 +1,6 @@
 <?php
 namespace S3b0\Ecompc\Controller;
 
-
 /***************************************************************
  *
  *  Copyright notice
@@ -30,9 +29,8 @@ use TYPO3\CMS\Core\Utility as CoreUtility;
 use TYPO3\CMS\Extbase\Utility as ExtbaseUtility;
 
 /**
- * PackageController
+ * StandardController
  *
- * @todo user group controls for packages/options
  * @todo re-configuration by releasing few dependencies… we´ll see
  * @package S3b0
  * @subpackage Ecompc
@@ -425,7 +423,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$selectableOptions = $this->optionRepository->findByConfigurationPackage($package)->toArray(); // Set basic settings
 
 		// Parse configurations, if any | @case SKU (default)
-		if ($this->cObj->getEcompcType() !== 1 && $this->selectableConfigurations) {
+		if (!$this->cObj->isDynamicEcomProductConfigurator() && $this->selectableConfigurations) {
 			$selectableOptions = array();
 			foreach ($this->selectableConfigurations as $configuration) {
 				if ($configurationOptions = $configuration->getOptions()) {
@@ -512,7 +510,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->getUid());
 
 		// Overwrite for SKU-based configurations
-		if ($this->cObj->getEcompcType() !== 1) {
+		if (!$this->cObj->isDynamicEcomProductConfigurator()) {
 			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedOptions);
 		}
 	}
@@ -564,70 +562,83 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**
-	 * @return string
+	 * @return mixed
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
 	public function getConfigurationResult() {
-		switch ($this->cObj->getEcompcType()) {
-			// In case of dynamic configurations get first configuration record
-			case 1:
-				return $this->buildConfigurationCode($this->selectableConfigurations->getFirst());
-				break;
-			// Otherwise fetch all configuration records
-			default:
-				if ($this->selectableConfigurations->count() !== 1) {
-					#$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
-				} else {
-					$this->view->assignMultiple(array(
-						'requestFormAdditionalParams' => json_decode(
-							sprintf(
-								$this->settings['requestForm']['addParam'],
-								$this->selectableConfigurations->getFirst()->getSku(),
-								$this->selectableConfigurations->getFirst()->getFrontendLabel()
-							),
-							TRUE
-						),
-						'configurationResultLabel' => $this->selectableConfigurations->getFirst()->getFrontendLabel()
-					));
-					return $this->selectableConfigurations->getFirst()->getSku();
-				}
+		// In case of dynamic configurations get first configuration record...
+		if ($this->cObj->isDynamicEcomProductConfigurator()) {
+			return $this->buildConfigurationCode($this->selectableConfigurations->getFirst());
+		}
+
+		// ...otherwise check for suitable configurations and return result in case of one remaining, of not throw 404 Error
+		if ($this->selectableConfigurations->count() !== 1) {
+			// @todo enable error on finish!
+			#$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
+		} else {
+			$this->view->assignMultiple(array(
+				'requestFormAdditionalParams' => json_decode(
+					sprintf(
+						$this->settings['requestForm']['addParam'],
+						$this->selectableConfigurations->getFirst()->getSku(),
+						$this->selectableConfigurations->getFirst()->getFrontendLabel()
+					),
+					TRUE
+				),
+				'configurationResultLabel' => $this->selectableConfigurations->getFirst()->getFrontendLabel()
+			));
+			return $this->selectableConfigurations->getFirst()->getSku();
 		}
 	}
 
 	/**
 	 * set configuration code
 	 *
-	 * @todo summary on site/for request
 	 * @param  \S3b0\Ecompc\Domain\Model\Configuration $configuration
 	 * @return string
 	 */
 	public function buildConfigurationCode(\S3b0\Ecompc\Domain\Model\Configuration $configuration) {
 		$wrapper = $configuration->getConfigurationCodePrefix() . '%s' . $configuration->getConfigurationCodeSuffix();
 		$segmentWrapper = '<span class="ecompc-syntax-help" title="%1$s">%2$s</span>';
+		$summaryPlainWrapper = '%1$s: %2$s\n';
+		$summaryHMTLTableWrapper = '<table>%s</table>';
+		$summaryHTMLTableRowWrapper = '<tr><td><b>%1$s:</b></td><td>%2$s</td></tr>';
 
 		$code = '';
 		$plain = '';
+		$summaryPlain = '';
+		$summaryHTML = '';
 
 		foreach ($this->cObj->getEcompcPackages() as $package) {
 			if (!$package->isVisibleInFrontend()) {
 				$code .= sprintf($segmentWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getConfigurationCodeSegment());
 				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
+				$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']');
+				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']');
 			} elseif ($options = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()])) {
+				$optionsList = array();
 				foreach ($options as $option) {
 					$code .= sprintf($segmentWrapper, $option->getConfigurationPackage()->getFrontendLabel(), $option->getConfigurationCodeSegment());
 					$plain .= $option->getConfigurationCodeSegment();
+					$optionsList[] = $option->getFrontendLabel() . ' [' . $option->getConfigurationCodeSegment() . ']';
 				}
+				$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), implode('\n', $optionsList));
+				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), implode('<br />', $optionsList));
 			}
 		}
 
-		$this->view->assign('requestFormAdditionalParams', json_decode(
-			sprintf(
-				$this->settings['requestForm']['addParam'],
-				sprintf($wrapper, $plain),
-				$configuration->getFrontendLabel()
-			),
-			TRUE
+		$this->view->assignMultiple(array(
+			'configurationSummary' => sprintf($summaryHMTLTableWrapper, $summaryHTML),
+			'requestFormAdditionalParams' => json_decode(
+				sprintf(
+					$this->settings['requestForm']['addParam'],
+					sprintf($wrapper, $plain),
+					$configuration->getFrontendLabel(),
+					$summaryPlain
+				),
+				TRUE
+			)
 		));
 
 		return sprintf($wrapper, $code);

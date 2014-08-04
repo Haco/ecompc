@@ -1,6 +1,3 @@
-<!--
-	TODO: Add process bar using {process}-var
--->
 <f:layout name="Default" />
 
 This Template is responsible for creating a table of domain objects.
@@ -21,38 +18,48 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <div class="tx-ecompc-index">
 	<progress value="{process}" max="1">
 		<div class="progress-bar">
-			<span style="width: {f:s3b0.calculation(expressionString:'{process}*100') -> f:format.number(decimals:0)}%"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>%</span>
+			<span><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>%</span>
 		</div>
-	</progress> <f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>% done
+	</progress>
 
-	<f:for each="{packages}" as="package">
+	<p class="ecom-configurator-process-number"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number><f:translate id="index.x_percent_done" /></p>
+
+	<f:for each="{packages}" as="package" iteration="packageIterator">
+
 		<f:if condition="{package.visibleInFrontend}">
-			<div>
-				<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-arrow-right">&nbsp;</f:link.action>
-				<div class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}">&nbsp;</div>
-				<div class="ecom-configurator-package-select">
-					<f:if condition="{package.active}">
-						<f:then><f:link.action action="selectPackageOptions" arguments="{package : package}" class="tx-ecompc-configure-package" id="tx-ecompc-configure-package-{package.uid}"> {package.frontendLabel}</f:link.action><br /></f:then>
-						<f:else> {package.frontendLabel}<br /></f:else>
-					</f:if>
-					<f:if condition="{package.selectedOptions}">
-						<f:then>Your choice: <f:render partial="Package/ListSelectedOptions" arguments="{selected:package.selectedOptions}" /></f:then>
-						<f:else><span class="ecom-configurator-package-prompt">{package.prompt}</span></f:else>
-					</f:if>
-				</div>
-			</div>
+
+			<f:if condition="{package.active}">
+				<f:then>
+					<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
+						<f:render partial="Index/Packages" arguments="{package : package}"/>
+					</f:link.action>
+				</f:then>
+				<f:else>
+					<div class="ecom-configurator-package-box inactive-package">
+						<f:render partial="Index/Packages" arguments="{package : package}"/>
+					</div>
+				</f:else>
+			</f:if>
+
 		</f:if>
+
 	</f:for>
-
 </div>
-
-<f:link.action action="reset">Reset</f:link.action>
+<f:link.action action="reset" class="ecom-configurator-reset-button"><f:translate id="index.reset_configuration" /></f:link.action>
+<div class="divider"></div>
 
 <f:if condition="{configurationResult}">
 	<div class="ecom-configurator-result">
 		<f:if condition="{configurationResultLabel}">{configurationResultLabel}<br /></f:if>
-		Your configuration code: <strong>{configurationResult -> f:format.raw()}</strong>
-		<br /><f:link.page pageUid="{settings.requestForm.pid}" target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}">c2a</f:link.page>
+		<h2>
+			<f:translate id="index.your_configuration_code" /><br />
+			<small>{configurationResult -> f:format.raw()}</small>
+		</h2>
+		<a href="#" class="action-button-default ecom-configurator-result-review-config" title="{f:translate(id:'index.summary_button_title')}"><f:translate id="index.summary_button" /></a>
+		<f:link.page pageUid="{settings.requestForm.pid}" target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}" class="action-button-default"><f:translate id="index.request_your_device" /></f:link.page>
+	</div>
+	<div class="ecom-configurator-summary-table">
+		{configurationSummary -> f:format.html()}
 	</div>
 </f:if>
 

@@ -16,17 +16,17 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<f:flashMessages renderMode="div" />
 
-	<h2>Please choose a region/currency</h2>
+	<h2><f:translate id="selectregion.choose_text" /></h2>
 
 	<f:for each="{currencies}" as="currency">
-		<f:link.action action="index" arguments="{currency: currency.key}" style="float: left; text-align: center;">
+		<f:link.action action="index" arguments="{currency: currency.key}">
 			<f:image src="{currency.flagIcon}" alt="{currency.region} - {currency.long}" width="200c" /><br />
 			<f:translate id="{currency.llRef}" default="{currency.region}" /> ( {currency.symbol} )
 		</f:link.action>
 	</f:for>
 
-	<div class="clearfix" style="clear: both;"></div>
+	<div class="clearfix"></div>
 	<p>&nbsp;</p>
-	<aside><small><strong>Note:</strong> This is a one time selection! You won´t be able to return and switch currency.</small></aside>
+	<aside><small><strong>Note:</strong><f:translate id="selectregion.warning_onetime_text" /></small></aside>
 
 </f:section>

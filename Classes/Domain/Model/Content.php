@@ -218,4 +218,8 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$this->ecompcBasePriceList = $ecompcBasePriceList;
 	}
 
+	public function isDynamicEcomProductConfigurator() {
+		return $this->getEcompcType() === 1;
+	}
+
 }

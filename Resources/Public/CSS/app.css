@@ -1,57 +1,147 @@
+body {
+	font-family: "Roboto Condensed", sans-serif;
+}
+a:focus {
+	outline: 1px dotted black;
+}
+.divider {
+	border-bottom: 1px solid #CCCCCC;
+	margin: 1em 0;
+}
+#tx-ecompc-canvas .action-button-default {
+	display: inline-block;
+	background-color: #b0b4b7; /* Old browsers */
+	background-color: -moz-linear-gradient(top,  #b0b4b7 0%, #9ea2a6 100%); /* FF3.6+ */
+	background-color: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b0b4b7), color-stop(100%,#9ea2a6)); /* Chrome,Safari4+ */
+	background-color: -webkit-linear-gradient(top,  #b0b4b7 0%,#9ea2a6 100%); /* Chrome10+,Safari5.1+ */
+	background-color: -o-linear-gradient(top,  #b0b4b7 0%,#9ea2a6 100%); /* Opera 11.10+ */
+	background-color: -ms-linear-gradient(top,  #b0b4b7 0%,#9ea2a6 100%); /* IE10+ */
+	background-color: linear-gradient(to bottom,  #b0b4b7 0%,#9ea2a6 100%); /* W3C */
+	background-image: url('../Images/white_arrow_right.png');
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+	border-radius: 1px;
+	padding: 5px 30px 5px 10px;
+	line-height: 30px;
+	color: white;
+	text-transform: uppercase;
+	font-size: 1em;
+	*display: inline;
+	zoom: 1
+}
+#tx-ecompc-canvas .action-button-default:hover,
+#tx-ecompc-canvas .action-button-default:focus {
+	background-color: #0083cb; /* Old browsers */
+	background-color: -moz-linear-gradient(top,  #0083cb 0%, #0075c2 100%); /* FF3.6+ */
+	background-color: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0083cb), color-stop(100%,#0075c2)); /* Chrome,Safari4+ */
+	background-color: -webkit-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Chrome10+,Safari5.1+ */
+	background-color: -o-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Opera 11.10+ */
+	background-color: -ms-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* IE10+ */
+	background-color: linear-gradient(to bottom,  #0083cb 0%,#0075c2 100%); /* W3C */
+	background-image: url('../Images/white_arrow_right.png');
+	color: white;
+}
+
+#tx-ecompc-canvas .action-button-default.left-arrow {
+	background-image: url('../Images/white_arrow_left.png');
+	background-position: 10px center;
+	padding-left: 30px;
+	padding-right: 10px;
+}
+
+#tx-ecompc-canvas .arrow-right {
+	background: url('../Images/blue_arrow_right.png') center center;
+	vertical-align: middle;
+	width: 9px;
+	height: 11px;
+	display: inline-block;
+}
+/**
+ * INDEX
+ */
 #tx-ecompc-canvas div.clearfix {
 	clear: both;
 }
-
+#tx-ecompc-canvas .tx-ecompc-configurator-head {
+	border-top: 1px solid #DDD;
+	border-bottom: 1px solid #DDD;
+	padding: 20px 10px;
+}
+#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-instructions {
+	float: left;
+}
+#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-instructions p {
+	margin: 0;
+}
+#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table {
+	float: right;
+}
+#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table thead {
+	color: grey;
+}
+#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
+	padding-left: 40px;
+}
+#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-configprice {
+	color: #0083cb;
+	font-weight: bold;
+}
 #tx-ecompc-canvas a {
 	text-decoration: none;
 }
-
 #tx-ecompc-canvas .ecompc-syntax-help {
 	padding: 0 2px;
 }
-
-#tx-ecompc-canvas .ecompc-syntax-help[title]:hover {
+#tx-ecompc-canvas .ecompc-syntax-help[title]:hover,
+#tx-ecompc-canvas .ecompc-syntax-help[title]:focus {
 	background-color: #ffff00;
 	cursor: help;
 }
-
-#tx-ecompc-canvas .ecom-configurator-arrow-right {
+#tx-ecompc-canvas .ecom-configurator-reset-button {
 	display: block;
-	float: right;
-	height: 1em;
-	width: 20px;
+	color: grey;
+	margin-top: 0.5em;
 }
-
-#tx-ecompc-canvas .ecom-configurator-package-state {
-	display: block;
-	float: left;
-	height: 100%;
-	width: 20px;
+#tx-ecompc-canvas .ecom-configurator-result {
+	margin: 2em 0;
+	text-align: center;
 }
-
-#tx-ecompc-canvas .ecom-configurator-package-state.checked {
-	background-color: #006600;
+#tx-ecompc-canvas .ecom-configurator-result h2 {
+	color: #0083cb;
+}
+#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+	font-size: 1.5em;
+	color: grey;
+}
+#tx-ecompc-canvas .ecom-configurator-summary-table {
+	display: none;
+}
+#tx-ecompc-canvas .ecom-configurator-summary-table > table {
+	width: auto;
+	margin: 0 auto;
+}
+#tx-ecompc-canvas .ecom-configurator-summary-table > table td {
+	padding: 5px 30px;
+}
+#tx-ecompc-canvas .ecom-configurator-result-review-config {
+	margin-right: 1em;
 }
 
 /**
- * @action selectPackageOptions
+ * Package Boxes => index action
  */
-#tx-ecompc-canvas .ecom-configurator-select-package-option,
-#tx-ecompc-canvas .ecom-configurator-select-package-option.option {
-	background-color: #ffffff;
+#tx-ecompc-canvas .ecom-configurator-process-number {
+	color: #0083cb;
+	font-size: 1.2em;
+	text-align: center;
+}
+#tx-ecompc-canvas .ecom-configurator-package-box {
 	display: block;
-	height: 40px;
-	line-height: 40px;
-	margin-bottom: 5px;
+	border-bottom: 2px solid white;
+	position: relative;
 }
-
-#tx-ecompc-canvas .ecom-configurator-select-package-option.option {
-	margin-left: 45px;
-	padding: 0 10px;
-}
-
-#tx-ecompc-canvas .ecom-configurator-select-package-option.option,
-#tx-ecompc-canvas .ecom-configurator-checkbox {
+#tx-ecompc-canvas .ecom-configurator-package-select,
+#tx-ecompc-canvas .ecom-configurator-package-state {
 	background: #edefee; /* Old browsers */
 	background: -moz-linear-gradient(top,  #edefee 0%, #dce3e3 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#edefee), color-stop(100%,#dce3e3)); /* Chrome,Safari4+ */
@@ -59,41 +149,192 @@
 	background: -o-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #edefee 0%,#dce3e3 100%); /* W3C */
-	border-bottom: 1px solid #cdd9d8;
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edefee', endColorstr='#dce3e3',GradientType=0 ); /* IE6-9 */
+	min-height: 50px;
+	position: relative;
 }
-
-#tx-ecompc-canvas .ecom-configurator-select-package-option.option:hover,
-#tx-ecompc-canvas .ecom-configurator-checkbox:hover {
-	background: #2189cc; /* Old browsers */
-	background: -moz-linear-gradient(top,  #2189cc 0%, #1c7cc4 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2189cc), color-stop(100%,#1c7cc4)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #2189cc 0%,#1c7cc4 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #2189cc 0%,#1c7cc4 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #2189cc 0%,#1c7cc4 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  #2189cc 0%,#1c7cc4 100%); /* W3C */
-	border-bottom: 1px solid #3687c6;
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package span.tx-ecompc-configure-package-label {
+	color: #0083cb;
+}
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-state {
+	background: #0083cb; /* Old browsers */
+	background: -moz-linear-gradient(top,  #0083cb 0%, #0075c2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0083cb), color-stop(100%,#0075c2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #0083cb 0%,#0075c2 100%); /* W3C */
+}
+#tx-ecompc-canvas .ecom-configurator-package-checkbox-image {
+	background-image: url("../Images/check_def_64.png");
+	background-repeat: no-repeat;
+	background-position: 50% center;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+#tx-ecompc-canvas .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
+	background-image: url("../Images/check_active_64.png");
+}
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
+	background-image: url("../Images/check_active_hover_64.png");
+}
+#tx-ecompc-canvas .ecom-configurator-package-select {
+	margin-left: 80px;
+	border-left: 2px solid white;
+	padding: 10px 15px;
+}
+#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
+	font-size: 1.3em;
+	color: black;
+	font-weight: bold;
+}
+#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+	color: grey;
+	display: block;
+}
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.ecom-configurator-package-addon,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+	color: white;
+}
+#tx-ecompc-canvas .ecom-configurator-arrow-right {
+	background: url('../Images/blue_arrow_right.png') no-repeat;
+	height: 11px;
+	width: 9px;
+	position: absolute;
+	right: 20px;
+	top: 42%;
+	z-index: 5;
+}
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-arrow-right,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-arrow-right {
+	background: url('../Images/white_arrow_right.png') no-repeat;
+}
+#tx-ecompc-canvas .ecom-configurator-package-state {
+	height: 50px;
+	width: 80px;
+	float: left;
+}
+/**
+ * @action selectPackageOptions
+ */
+#tx-ecompc-canvas .tx-ecompc-optionSelection-package-info {
+	margin-bottom: 2em;
+}
+#tx-ecompc-canvas .tx-ecompc-optionSelection-package-info h2 {
+	color: #0083cb;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap {
+	color: black;
+	background: #eeeeee;
+	display: block;
+	border-bottom: 2px solid white;
+	padding: 8px;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus {
+	background: #0083cb;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option.option {
+	display: block;
+	margin-left: 45px;
+	padding: 9px 15px;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-price {
+	color: #0083cb;
+	float: right;
+	line-height: 38px;
+	padding: 0px 15px;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info {
+	color: grey;
+	line-height: 38px;
+	cursor: help;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info:hover {
+	text-decoration: underline;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-wrapper {
+	float: right;
+	padding: 0px 15px;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
+	display: none;
+	opacity: 0;
+	background: white;
+	border: 1px solid #CCC;
+	-webkit-box-shadow: 0 2px 8px #CCC;
+	-moz-box-shadow: 0 2px 8px #CCC;
+	box-shadow: 0 2px 8px #CCC;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	width: 100%;
+	max-width: 700px;
+	position: absolute;
+	right: 0px;
+	left: 0px;
+	top: 0;
+	margin: 0 auto;
+	padding: 30px;
+	z-index: 100;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box h3 {
+	margin-top: 0;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x {
+	position: absolute;
+	right: 10px;
+	top: 2px;
+	font-size: 140%;
+	cursor: pointer;
+	font-weight: bold;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x:hover {
+	color: #0083cb;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-checkbox,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option.option,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-price,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-info,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-checkbox,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option.option,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-price,
+#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-info {
 	color: #ffffff;
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2189cc', endColorstr='#1c7cc4',GradientType=0 ); /* IE6-9 */
 }
-
 #tx-ecompc-canvas .ecom-configurator-checkbox {
 	border: 4px solid #cccccc;
+	background: white;
+	box-shadow: 0 0 2px #CCC inset;
 	display: block;
 	float: left;
 	height: 32px;
 	margin-right: 5px;
-	overflow: hidden;
 	width: 32px;
+	position: relative;
 }
-
 #tx-ecompc-canvas .ecom-configurator-checkbox.checked {
-	background: #006600;
+	border-color: #0083cb;
 }
-
+.ecom-configurator-checkbox.checked+span {
+	color: #0083cb;
+}
+#tx-ecompc-canvas .ecom-configurator-checkbox.checked .ecom-configurator-option-checkbox-image {
+	background-image: url("../Images/check_option_32.png");
+	background-repeat: no-repeat;
+	background-position: 50% center;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
 
 /* Styling an indeterminate progress bar */
-
 #tx-ecompc-canvas progress:not(value) {
 	/* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
 }
@@ -112,8 +353,8 @@
 	position: fixed;
 	top: 0;
 	width: 100%;
+	z-index: 1;
 }
-
 /* Fallback technique styles */
 #tx-ecompc-canvas .progress-bar {
 	background-color: transparent;
@@ -122,9 +363,73 @@
 	position: fixed;
 	width: 500px;
 }
-
 #tx-ecompc-canvas .progress-bar span {
 	background-color: #0083cb;
 	display: block;
 	text-indent: -9999px;
 }
+
+@media (max-width: 1024px) {
+	#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
+		width: 90%;
+	}
+}
+
+@media (max-width: 768px) {
+	#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-instructions {
+		display: block;
+		float: none;
+	}
+	#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table {
+		display: block;
+		float: none;
+		margin-top: 1em;
+	}
+	#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
+		padding-left: 0;
+		padding-right: 40px;
+	}
+	#tx-ecompc-canvas .ecom-configurator-result h2 {
+		font-size: 1.7em;
+		font-weight: normal;
+	}
+	#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+		font-size: 1em;
+		font-weight: normal;
+	}
+	#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
+		font-size: 1.2em;
+	}
+	#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+		font-size: 1em;
+	}
+	#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
+		width: auto;
+	}
+}
+
+@media (max-width: 468px) {
+	#tx-ecompc-canvas .ecom-configurator-select-package-option-price,
+	#tx-ecompc-canvas .ecom-configurator-select-package-option-info {
+		padding: 0px 5px;
+	}
+	#tx-ecompc-canvas .ecom-configurator-result h2 {
+		font-size: 1.4em;
+		font-weight: normal;
+	}
+	#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+		font-size: 0.8em;
+		font-weight: normal;
+	}
+	#tx-ecompc-canvas .ecom-configurator-arrow-right {
+		display: none;
+	}
+	#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
+		font-size: 1em;
+	}
+	#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
+		font-size: 0.9em;
+	}
+}
+
+

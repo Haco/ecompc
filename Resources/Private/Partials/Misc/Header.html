@@ -1,25 +1,25 @@
 <div class="tx-ecompc-configurator-head">
+	<f:if condition="{0:action} == {0:'index'}">
+		<f:then><div class="tx-ecompc-config-header-instructions">{instructions -> f:format.html()}</div></f:then>
+		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink action-button-default left-arrow"><f:translate id="index.header.back_to_selection" /></f:link.action></f:else>
+	</f:if>
 	<f:if condition="{sp}">
-		<div style="float: right;">
+		<div class="tx-ecompc-config-header-price-table">
 			<table>
 				<thead>
 				<tr>
-					<f:if condition="{pricing.0}"><td>Basispreis</td></f:if>
-					<f:if condition="{pricing.1}"><td>Konfigpreis</td></f:if>
+					<f:if condition="{pricing.0}"><td><f:translate id="index.header.base_price" /></td></f:if>
+					<f:if condition="{pricing.1}"><td><f:translate id="index.header.config_price" /></td></f:if>
 				</tr>
 				</thead>
 				<tbody>
 				<tr>
 					<f:if condition="{pricing.0}"><td><f:format.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{pricing.0}</f:format.currency></td></f:if>
-					<f:if condition="{pricing.1}"><td><f:format.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{pricing.1}</f:format.currency></td></f:if>
+					<f:if condition="{pricing.1}"><td><span class="tx-ecompc-config-header-configprice"><f:format.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:if>
 				</tr>
 				</tbody>
 			</table>
 		</div>
 	</f:if>
-	<f:if condition="{0:action} == {0:'index'}">
-		<f:then><div class="tx-ecompc-config-header-instructions">{instructions -> f:format.html()}</div></f:then>
-		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink">Back</f:link.action></f:else>
-	</f:if>
+	<div class="clearfix" style="clear: both;"></div>
 </div>
-<div class="clearfix" style="clear: both;"></div>
