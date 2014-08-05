@@ -109,6 +109,12 @@
 			<trans-unit id="price.inclusive">
 				<source>incl.</source>
 			</trans-unit>
+			<trans-unit id="csh.configCodePrefix">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="csh.configCodeSuffix">
+				<source></source>
+			</trans-unit>
 
 			<trans-unit id="index.header.back_to_selection">
 				<source>Back to selection</source>
@@ -139,6 +145,9 @@
 			</trans-unit>
 			<trans-unit id="index.summary_button_title">
 				<source>Review your Configuration</source>
+			</trans-unit>
+			<trans-unit id="index.package.no_price_label">
+				<source>+ additional costs</source>
 			</trans-unit>
 			<trans-unit id="optionlist.more_info">
 				<source>More Info</source>

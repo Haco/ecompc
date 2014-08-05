@@ -99,6 +99,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $active = FALSE;
 
 	/**
+	 * priceOutput
+	 *
+	 * @var float
+	 */
+	protected $priceOutput = 0.0;
+
+	/**
 	 * defaultOption
 	 *
 	 * @var \S3b0\Ecompc\Domain\Model\Option
@@ -337,6 +344,29 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function isActive() {
 		return $this->active;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getPriceOutput() {
+		return $this->priceOutput;
+	}
+
+	/**
+	 * @param float $priceOutput
+	 * @return void
+	 */
+	public function setPriceOutput($priceOutput) {
+		$this->priceOutput = $priceOutput;
+	}
+
+	/**
+	 * @param integer|float $add
+	 * @return void
+	 */
+	public function sumPriceOutput($add) {
+		$this->priceOutput += floatval($add);
 	}
 
 	/**

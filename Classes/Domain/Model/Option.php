@@ -97,6 +97,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var float
 	 */
 	protected $priceOutput = 0.0;
+
 	/**
 	 * Corresponding Package
 	 *

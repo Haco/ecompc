@@ -42,6 +42,7 @@ plugin.tx_ecompc {
 	}
 	settings {
 		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->reset;Standard->selectRegion
+		enablePricing = {$plugin.tx_ecompc.constants.enablePricing}
 		currency {
 			default {
 				long = {$plugin.tx_ecompc.constants.currency.default.long}
@@ -84,7 +85,7 @@ plugin.tx_ecompc {
 		}
 		requestForm {
 			pid = {$plugin.tx_ecompc.constants.requestForm.pid}
-			addParam = {$plugin.tx_ecompc.constants.requestForm.addParam}
+			additionalParams = {$plugin.tx_ecompc.constants.requestForm.additionalParams}
 			target = {$plugin.tx_ecompc.constants.requestForm.target}
 		}
 	}
