@@ -101,6 +101,31 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $selected = FALSE;
 
 	/**
+	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
+	 */
+	protected $conflictsWithSelectedOptions = NULL;
+
+	/**
+	 * __construct
+	 */
+	public function __construct() {
+		//Do not remove the next line: It would break the functionality
+		$this->initStorageObjects();
+	}
+
+	/**
+	 * Initializes all ObjectStorage properties
+	 * Do not modify this method!
+	 * It will be rewritten on each save in the extension builder
+	 * You may modify the constructor of this class instead
+	 *
+	 * @return void
+	 */
+	protected function initStorageObjects() {
+		$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+	}
+
+	/**
 	 * @return string $backendLabel
 	 */
 	public function getBackendLabel() {
@@ -301,6 +326,45 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function isSelected() {
 		return $this->selected;
+	}
+
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOption
+	 * @return void
+	 */
+	public function addConflictsWithSelectedOption(\S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOption) {
+		if ($this->conflictsWithSelectedOptions === NULL) {
+			$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+
+		$this->conflictsWithSelectedOptions->attach($conflictsWithSelectedOption);
+	}
+
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOptionToRemove
+	 * @return void
+	 */
+	public function removeConflictsWithSelectedOption(\S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOptionToRemove) {
+		$this->conflictsWithSelectedOptions->detach($conflictsWithSelectedOptionToRemove);
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $conflictsWithSelectedOptions
+	 */
+	public function getConflictsWithSelectedOptions() {
+		if ($this->conflictsWithSelectedOptions === NULL) {
+			$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+
+		return $this->conflictsWithSelectedOptions;
+	}
+
+	/**
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $conflictsWithSelectedOptions
+	 * @return void
+	 */
+	public function setConflictsWithSelectedOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $conflictsWithSelectedOptions = null) {
+		$this->conflictsWithSelectedOptions = $conflictsWithSelectedOptions;
 	}
 
 	/**

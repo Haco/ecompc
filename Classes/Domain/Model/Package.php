@@ -329,11 +329,11 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOptionToRemove The Option to be removed
+	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOptionToRemove
 	 * @return void
 	 */
 	public function removeSelectedOption(\S3b0\Ecompc\Domain\Model\Option $selectedOptionToRemove) {
-		$this->selectedOptions->detach($selectedOptionsToRemove);
+		$this->selectedOptions->detach($selectedOptionToRemove);
 	}
 
 	/**

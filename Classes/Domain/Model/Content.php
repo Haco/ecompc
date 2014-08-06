@@ -222,4 +222,8 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		return $this->getEcompcType() === 1;
 	}
 
+	public function isStaticEcomProductConfigurator() {
+		return $this->getEcompcType() !== 1;
+	}
+
 }
