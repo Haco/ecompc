@@ -74,11 +74,11 @@
 	$('#tx-ecompc-canvas .ecom-configurator-result-review-config').on('click', function(e) {
 		// Prevent default anchor action
 		e.preventDefault();
-		$(this).toggleClass('active').stop(true, true);
-		$summaryTable.fadeToggle('slow').stop(true, true);
+		$(this).stop().toggleClass('active');
+		$summaryTable.stop().slideToggle('slow');
 		// Scroll in position if the table is not currently hidden
 		if (!$summaryTable.is(':hidden')) {
-			$('html, body').animate({
+			$('html, body').stop().animate({
 				scrollTop: $summaryTable.offset().top
 			}, 'slow');
 		}

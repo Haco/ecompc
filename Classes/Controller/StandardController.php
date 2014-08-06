@@ -156,8 +156,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Get configuration price
 		$this->selectedConfigurationPrice = $this->showPricing ? $this->getConfigurationPrice() : array();
 		// pre-parse Options
-		$this->initializeOptions(NULL);
-		debug(__FUNCTION__);
+		$this->initializeOptions(NULL, __FUNCTION__);
 	}
 
 	/**
@@ -650,9 +649,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected function initializeOptions($selectedOptions = null, $caller = '') {
 		// Parse options
 		if ($options = $this->optionRepository->findAll()) {
+			$counter = 0;
 			foreach ($options as $option) {
 				$package = $option->getConfigurationPackage();
-				// Process pricing
+				// PROCESS PRICING
 				if ($this->showPricing && $this->feSession->get('currency')) {
 					// Calculate percent price [working on packages WITHOUT multipleSelect() flag set ONLY!]
 					if ($package->isPercentPricing() && !$package->isMultipleSelect()) {
@@ -672,8 +672,14 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 						$option->setPriceOutput($priceOutput);
 					}
 				}
+				// PROCESS SKU BASED CONFIGURATOR SPECIALS
+				if ($caller === 'initializeAction' && $this->cObj->getEcompcType() !== 1 && $package->hasSelectedOptions() && $counter === 0) {
+					//if ($package->getSelectedOptions()->contains($option))
+						debug($package->getSelectedOptions());
+				}
 				if (in_array($option->getUid(), $this->selectedConfiguration['options']))
 					$package->sumPriceOutput($option->getPriceOutput());
+				$counter++;
 			}
 		}
 	}
