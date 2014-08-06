@@ -74,7 +74,8 @@
 	$('#tx-ecompc-canvas .ecom-configurator-result-review-config').on('click', function(e) {
 		// Prevent default anchor action
 		e.preventDefault();
-		$summaryTable.fadeToggle('slow');
+		$(this).toggleClass('active').stop(true, true);
+		$summaryTable.fadeToggle('slow').stop(true, true);
 		// Scroll in position if the table is not currently hidden
 		if (!$summaryTable.is(':hidden')) {
 			$('html, body').animate({

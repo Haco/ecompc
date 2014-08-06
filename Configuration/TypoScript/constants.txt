@@ -12,6 +12,8 @@ plugin.tx_ecompc {
 		storagePid =
 	}
 	constants {
+		# cat=plugin.tx_ecompc//x10; type=boolean; label=Enable pricing:Show pricing if set (master switch!)
+		enablePricing = 1
 		currency.default {
 			# cat=plugin.tx_ecompc//b2; type=string; label=Default currency [ISO 4217 Currency Codes]
 			short = EUR
@@ -29,8 +31,8 @@ plugin.tx_ecompc {
 		requestForm {
 			# cat=plugin.tx_ecompc//a1; type=int; label=Form pid:Page uid for request form
 			pid = 0
-			# cat=plugin.tx_ecompc//a2; type=string; label=AdditionalParam:JSON Array with placeholder %s
-			addParam = {"tx_powermail_pi1":{"field":{"1":"%s"}}}
+			# cat=plugin.tx_ecompc//a2; type=string; label=Additional Params:JSON Array with placeholders %x$s
+			additionalParams = {"tx_powermail_pi1":{"field":{"1":"%1$s","2":"%2$s","3":"%3$s"}}}
 			# cat=plugin.tx_ecompc//a3; type=options[,_top,_blank]; label=Target
 			target = _blank
 		}

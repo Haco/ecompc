@@ -5,7 +5,7 @@ a:focus {
 	outline: 1px dotted black;
 }
 .divider {
-	border-bottom: 1px solid #CCCCCC;
+	border-bottom: 1px solid #cccccc;
 	margin: 1em 0;
 }
 #tx-ecompc-canvas .action-button-default {
@@ -39,7 +39,7 @@ a:focus {
 	background-color: -ms-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* IE10+ */
 	background-color: linear-gradient(to bottom,  #0083cb 0%,#0075c2 100%); /* W3C */
 	background-image: url('../Images/white_arrow_right.png');
-	color: white;
+	color: #ffffff;
 }
 
 #tx-ecompc-canvas .action-button-default.left-arrow {
@@ -56,6 +56,58 @@ a:focus {
 	height: 11px;
 	display: inline-block;
 }
+#tx-ecompc-canvas .action-button-default.dropdown {
+	background-image: url('../Images/white_arrow_down.png');
+}
+#tx-ecompc-canvas .action-button-default.dropdown.active {
+	background-image: url('../Images/white_arrow_up.png');
+}
+/**
+*	SELECT REGION / CURRENCY
+*/
+.select-region-wrap {
+	text-align: center;
+}
+.select-region-wrap .select-region-currencies {
+	background: #f5f5f5;
+	border-bottom: 1px solid #ddd;
+	border-top: 1px solid #ddd;
+	padding: 10px 0;
+}
+.select-region-wrap h2 {
+	color: #0083cb;
+	margin-bottom: 1.5em;
+}
+.select-region-wrap a.selectregion-choose-flag {
+	color: black;
+	font-size: 1.2em;
+	text-align: center;
+	text-decoration: none;
+	padding: 0px 15px;
+	margin: 1em 0;
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+	transition: color 0.2s ease-out;
+}
+
+.select-region-wrap a.selectregion-choose-flag:hover {
+	color: #0083cb;
+}
+.select-region-wrap a.selectregion-choose-flag img {
+	opacity: 0.5;
+	margin-bottom: 0.5em;
+	transition: all 0.2s ease-out;
+}
+.select-region-wrap a.selectregion-choose-flag:hover img {
+	opacity: 1;
+}
+.select-region-wrap aside {
+	color: #999;
+	text-align: center;
+	margin-top: 2em;
+}
+
 /**
  * INDEX
  */
@@ -63,8 +115,8 @@ a:focus {
 	clear: both;
 }
 #tx-ecompc-canvas .tx-ecompc-configurator-head {
-	border-top: 1px solid #DDD;
-	border-bottom: 1px solid #DDD;
+	border-top: 1px solid #dddddd;
+	border-bottom: 1px solid #dddddd;
 	padding: 20px 10px;
 }
 #tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-instructions {
@@ -77,7 +129,7 @@ a:focus {
 	float: right;
 }
 #tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table thead {
-	color: grey;
+	color: #808080;
 }
 #tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
 	padding-left: 40px;
@@ -94,12 +146,12 @@ a:focus {
 }
 #tx-ecompc-canvas .ecompc-syntax-help[title]:hover,
 #tx-ecompc-canvas .ecompc-syntax-help[title]:focus {
-	background-color: #ffff00;
+	background-color: #ffff66;
 	cursor: help;
 }
 #tx-ecompc-canvas .ecom-configurator-reset-button {
 	display: block;
-	color: grey;
+	color: #808080;
 	margin-top: 0.5em;
 }
 #tx-ecompc-canvas .ecom-configurator-result {
@@ -111,17 +163,29 @@ a:focus {
 }
 #tx-ecompc-canvas .ecom-configurator-result h2 > small {
 	font-size: 1.5em;
-	color: grey;
+	color: #808080;
 }
 #tx-ecompc-canvas .ecom-configurator-summary-table {
 	display: none;
+	padding-top: 1.5em;
 }
 #tx-ecompc-canvas .ecom-configurator-summary-table > table {
 	width: auto;
 	margin: 0 auto;
 }
+#tx-ecompc-canvas .ecom-configurator-summary-table > table tr {
+	background: #efefef;
+	transition: background 0.2s, color 0.2s;
+}
+#tx-ecompc-canvas .ecom-configurator-summary-table > table tr:nth-child(2n) {
+	background: #fafafa;
+}
 #tx-ecompc-canvas .ecom-configurator-summary-table > table td {
 	padding: 5px 30px;
+}
+#tx-ecompc-canvas .ecom-configurator-summary-table > table tr:hover {
+	background: #0083cb;
+	color: white;
 }
 #tx-ecompc-canvas .ecom-configurator-result-review-config {
 	margin-right: 1em;
@@ -137,7 +201,7 @@ a:focus {
 }
 #tx-ecompc-canvas .ecom-configurator-package-box {
 	display: block;
-	border-bottom: 2px solid white;
+	border-bottom: 2px solid #ffffff;
 	position: relative;
 }
 #tx-ecompc-canvas .ecom-configurator-package-select,
@@ -184,23 +248,25 @@ a:focus {
 }
 #tx-ecompc-canvas .ecom-configurator-package-select {
 	margin-left: 80px;
-	border-left: 2px solid white;
+	border-left: 2px solid #ffffff;
 	padding: 10px 15px;
 }
 #tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
 	font-size: 1.3em;
-	color: black;
+	color: #000000;
 	font-weight: bold;
 }
 #tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
-	color: grey;
+	color: #808080;
 	display: block;
 }
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.ecom-configurator-package-addon,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > .ecom-configurator-select-package-price,
 #tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.ecom-configurator-package-addon {
-	color: white;
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.ecom-configurator-package-addon,
+#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > .ecom-configurator-select-package-price {
+	color: #ffffff;
 }
 #tx-ecompc-canvas .ecom-configurator-arrow-right {
 	background: url('../Images/blue_arrow_right.png') no-repeat;
@@ -230,10 +296,10 @@ a:focus {
 	color: #0083cb;
 }
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap {
-	color: black;
+	color: #000000;
 	background: #eeeeee;
 	display: block;
-	border-bottom: 2px solid white;
+	border-bottom: 2px solid #ffffff;
 	padding: 8px;
 }
 #tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover,
@@ -245,14 +311,22 @@ a:focus {
 	margin-left: 45px;
 	padding: 9px 15px;
 }
+#tx-ecompc-canvas .ecom-configurator-select-package-price,
 #tx-ecompc-canvas .ecom-configurator-select-package-option-price {
 	color: #0083cb;
 	float: right;
 	line-height: 38px;
-	padding: 0px 15px;
+	padding: 0 15px;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-price {
+	line-height: 50px;
+	padding: 0 25px 0 0;
+}
+#tx-ecompc-canvas .ecom-configurator-select-package-price.ecom-configurator-price-info {
+	color: #808080;
 }
 #tx-ecompc-canvas .ecom-configurator-select-package-option-info {
-	color: grey;
+	color: #808080;
 	line-height: 38px;
 	cursor: help;
 }
@@ -261,24 +335,24 @@ a:focus {
 }
 #tx-ecompc-canvas .ecom-configurator-select-package-option-info-wrapper {
 	float: right;
-	padding: 0px 15px;
+	padding: 0 15px;
 }
 #tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
 	display: none;
 	opacity: 0;
-	background: white;
+	background: #ffffff;
 	border: 1px solid #CCC;
-	-webkit-box-shadow: 0 2px 8px #CCC;
-	-moz-box-shadow: 0 2px 8px #CCC;
-	box-shadow: 0 2px 8px #CCC;
+	-webkit-box-shadow: 0 2px 8px #cccccc;
+	-moz-box-shadow: 0 2px 8px #cccccc;
+	box-shadow: 0 2px 8px #cccccc;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 	width: 100%;
 	max-width: 700px;
 	position: absolute;
-	right: 0px;
-	left: 0px;
+	right: 0;
+	left: 0;
 	top: 0;
 	margin: 0 auto;
 	padding: 30px;
@@ -310,8 +384,8 @@ a:focus {
 }
 #tx-ecompc-canvas .ecom-configurator-checkbox {
 	border: 4px solid #cccccc;
-	background: white;
-	box-shadow: 0 0 2px #CCC inset;
+	background: #ffffff;
+	box-shadow: 0 0 2px #cccccc inset;
 	display: block;
 	float: left;
 	height: 32px;
@@ -406,12 +480,20 @@ a:focus {
 	#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
 		width: auto;
 	}
+	.select-region-wrap a.selectregion-choose-flag img {
+		width: 150px;
+		height: auto;
+	}
+	#tx-ecompc-canvas .ecom-configurator-summary-table > table td {
+		padding: 5px 10px;
+	}
 }
 
 @media (max-width: 468px) {
+	#tx-ecompc-canvas .ecom-configurator-select-package-price,
 	#tx-ecompc-canvas .ecom-configurator-select-package-option-price,
 	#tx-ecompc-canvas .ecom-configurator-select-package-option-info {
-		padding: 0px 5px;
+		padding: 0 5px;
 	}
 	#tx-ecompc-canvas .ecom-configurator-result h2 {
 		font-size: 1.4em;
@@ -429,6 +511,13 @@ a:focus {
 	}
 	#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
 		font-size: 0.9em;
+	}
+	.select-region-wrap a.selectregion-choose-flag {
+		display: block;
+	}
+	.select-region-wrap a.selectregion-choose-flag img {
+		width: 100px;
+		height: auto;
 	}
 }
 

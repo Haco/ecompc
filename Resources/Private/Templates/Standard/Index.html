@@ -31,12 +31,12 @@ Otherwise your changes will be overwritten the next time you save the extension 
 			<f:if condition="{package.active}">
 				<f:then>
 					<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
-						<f:render partial="Index/Packages" arguments="{package : package}"/>
+						<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
 					</f:link.action>
 				</f:then>
 				<f:else>
 					<div class="ecom-configurator-package-box inactive-package">
-						<f:render partial="Index/Packages" arguments="{package : package}"/>
+						<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
 					</div>
 				</f:else>
 			</f:if>
@@ -55,7 +55,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 			<f:translate id="index.your_configuration_code" /><br />
 			<small>{configurationResult -> f:format.raw()}</small>
 		</h2>
-		<a href="#" class="action-button-default ecom-configurator-result-review-config" title="{f:translate(id:'index.summary_button_title')}"><f:translate id="index.summary_button" /></a>
+		<a href="#" class="action-button-default ecom-configurator-result-review-config dropdown" title="{f:translate(id:'index.summary_button_title')}"><f:translate id="index.summary_button" /></a>
 		<f:link.page pageUid="{settings.requestForm.pid}" target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}" class="action-button-default"><f:translate id="index.request_your_device" /></f:link.page>
 	</div>
 	<div class="ecom-configurator-summary-table">

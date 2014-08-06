@@ -48,24 +48,27 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * Set repository wide settings
 	 */
 	public function initializeObject() {
-		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
-		$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
-		$this->setDefaultQuerySettings($querySettings);
+		//$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
+		//$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
+		//$this->setDefaultQuerySettings($querySettings);
 	}
 
 	/**
-	 * @param array $list
+	 * @param array   $list
+	 * @param boolean $getFirst
 	 *
-	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface|\S3b0\Ecompc\Domain\Model\Option
 	 */
-	public function findOptionsByUidList(array $list) {
+	public function findOptionsByUidList(array $list, $getFirst = FALSE) {
 		if (!sizeof($list))
 			return NULL;
 
 		$query = $this->createQuery();
-		return $query->matching(
+		$result = $query->matching(
 			$query->in('uid', $list)
 		)->execute();
+
+		return $getFirst ? $result->getFirst() : $result;
 	}
 
 	/**
