@@ -75,9 +75,10 @@
 		// Prevent default anchor action
 		e.preventDefault();
 		$(this).stop().toggleClass('active');
-		$summaryTable.stop().slideToggle('slow');
+		$summaryTable.stop().slideToggle('slow').toggleClass('active');
+
 		// Scroll in position if the table is not currently hidden
-		if (!$summaryTable.is(':hidden')) {
+		if ($summaryTable.hasClass('active')) {
 			$('html, body').stop().animate({
 				scrollTop: $summaryTable.offset().top
 			}, 'slow');
