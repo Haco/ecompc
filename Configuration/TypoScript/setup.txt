@@ -41,7 +41,7 @@ plugin.tx_ecompc {
 		# rewrittenPropertyMapper = 1
 	}
 	settings {
-		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->reset;Standard->selectRegion
+		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion
 		enablePricing = {$plugin.tx_ecompc.constants.enablePricing}
 		currency {
 			default {

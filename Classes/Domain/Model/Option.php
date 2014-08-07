@@ -36,92 +36,96 @@ namespace S3b0\Ecompc\Domain\Model;
 class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
-	 * backendLabel
-	 *
 	 * @var string
 	 */
 	protected $backendLabel = '';
 
 	/**
-	 * frontendLabel
-	 *
 	 * @var string
 	 */
 	protected $frontendLabel = '';
 
 	/**
-	 * configurationCodeSegment
-	 *
 	 * @var string
 	 */
 	protected $configurationCodeSegment = '';
 
 	/**
-	 * image
-	 *
 	 * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
 	 */
 	protected $image = NULL;
 
 	/**
-	 * hintText
-	 *
 	 * @var string
 	 */
 	protected $hintText = '';
 
 	/**
-	 * price
-	 *
 	 * @var float
 	 */
 	protected $price = 0.0;
 
 	/**
-	 * pricePercental
-	 *
+	 * @var float
+	 */
+	protected $unitPrice = 0.0;
+
+	/**
 	 * @var float
 	 */
 	protected $pricePercental = 0.0;
 
 	/**
-	 * priceList
-	 *
 	 * @var string
 	 */
 	protected $priceList = '';
 
 	/**
-	 * priceOutput
-	 *
 	 * @var float
 	 */
 	protected $priceOutput = 0.0;
 
 	/**
-	 * Corresponding Package
-	 *
 	 * @var \S3b0\Ecompc\Domain\Model\Package
 	 */
 	protected $configurationPackage = NULL;
 
 	/**
-	 * Set Dependencies
-	 *
 	 * @var \S3b0\Ecompc\Domain\Model\Dependency
 	 */
 	protected $dependency = NULL;
 
 	/**
-	 * selected
-	 *
 	 * @var boolean
 	 */
 	protected $selected = FALSE;
 
 	/**
-	 * Returns the backendLabel
+	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
+	 */
+	protected $conflictsWithSelectedOptions = NULL;
+
+	/**
+	 * __construct
+	 */
+	public function __construct() {
+		//Do not remove the next line: It would break the functionality
+		$this->initStorageObjects();
+	}
+
+	/**
+	 * Initializes all ObjectStorage properties
+	 * Do not modify this method!
+	 * It will be rewritten on each save in the extension builder
+	 * You may modify the constructor of this class instead
 	 *
+	 * @return void
+	 */
+	protected function initStorageObjects() {
+		$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+	}
+
+	/**
 	 * @return string $backendLabel
 	 */
 	public function getBackendLabel() {
@@ -129,8 +133,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the backendLabel
-	 *
 	 * @param string $backendLabel
 	 * @return void
 	 */
@@ -139,8 +141,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the frontendLabel
-	 *
 	 * @return string $frontendLabel
 	 */
 	public function getFrontendLabel() {
@@ -148,8 +148,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the frontendLabel
-	 *
 	 * @param string $frontendLabel
 	 * @return void
 	 */
@@ -158,8 +156,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the configurationCodeSegment
-	 *
 	 * @return string $configurationCodeSegment
 	 */
 	public function getConfigurationCodeSegment() {
@@ -167,8 +163,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the configurationCodeSegment
-	 *
 	 * @param string $configurationCodeSegment
 	 * @return void
 	 */
@@ -177,8 +171,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the image
-	 *
 	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
 	 */
 	public function getImage() {
@@ -186,8 +178,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the image
-	 *
 	 * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
 	 * @return void
 	 */
@@ -196,8 +186,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the hintText
-	 *
 	 * @return string $hintText
 	 */
 	public function getHintText() {
@@ -205,8 +193,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the hintText
-	 *
 	 * @param string $hintText
 	 * @return void
 	 */
@@ -215,8 +201,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the price
-	 *
 	 * @return float $price
 	 */
 	public function getPrice() {
@@ -224,8 +208,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the price
-	 *
 	 * @param float $price
 	 * @return void
 	 */
@@ -234,8 +216,21 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the pricePercental
-	 *
+	 * @return float
+	 */
+	public function getUnitPrice() {
+		return $this->unitPrice;
+	}
+
+	/**
+	 * @param float $unitPrice
+	 * @return void
+	 */
+	public function setUnitPrice($unitPrice) {
+		$this->unitPrice = $unitPrice;
+	}
+
+	/**
 	 * @return float $pricePercental
 	 */
 	public function getPricePercental() {
@@ -243,8 +238,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the pricePercental
-	 *
 	 * @param float $pricePercental
 	 * @return void
 	 */
@@ -253,8 +246,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the priceList
-	 *
 	 * @return string $priceList
 	 */
 	public function getPriceList() {
@@ -263,8 +254,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the priceList
-	 *
 	 * @param string $priceList
 	 * @return void
 	 */
@@ -273,8 +262,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the priceOutput
-	 *
 	 * @return float $priceOutput
 	 */
 	public function getPriceOutput() {
@@ -282,8 +269,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the priceOutput
-	 *
 	 * @param float $priceOutput
 	 * @return void
 	 */
@@ -292,8 +277,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the configurationPackage
-	 *
 	 * @return \S3b0\Ecompc\Domain\Model\Package $configurationPackage
 	 */
 	public function getConfigurationPackage() {
@@ -301,8 +284,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the configurationPackage
-	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Package $configurationPackage
 	 * @return void
 	 */
@@ -311,8 +292,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the dependency
-	 *
 	 * @return \S3b0\Ecompc\Domain\Model\Dependency $dependency
 	 */
 	public function getDependency() {
@@ -320,8 +299,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the dependency
-	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Dependency $dependency
 	 * @return void
 	 */
@@ -330,8 +307,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the selected
-	 *
 	 * @return boolean $selected
 	 */
 	public function getSelected() {
@@ -339,8 +314,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Sets the selected
-	 *
 	 * @param boolean $selected
 	 * @return void
 	 */
@@ -349,8 +322,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the boolean state of selected
-	 *
 	 * @return boolean
 	 */
 	public function isSelected() {
@@ -358,9 +329,47 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOption
+	 * @return void
+	 */
+	public function addConflictsWithSelectedOption(\S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOption) {
+		if ($this->conflictsWithSelectedOptions === NULL) {
+			$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+
+		$this->conflictsWithSelectedOptions->attach($conflictsWithSelectedOption);
+	}
+
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOptionToRemove
+	 * @return void
+	 */
+	public function removeConflictsWithSelectedOption(\S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOptionToRemove) {
+		$this->conflictsWithSelectedOptions->detach($conflictsWithSelectedOptionToRemove);
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $conflictsWithSelectedOptions
+	 */
+	public function getConflictsWithSelectedOptions() {
+		if ($this->conflictsWithSelectedOptions === NULL) {
+			$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+
+		return $this->conflictsWithSelectedOptions;
+	}
+
+	/**
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $conflictsWithSelectedOptions
+	 * @return void
+	 */
+	public function setConflictsWithSelectedOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $conflictsWithSelectedOptions = null) {
+		$this->conflictsWithSelectedOptions = $conflictsWithSelectedOptions;
+	}
+
+	/**
 	 * @param string $currency
 	 * @param float  $exchange
-	 *
 	 * @return float
 	 */
 	public function getPriceInCurrency($currency = 'default', $exchange = 0.00) {
@@ -370,7 +379,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$priceList = $this->getPriceList();
 		$price = strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
 
-		return $price ?: $this->getPrice() ? $this->getPrice() * $exchange : 0.00;
+		return $price > 0 ? $price : $this->getPrice() * $exchange;
 	}
 
 }

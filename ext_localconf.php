@@ -7,10 +7,10 @@ if (!defined('TYPO3_MODE')) {
 	'S3b0.' . $_EXTKEY,
 	'Configurator',
 	array(
-		'Standard' => 'index,selectPackageOptions,setOption,reset,selectRegion',
+		'Standard' => 'index,selectPackageOptions,setOption,resetPackage,reset,selectRegion',
 	),
 	// non-cacheable actions
 	array(
-		'Standard' => 'index,selectPackageOptions,setOption,reset',
+		'Standard' => 'index,selectPackageOptions,setOption,resetPackage,reset',
 	)
 );

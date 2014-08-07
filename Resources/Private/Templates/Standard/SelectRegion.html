@@ -15,18 +15,19 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <f:section name="main">
 
 	<f:flashMessages renderMode="div" />
+	<div class="select-region-wrap">
+		<h2><f:translate id="selectregion.choose_text" /></h2>
+		<div class="select-region-currencies">
+			<f:for each="{currencies}" as="currency">
+				<f:link.action action="index" arguments="{currency: currency.key}" class="selectregion-choose-flag">
+					<f:image src="{currency.flagIcon}" alt="{currency.region} - {currency.long}" width="200" /><br />
+					<f:translate id="{currency.llRef}" default="{currency.region}" /> ( {currency.symbol} )
+				</f:link.action>
+			</f:for>
+		</div>
 
-	<h2><f:translate id="selectregion.choose_text" /></h2>
-
-	<f:for each="{currencies}" as="currency">
-		<f:link.action action="index" arguments="{currency: currency.key}">
-			<f:image src="{currency.flagIcon}" alt="{currency.region} - {currency.long}" width="200c" /><br />
-			<f:translate id="{currency.llRef}" default="{currency.region}" /> ( {currency.symbol} )
-		</f:link.action>
-	</f:for>
-
-	<div class="clearfix"></div>
-	<p>&nbsp;</p>
-	<aside><small><strong>Note:</strong><f:translate id="selectregion.warning_onetime_text" /></small></aside>
+		<div class="clearfix"></div>
+		<aside><small><strong>Note:</strong> <f:translate id="selectregion.warning_onetime_text" /></small></aside>
+	</div>
 
 </f:section>
