@@ -379,7 +379,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$priceList = $this->getPriceList();
 		$price = strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
 
-		return $price > 0 ? $price : $this->getPrice() * $exchange;
+		return $price > 0 ? $price : ($this->getPrice() * $exchange);
 	}
 
 }

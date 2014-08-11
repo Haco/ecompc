@@ -48,7 +48,10 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$this->setDefaultQuerySettings($querySettings);
 	}
 
-	public function findDuplicates() {
+	/**
+	 * @return boolean
+	 */
+	public function hasDuplicateContentElementsWithPlugin() {
 		$query = $this->createQuery();
 
 		return $query
@@ -58,7 +61,7 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 					$query->equals('list_type', 'ecompc_configurator')
 				)
 			)
-			->execute();
+			->execute()->count() > 1;
 	}
 
 }

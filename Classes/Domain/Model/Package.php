@@ -81,6 +81,11 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $active = FALSE;
 
 	/**
+	 * @var boolean
+	 */
+	protected $selected = FALSE;
+
+	/**
 	 * @var float
 	 */
 	protected $priceOutput = 0.0;
@@ -358,8 +363,15 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @return boolean
 	 */
-	public function hasSelectedOptions() {
-		return boolval($this->getSelectedOptions()->count());
+	public function isSelected() {
+		return $this->selected;
+	}
+
+	/**
+	 * @param boolean $selected
+	 */
+	public function setSelected($selected) {
+		$this->selected = $selected;
 	}
 
 }

@@ -218,10 +218,32 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$this->ecompcBasePriceList = $ecompcBasePriceList;
 	}
 
+	/**
+	 * @param string $currency
+	 * @param float  $exchange
+	 *
+	 * @return float
+	 */
+	public function getPriceInCurrency($currency = 'default', $exchange = 0.00) {
+		if ($currency === 'default')
+			return $this->getEcompcBasePrice();
+
+		$priceList = $this->getEcompcBasePriceList();
+		$price = strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
+
+		return $price > 0 ? $price : ($this->getEcompcBasePrice() * $exchange);
+	}
+
+	/**
+	 * @return boolean
+	 */
 	public function isDynamicEcomProductConfigurator() {
 		return $this->getEcompcType() === 1;
 	}
 
+	/**
+	 * @return boolean
+	 */
 	public function isStaticEcomProductConfigurator() {
 		return $this->getEcompcType() !== 1;
 	}
