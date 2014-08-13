@@ -20,6 +20,27 @@ config.tx_extbase {
 					}
 				}
 			}
+			S3b0\Ecompc\Domain\Model\Logger {
+				mapping {
+					tableName = tx_ecompc_domain_model_logger
+					columns {
+						crdate.mapOnProperty = crdate
+						tstamp.mapOnProperty = tstamp
+						ses_id.mapOnProperty = sesId
+						settings.mapOnProperty = settings
+						selected_configuration.mapOnProperty = selectedConfiguration
+						currency.mapOnProperty = currency
+						currency_setup.mapOnProperty = currencySetup
+						price_enabled.mapOnProperty = priceEnabled
+						price_basic.mapOnProperty = priceBasic
+						price_configuration.mapOnProperty = priceConfiguration
+						c_obj.mapOnProperty = cObj
+						options.mapOnProperty = options
+						configurations.mapOnProperty = configurations
+						available_configurations.mapOnProperty = availableConfigurations
+					}
+				}
+			}
 		}
 	}
 }
@@ -100,7 +121,8 @@ page.includeCSSLibs {
 }
 
 page.includeJSFooterlibs {
-	ecompcJS = EXT:ecompc/Resources/Public/JS/app.js
+	ecompcAppJS = EXT:ecompc/Resources/Public/JS/app.js
+	ecompcAjaxJS = EXT:ecompc/Resources/Public/JS/ajax.js
 }
 
 plugin.tx_ecompc._CSS_DEFAULT_STYLE (
@@ -136,3 +158,37 @@ plugin.tx_ecompc._CSS_DEFAULT_STYLE (
 	}
 
 )
+
+EcompcAjaxRequest = PAGE
+EcompcAjaxRequest {
+	typeNum = 1407764086
+
+	config {
+		disableAllHeaderCode = 1
+		xhtml_cleaning = 0
+		admPanel = 0
+		debug = 0
+		no_cache = 1
+		additionalHeaders = Content-type:application/json
+	}
+
+	10 = USER
+	10 {
+		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+		vendorName = S3b0
+		extensionName = Ecompc
+		pluginName = Configurator
+		controller = AjaxRequest
+		switchableControllerActions {
+			AjaxRequest {
+				1 = selectPackageOptions
+				2 = setOption
+				3 = resetPackage
+			}
+		}
+	}
+
+	view < plugin.tx_ecompc.view
+	persistence < plugin.tx_ecompc.persistence
+	settings < plugin.tx_ecompc.settings
+}

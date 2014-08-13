@@ -16,13 +16,13 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <f:flashMessages renderMode="div" />
 
 <div class="tx-ecompc-index">
-	<progress value="{process}" max="1">
+	<progress value="{process}" max="1" id="ecom-configurator-process-value">
 		<div class="progress-bar">
-			<span><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number>%</span>
+			<span><span class="ecom-configurator-process-value-print"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number></span>%</span>
 		</div>
 	</progress>
 
-	<p class="ecom-configurator-process-number"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number><f:translate id="index.x_percent_done" /></p>
+	<p class="ecom-configurator-process-number"><span class="ecom-configurator-process-value-print"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number></span><f:translate id="index.x_percent_done" /></p>
 
 	<f:for each="{packages}" as="package" iteration="packageIterator">
 
@@ -30,9 +30,9 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 			<f:if condition="{package.active}">
 				<f:then>
-					<f:link.action action="selectPackageOptions" arguments="{package : package}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
+					<a href="javascript:void(0);" data-cObj="{cObj}" data-package="{package.uid}" data-target="{f:uri.page(noCacheHash: 1)}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
 						<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
-					</f:link.action>
+					</a>
 				</f:then>
 				<f:else>
 					<div class="ecom-configurator-package-box inactive-package">

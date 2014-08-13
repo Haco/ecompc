@@ -7,10 +7,14 @@ if (!defined('TYPO3_MODE')) {
 	'S3b0.' . $_EXTKEY,
 	'Configurator',
 	array(
-		'Standard' => 'index,selectPackageOptions,setOption,resetPackage,reset,selectRegion',
+		'Standard' => 'index,reset,selectRegion',
+		'AjaxRequest' => 'selectPackageOptions,setOption,resetPackage'
 	),
 	// non-cacheable actions
 	array(
-		'Standard' => 'index,selectPackageOptions,setOption,resetPackage,reset',
+		'Standard' => 'index,reset',
+		'AjaxRequest' => 'selectPackageOptions,setOption,resetPackage'
 	)
 );
+
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['EcomProductConfigurator'] = 'EXT:ecompc/Classes/Utility/AjaxDispatcher.php';
