@@ -1,7 +1,9 @@
 <f:for each="{options}" as="option" iteration="optionIterator">
-	<f:link.action action="setOption" arguments="{option:option,redirectAction:package.multipleSelect,unset:option.selected}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">
+	<!--<f:link.action action="setOption" arguments="{option:option,redirectAction:package.multipleSelect,unset:option.selected}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">-->
+	<a href="javascript:updatePackage()" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">
 		<f:render partial="Misc/SetOptionLinkInnerHTML" arguments="{_all}" />
-	</f:link.action>
+	</a>
+	<!--</f:link.action>-->
 	<span class="ecom-configurator-select-package-option-info-hint-box">
 		<span class="close-popover-x" title="Close Info Box">&times;</span>
 		<f:format.html>{option.hintText}</f:format.html>

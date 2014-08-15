@@ -9,45 +9,122 @@ function initAjaxLoader(element, action) {
 	}
 }
 
-(function() {
+function goBackToIndex() {
+	$('#tx-ecompc-ajax-header-instructions').show();
+	$('#tx-ecompc-ajax-header-backlink').hide();
+	$('#tx-ecompc-package-select-option-index').fadeOut();
+	$('#tx-ecompc-package-select-index').fadeIn();
+}
 
+function ajaxCaller(target, loader, id, request) {
+	initAjaxLoader(loader, 'add');
+	$('#tx-ecompc-package-select-index').fadeOut();
+	$.ajax({
+		async: 'true',
+		url: 'index.php',
+		type: 'POST',
+		//contentType: 'application/json; charset=utf-8',
+		dataType: 'json',
+		data: {
+			eID: 'EcomProductConfigurator',
+			id: id,
+			type: 1407764086,
+			request: request
+		},
+		success: function(result) {
+			initAjaxLoader(loader, 'remove');
+			if (target.length) {
+				$(target).html(result['content']).fadeIn();
+			} else {
+				goBackToIndex();
+			}
+			/** Update process info */
+			$('#ecom-configurator-process-value').prop('value', result['selectedCPkg'] / totalCPkg);
+			$('.ecom-configurator-process-value-print').html(Math.floor(result['selectedCPkg'] / totalCPkg * 100));
+			/** Toggle Header Content */
+			if (request.actionName == 'index') {
+				$('#tx-ecompc-ajax-header-instructions').show();
+				$('#tx-ecompc-ajax-header-backlink').hide();
+			} else {
+				$('#tx-ecompc-ajax-header-instructions').hide();
+				$('#tx-ecompc-ajax-header-backlink').css('display', 'inline-block');
+			}
+		},
+		error: function(error) {
+			console.log('Request failed with ' + error + '!');
+		}
+	});
+}
+
+function updatePackage(pid, cObj, option, redirectAction, unset) {
+	var request = {
+		actionName: 'setOptionAction',
+		arguments: {
+			cObj: cObj,
+			option: option,
+			redirectAction: redirectAction,
+			unset: unset
+		}
+	};
+
+	ajaxCaller('', '#tx-ecompc-ajax-loader', pid, request);
+/*
+	$.ajax({
+		async: 'true',
+		url: 'index.php',
+		type: 'POST',
+		//contentType: 'application/json; charset=utf-8',
+		dataType: 'json',
+		data: {
+			eID: 'EcomProductConfigurator',
+			id: pid,
+			type: 1407764086,
+			request: request
+		},
+		success: function(result) {
+			initAjaxLoader(loader, 'remove');
+			$(target).html(result['content']).fadeIn();
+			*/
+/** Update process info *//*
+
+			$('#ecom-configurator-process-value').prop('value', result['selectedCPkg'] / totalCPkg);
+			$('.ecom-configurator-process-value-print').html(Math.floor(result['selectedCPkg'] / totalCPkg * 100));
+			*/
+/** Toggle Header Content *//*
+
+			if (request.actionName == 'index') {
+				$('#tx-ecompc-ajax-header-instructions').show();
+				$('#tx-ecompc-ajax-header-backlink').hide();
+			} else {
+				$('#tx-ecompc-ajax-header-instructions').hide();
+				$('#tx-ecompc-ajax-header-backlink').css('display', 'inline-block');
+			}
+		},
+		error: function(error) {
+			console.log('Request failed with ' + error + '!');
+		}
+	});
+*/
+}
+
+(function() {
 	$('.ecom-configurator-package-box').on('click', function() {
-		initAjaxLoader('#tx-ecompc-canvas', 'add');
+		var pid = $(this).attr('data-page');
 		var pkg = $(this).attr('data-package');
 		var cObj = $(this).attr('data-cObj');
-		$('#tx-ecompc-canvas').css('cursor', 'wait');
-		$.ajax({
-			async: 'true',
-			url: 'index.php',
-			type: 'POST',
-			//contentType: 'application/json; charset=utf-8',
-			dataType: 'json',
-			data: {
-				eID: 'EcomProductConfigurator',
-				id: 8,
-				type: 1407764086,
-				request: {
-					actionName: 'selectPackageOptions',
-					arguments: {
-						storagePid: 4,
-						configurationPackage: pkg,
-						cObj: cObj
-					}
-				}
-			},
-			success: function(result) {
-				if (result['success'] === true) {
-					initAjaxLoader('#tx-ecompc-canvas', 'remove');
-					/** Update process info */
-					$('#ecom-configurator-process-value').prop('value', 0.1);
-					$('.ecom-configurator-process-value-print').html(10);
-					//$('#businessMgmtFormCountry').html(result['content']).removeAttr('disabled');
-				} else {
-					console.log('Request failed!');
-				}
-				$('#tx-ecompc-canvas').css('cursor', 'default');
+		var request = {
+			actionName: 'selectPackageOptions',
+			arguments: {
+				configurationPackage: pkg,
+				cObj: cObj
 			}
-		});
+		};
+
+		ajaxCaller('#tx-ecompc-package-select-option-index', '#tx-ecompc-ajax-loader', pid, request);
+	});
+
+	$('#tx-ecompc-ajax-header-backlink').on('click', function() {
+		goBackToIndex();
 	});
 
 })(jQuery);

@@ -39,6 +39,16 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $bodytext;
 
 	/**
+	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Page>
+	 */
+	protected $storage = NULL;
+
+	/**
+	 * @var int
+	 */
+	protected $recursive = 0;
+
+	/**
 	 * @var int
 	 */
 	protected $ecompcType = 0;
@@ -84,6 +94,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	protected function initStorageObjects() {
+		$this->storage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$this->ecompcPackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$this->ecompcConfigurations = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 	}
@@ -93,6 +104,54 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function getBodytext() {
 		return $this->bodytext;
+	}
+
+	/**
+	 * Adds a Storage
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Page $page
+	 * @return void
+	 */
+	public function addStorage(\S3b0\Ecompc\Domain\Model\Page $page) {
+		$this->storage->attach($page);
+	}
+
+	/**
+	 * Removes a Storage
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Page $page
+	 * @return void
+	 */
+	public function removeStorage(\S3b0\Ecompc\Domain\Model\Page $page) {
+		$this->storage->detach($page);
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Page> $storage
+	 */
+	public function getStorage() {
+		return $this->storage;
+	}
+
+	/**
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Page> $storage
+	 */
+	public function setStorage($storage) {
+		$this->storage = $storage;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getRecursive() {
+		return $this->recursive;
+	}
+
+	/**
+	 * @param int $recursive
+	 */
+	public function setRecursive($recursive) {
+		$this->recursive = $recursive;
 	}
 
 	/**
@@ -246,6 +305,31 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function isStaticEcomProductConfigurator() {
 		return $this->getEcompcType() !== 1;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getStoragePidArray() {
+		$pidArray = array();
+
+		if ($this->getStorage() instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->getStorage()->count()) {
+			/** @var \S3b0\Ecompc\Domain\Model\Page $storage */
+			foreach ($this->getStorage() as $storage) {
+				/** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
+				$pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+				if ($rootLine = $pageRepository->getRootLine($storage->getUid())) {
+					$limit = $this->getRecursive() < count($rootLine) ? $this->getRecursive() + 1 : count($rootLine);
+					for ($i = 0; $i < $limit; $i++) {
+						$current = current($rootLine);
+						$pidArray[] = $current['uid'];
+						next($rootLine);
+					}
+				}
+			}
+		}
+
+		return array_unique($pidArray);
 	}
 
 }

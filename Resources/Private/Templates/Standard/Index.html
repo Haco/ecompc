@@ -24,26 +24,29 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<p class="ecom-configurator-process-number"><span class="ecom-configurator-process-value-print"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number></span><f:translate id="index.x_percent_done" /></p>
 
-	<f:for each="{packages}" as="package" iteration="packageIterator">
+	<div id="tx-ecompc-package-select-index">
+		<f:for each="{packages}" as="package" iteration="packageIterator">
 
-		<f:if condition="{package.visibleInFrontend}">
+			<f:if condition="{package.visibleInFrontend}">
 
-			<f:if condition="{package.active}">
-				<f:then>
-					<a href="javascript:void(0);" data-cObj="{cObj}" data-package="{package.uid}" data-target="{f:uri.page(noCacheHash: 1)}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
-						<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
-					</a>
-				</f:then>
-				<f:else>
-					<div class="ecom-configurator-package-box inactive-package">
-						<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
-					</div>
-				</f:else>
+				<f:if condition="{package.active}">
+					<f:then>
+						<a href="javascript:void(0);" data-cObj="{cObj}" data-package="{package.uid}" data-page="{pid}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
+							<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
+						</a>
+					</f:then>
+					<f:else>
+						<div class="ecom-configurator-package-box inactive-package">
+							<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
+						</div>
+					</f:else>
+				</f:if>
+
 			</f:if>
 
-		</f:if>
-
-	</f:for>
+		</f:for>
+	</div>
+	<div id="tx-ecompc-package-select-option-index"></div>
 </div>
 <f:link.action action="reset" class="ecom-configurator-reset-button"><f:translate id="index.reset_configuration" /></f:link.action>
 <div class="divider"></div>
@@ -62,5 +65,8 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		{configurationSummary -> f:format.html()}
 	</div>
 </f:if>
+
+
+<script language="JavaScript" type="text/javascript">var totalCPkg = {totalCItems};</script>
 
 </f:section>

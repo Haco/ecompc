@@ -1,8 +1,12 @@
 <div class="tx-ecompc-configurator-head">
+	<div class="tx-ecompc-config-header-instructions" id="tx-ecompc-ajax-header-instructions">{instructions -> f:format.html()}</div>
+	<a href="javascript:void(0);" data-cObj="{cObj}" data-page="{pid}" class="tx-ecompc-config-header-backlink action-button-default left-arrow" id="tx-ecompc-ajax-header-backlink"><f:translate id="index.header.back_to_selection" /></a>
+	<!--
 	<f:if condition="{0:action} == {0:'index'}">
 		<f:then><div class="tx-ecompc-config-header-instructions">{instructions -> f:format.html()}</div></f:then>
 		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink action-button-default left-arrow"><f:translate id="index.header.back_to_selection" /></f:link.action></f:else>
 	</f:if>
+	-->
 	<f:if condition="{sp}">
 		<div class="tx-ecompc-config-header-price-table">
 			<table>
