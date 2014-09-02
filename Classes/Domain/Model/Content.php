@@ -64,18 +64,18 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $ecompcConfigurations = NULL;
 
 	/**
-	 * ecompcBasePrice
+	 * ecompcBasePriceInDefaultCurrency
 	 *
 	 * @var float
 	 */
-	protected $ecompcBasePrice = 0.0;
+	protected $ecompcBasePriceInDefaultCurrency = 0.0;
 
 	/**
-	 * ecompcBasePriceList
+	 * ecompcBasePriceInForeignCurrencies
 	 *
 	 * @var string
 	 */
-	protected $ecompcBasePriceList = '';
+	protected $ecompcBasePriceInForeignCurrencies = '';
 
 	/**
 	 * __construct
@@ -239,42 +239,43 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the ecompcBasePrice
+	 * Returns the ecompcBasePriceInDefaultCurrency
 	 *
-	 * @return float $ecompcBasePrice
+	 * @return float $ecompcBasePriceInDefaultCurrency
 	 */
-	public function getEcompcBasePrice() {
-		return $this->ecompcBasePrice;
+	public function getEcompcBasePriceInDefaultCurrency() {
+		return $this->ecompcBasePriceInDefaultCurrency;
 	}
 
 	/**
-	 * Sets the ecompcBasePrice
+	 * Sets the ecompcBasePriceInDefaultCurrency
 	 *
-	 * @param float $ecompcBasePrice
+	 * @param float $ecompcBasePriceInDefaultCurrency
 	 * @return void
 	 */
-	public function setEcompcBasePrice($ecompcBasePrice) {
-		$this->ecompcBasePrice = $ecompcBasePrice;
+	public function setEcompcBasePriceInDefaultCurrency($ecompcBasePriceInDefaultCurrency) {
+		$this->ecompcBasePriceInDefaultCurrency = $ecompcBasePriceInDefaultCurrency;
 	}
 
 	/**
-	 * Returns the ecompcBasePriceList
+	 * Returns the ecompcBasePriceInForeignCurrencies
 	 *
-	 * @return string $ecompcBasePriceList
+	 * @return string $ecompcBasePriceInForeignCurrencies
 	 */
-	public function getEcompcBasePriceList() {
-		$convArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->ecompcBasePriceList);
-		return $convArray['data']['sDEF']['lDEF'];
+	public function getEcompcBasePriceInForeignCurrencies() {
+		$converted2Array = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->ecompcBasePriceInForeignCurrencies);
+		return $converted2Array['data']['sDEF']['lDEF'];
 	}
 
 	/**
-	 * Sets the ecompcBasePriceList
+	 * Sets the ecompcBasePriceInForeignCurrencies
 	 *
-	 * @param string $ecompcBasePriceList
-	 * @return void
+	 * @param string $ecompcBasePriceInForeignCurrencies
+	 *
+*@return void
 	 */
-	public function setEcompcBasePriceList($ecompcBasePriceList) {
-		$this->ecompcBasePriceList = $ecompcBasePriceList;
+	public function setEcompcBasePriceInForeignCurrencies($ecompcBasePriceInForeignCurrencies) {
+		$this->ecompcBasePriceInForeignCurrencies = $ecompcBasePriceInForeignCurrencies;
 	}
 
 	/**
@@ -285,12 +286,12 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function getPriceInCurrency($currency = 'default', $exchange = 0.00) {
 		if ($currency === 'default')
-			return $this->getEcompcBasePrice();
+			return $this->getEcompcBasePriceInDefaultCurrency();
 
-		$priceList = $this->getEcompcBasePriceList();
-		$price = strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
+		$foreignCurrencies = $this->getEcompcBasePriceInForeignCurrencies();
+		$price = strlen($currency) === 3 && array_key_exists($currency, $foreignCurrencies) ? floatval($foreignCurrencies[$currency]['vDEF']) : 0.00;
 
-		return $price > 0 ? $price : ($this->getEcompcBasePrice() * $exchange);
+		return $price > 0 ? $price : ($this->getEcompcBasePriceInDefaultCurrency() * $exchange);
 	}
 
 	/**

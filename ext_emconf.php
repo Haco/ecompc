@@ -25,6 +25,7 @@ $EM_CONF['ecompc'] = array(
 	'constraints' => array(
 		'depends' => array(
 			'typo3' => '6.2',
+			'php' => '5.4.0-5.5.99'
 		),
 		'conflicts' => array(
 		),

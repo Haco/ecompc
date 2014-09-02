@@ -28,20 +28,9 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		<f:for each="{packages}" as="package" iteration="packageIterator">
 
 			<f:if condition="{package.visibleInFrontend}">
-
-				<f:if condition="{package.active}">
-					<f:then>
-						<a href="javascript:void(0);" data-cObj="{cObj}" data-package="{package.uid}" data-page="{pid}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
-							<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
-						</a>
-					</f:then>
-					<f:else>
-						<div class="ecom-configurator-package-box inactive-package">
-							<f:render partial="Index/Packages" arguments="{package : package, currencySetup : currencySetup, sp : sp}"/>
-						</div>
-					</f:else>
-				</f:if>
-
+				<a href="javascript:void(0);" data-pckg-state="{package.active -> f:format.number(decimals: 0)}" data-cObj="{cObj}" data-package="{package.uid}" data-page="{pid}" class="ecom-configurator-package-box active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
+					<f:render partial="Index/Packages" arguments="{package : package, currency : currency, priceLabels : priceLabels}"/>
+				</a>
 			</f:if>
 
 		</f:for>

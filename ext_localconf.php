@@ -12,7 +12,7 @@ if (!defined('TYPO3_MODE')) {
 	),
 	// non-cacheable actions
 	array(
-		'Standard' => 'index,reset',
+		'Standard' => 'index,reset,selectRegion',
 		'AjaxRequest' => 'selectPackageOptions,setOption,resetPackage'
 	)
 );

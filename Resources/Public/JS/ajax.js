@@ -16,9 +16,11 @@ function goBackToIndex() {
 	$('#tx-ecompc-package-select-index').fadeIn();
 }
 
-function ajaxCaller(target, loader, id, request) {
-	initAjaxLoader(loader, 'add');
+function ajaxCaller(targets, loader, id, request, backToIndex) {
+	initAjaxLoader(loader, 'add');console.log(targets.split(':'));
 	$('#tx-ecompc-package-select-index').fadeOut();
+	var key;
+	var targetsAndArrayKeys = targets.split(',');
 	$.ajax({
 		async: 'true',
 		url: 'index.php',
@@ -32,17 +34,18 @@ function ajaxCaller(target, loader, id, request) {
 			request: request
 		},
 		success: function(result) {
+			if (result['dev']) { console.log(result); }
 			initAjaxLoader(loader, 'remove');
-			if (target.length) {
-				$(target).html(result['content']).fadeIn();
-			} else {
-				goBackToIndex();
+			for (key in targetsAndArrayKeys) {
+				var tokens = targetsAndArrayKeys[key].split(':');
+				$(tokens[0]).html(result[tokens[1]]).fadeIn();
 			}
+			if (backToIndex) { goBackToIndex(); }
 			/** Update process info */
-			$('#ecom-configurator-process-value').prop('value', result['selectedCPkg'] / totalCPkg);
+			$('#ecom-configurator-process-value').animate({value: result['selectedCPkg'] / totalCPkg});
 			$('.ecom-configurator-process-value-print').html(Math.floor(result['selectedCPkg'] / totalCPkg * 100));
 			/** Toggle Header Content */
-			if (request.actionName == 'index') {
+			if (request.actionName == 'index' || request.actionName == 'setOptionAction') {
 				$('#tx-ecompc-ajax-header-instructions').show();
 				$('#tx-ecompc-ajax-header-backlink').hide();
 			} else {
@@ -50,61 +53,24 @@ function ajaxCaller(target, loader, id, request) {
 				$('#tx-ecompc-ajax-header-backlink').css('display', 'inline-block');
 			}
 		},
-		error: function(error) {
-			console.log('Request failed with ' + error + '!');
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log('Request failed with ' + textStatus + ': ' + errorThrown +  '!');
 		}
 	});
 }
 
-function updatePackage(pid, cObj, option, redirectAction, unset) {
+function updatePackage(pid, cObj, option, redirect, unset) {
 	var request = {
-		actionName: 'setOptionAction',
+		actionName: 'setOption',
 		arguments: {
 			cObj: cObj,
 			option: option,
-			redirectAction: redirectAction,
+			redirect: redirect,
 			unset: unset
 		}
 	};
 
-	ajaxCaller('', '#tx-ecompc-ajax-loader', pid, request);
-/*
-	$.ajax({
-		async: 'true',
-		url: 'index.php',
-		type: 'POST',
-		//contentType: 'application/json; charset=utf-8',
-		dataType: 'json',
-		data: {
-			eID: 'EcomProductConfigurator',
-			id: pid,
-			type: 1407764086,
-			request: request
-		},
-		success: function(result) {
-			initAjaxLoader(loader, 'remove');
-			$(target).html(result['content']).fadeIn();
-			*/
-/** Update process info *//*
-
-			$('#ecom-configurator-process-value').prop('value', result['selectedCPkg'] / totalCPkg);
-			$('.ecom-configurator-process-value-print').html(Math.floor(result['selectedCPkg'] / totalCPkg * 100));
-			*/
-/** Toggle Header Content *//*
-
-			if (request.actionName == 'index') {
-				$('#tx-ecompc-ajax-header-instructions').show();
-				$('#tx-ecompc-ajax-header-backlink').hide();
-			} else {
-				$('#tx-ecompc-ajax-header-instructions').hide();
-				$('#tx-ecompc-ajax-header-backlink').css('display', 'inline-block');
-			}
-		},
-		error: function(error) {
-			console.log('Request failed with ' + error + '!');
-		}
-	});
-*/
+	ajaxCaller('', '#tx-ecompc-ajax-loader', pid, request, 1);
 }
 
 (function() {
@@ -120,7 +86,7 @@ function updatePackage(pid, cObj, option, redirectAction, unset) {
 			}
 		};
 
-		ajaxCaller('#tx-ecompc-package-select-option-index', '#tx-ecompc-ajax-loader', pid, request);
+		ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', pid, request);
 	});
 
 	$('#tx-ecompc-ajax-header-backlink').on('click', function() {

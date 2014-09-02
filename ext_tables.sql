@@ -3,10 +3,10 @@
 #
 CREATE TABLE tt_content (
 	tx_ecompc_type int(11) DEFAULT '0' NOT NULL,
-	tx_ecompc_packages text,
-	tx_ecompc_configurations int(11) unsigned DEFAULT '0',
-	tx_ecompc_base_price double(11,2) DEFAULT '0.00' NOT NULL,
-	tx_ecompc_base_price_list text NOT NULL,
+	tx_ecompc_pckg text,
+	tx_ecompc_conf int(11) unsigned DEFAULT '0',
+	tx_ecompc_bpdc double(11,2) DEFAULT '0.00' NOT NULL,
+	tx_ecompc_bpfc text NOT NULL,
 );
 
 #
@@ -234,4 +234,31 @@ CREATE TABLE tx_ecompc_dependency_package_mm (
 
 	KEY uid_local (uid_local),
 	KEY uid_foreign (uid_foreign)
+);
+
+#
+# Table structure for table 'tx_ecompc_domain_model_log'
+#
+CREATE TABLE tx_ecompc_domain_model_logger (
+	uid int(11) NOT NULL auto_increment,
+	pid int(11) DEFAULT '0' NOT NULL,
+
+	crdate int(11) unsigned DEFAULT '0' NOT NULL,
+	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
+	ses_id varchar(32) DEFAULT '' NOT NULL,
+	settings text,
+	selected_configuration text,
+	currency varchar(255) DEFAULT 'default' NOT NULL,
+	currency_setup text,
+	price_enabled tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	price_basic double(11,2) DEFAULT '0.00' NOT NULL,
+	price_configuration double(11,2) DEFAULT '0.00' NOT NULL,
+	c_obj int(11) unsigned DEFAULT '0',
+	options text,
+	configurations text,
+	available_configurations text,
+
+	PRIMARY KEY (uid),
+	KEY parent (pid),
+	KEY sesid (ses_id)
 );

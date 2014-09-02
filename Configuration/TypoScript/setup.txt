@@ -13,10 +13,10 @@ config.tx_extbase {
 					columns {
 						bodytext.mapOnProperty = bodytext
 						tx_ecompc_type.mapOnProperty = ecompcType
-						tx_ecompc_packages.mapOnProperty = ecompcPackages
-						tx_ecompc_configurations.mapOnProperty = ecompcConfigurations
-						tx_ecompc_base_price.mapOnProperty = ecompcBasePrice
-						tx_ecompc_base_price_list.mapOnProperty = ecompcBasePriceList
+						tx_ecompc_pckg.mapOnProperty = ecompcPackages
+						tx_ecompc_conf.mapOnProperty = ecompcConfigurations
+						tx_ecompc_bpdc.mapOnProperty = ecompcBasePriceInDefaultCurrency
+						tx_ecompc_bpfc.mapOnProperty = ecompcBasePriceInForeignCurrencies
 						pages.mapOnProperty = storage
 						recursive.mapOnProperty = recursive
 					}
@@ -70,7 +70,7 @@ plugin.tx_ecompc {
 	}
 	settings {
 		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion
-		enablePricing = {$plugin.tx_ecompc.constants.enablePricing}
+		showPriceLabels = {$plugin.tx_ecompc.constants.showPriceLabels}
 		currency {
 			default {
 				long = {$plugin.tx_ecompc.constants.currency.default.long}

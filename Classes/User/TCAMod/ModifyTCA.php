@@ -154,7 +154,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		$contentElement = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'tx_ecompc_type,tx_ecompc_packages');
+		$contentElement = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'tx_ecompc_type,tx_ecompc_pckg');
 		if (CoreUtility\MathUtility::convertToPositiveInteger($contentElement['tx_ecompc_type']) === 1)
 			return '';
 
@@ -163,7 +163,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Prepare some values:
 		$config = $PA['fieldConf']['config'];
 
-		$configurationPackages = $contentElement['tx_ecompc_packages'] ? BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_package', '1', '1', 'AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0) AND uid IN (' . $contentElement['tx_ecompc_packages'] . ')') : null;
+		$configurationPackages = $contentElement['tx_ecompc_pckg'] ? BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_package', '1', '1', 'AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0) AND uid IN (' . $contentElement['tx_ecompc_pckg'] . ')') : null;
 
 		// Fill items Array manually
 		$selItems = $this->initItemArray($PA['fieldConf']);
@@ -310,11 +310,11 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Adding an item!
 		//$PA['items'][] = array($pObj->sL('Added label by PHP function|Tilfjet Dansk tekst med PHP funktion'), 999);
 
-		if (sizeof($PA['items']) && $PA['row']['packages']) {
+		if (sizeof($PA['items']) && $PA['row']['pckg']) {
 			$configurationPackages = array();
 			$referringOption = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_option', $PA['row']['ref_option'], 'pid,configuration_package');
 
-			$packages = array_map('intval', CoreUtility\GeneralUtility::trimExplode(',', $PA['row']['packages']));
+			$packages = array_map('intval', CoreUtility\GeneralUtility::trimExplode(',', $PA['row']['pckg']));
 
 			foreach ($PA['items'] as $item) {
 				$data = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_option', $item[1], '*');
@@ -342,7 +342,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 				$PA['items'][] = array($configurationPackage['label'], '--div--');
 				$PA['items'] = array_merge($PA['items'], $configurationPackage['items']);
 			}
-		} elseif (!$PA['row']['packages']) {
+		} elseif (!$PA['row']['pckg']) {
 			$PA['items'] = array();
 		}
 

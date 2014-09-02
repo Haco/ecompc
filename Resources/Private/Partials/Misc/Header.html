@@ -7,7 +7,7 @@
 		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink action-button-default left-arrow"><f:translate id="index.header.back_to_selection" /></f:link.action></f:else>
 	</f:if>
 	-->
-	<f:if condition="{sp}">
+	<f:if condition="{priceLabels}">
 		<div class="tx-ecompc-config-header-price-table">
 			<table>
 				<thead>
@@ -18,8 +18,8 @@
 				</thead>
 				<tbody>
 				<tr>
-					<f:if condition="{pricing.0}"><td><f:format.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{pricing.0}</f:format.currency></td></f:if>
-					<f:if condition="{pricing.1}"><td><span class="tx-ecompc-config-header-configprice"><f:format.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:if>
+					<f:if condition="{pricing.0}"><td><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.0}</f:format.currency></td></f:if>
+					<f:if condition="{pricing.1}"><td><span class="tx-ecompc-config-header-configprice"><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:if>
 				</tr>
 				</tbody>
 			</table>

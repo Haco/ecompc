@@ -1,6 +1,6 @@
 <f:for each="{options}" as="option" iteration="optionIterator">
 	<!--<f:link.action action="setOption" arguments="{option:option,redirectAction:package.multipleSelect,unset:option.selected}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">-->
-	<a href="javascript:updatePackage()" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">
+	<a href="javascript:void(0);" onclick="updatePackage({pid}, {cObj}, {option.uid}, {package.multipleSelect -> f:s3b0.num()}, {option.selected -> f:s3b0.num()})" data-page="{pid}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">
 		<f:render partial="Misc/SetOptionLinkInnerHTML" arguments="{_all}" />
 	</a>
 	<!--</f:link.action>-->

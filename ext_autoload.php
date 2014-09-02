@@ -10,6 +10,7 @@
 
 	return array(
 		'S3b0\Ecompc\User\TCAMod\ModifyTCA' => $extensionClassesPath . 'User/TCAMod/ModifyTCA.php',
+		'TYPO3\CMS\Fluid\ViewHelpers\S3b0\NumViewHelper' => $extensionClassesPath . 'ViewHelpers/S3b0/NumViewHelper.php',
 		'TYPO3\CMS\Fluid\ViewHelpers\S3b0\CObjUidViewHelper' => $extensionClassesPath . 'ViewHelpers/S3b0/CObjUidViewHelper.php',
 		'TYPO3\CMS\Fluid\ViewHelpers\S3b0\CalculationViewHelper' => $extensionClassesPath . 'ViewHelpers/S3b0/CalculationViewHelper.php',
 		'TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper' => $extensionClassesPath . 'ViewHelpers/S3b0/Financial/CurrencyViewHelper.php'

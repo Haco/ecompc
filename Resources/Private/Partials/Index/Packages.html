@@ -1,9 +1,9 @@
 <span class="ecom-configurator-arrow-right">&nbsp;</span>
 <div class="ecom-configurator-package-state {f:if(condition:package.selectedOptions,then:'checked',else:'unchecked')}"><span class="ecom-configurator-package-checkbox-image"></span></div>
 <div class="ecom-configurator-package-select">
-	<f:if condition="{sp}">
+	<f:if condition="{priceLabels}">
 		<f:if condition="{package.selectedOptions}">
-			<f:then><span class="ecom-configurator-select-package-price"><f:s3b0.financial.currency currencySign="{currencySetup.symbol}" prependCurrency="{currencySetup.prependCurrency}">{package.priceOutput}</f:s3b0.financial.currency></span></f:then>
+			<f:then><span class="ecom-configurator-select-package-price"><f:s3b0.financial.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{package.priceOutput}</f:s3b0.financial.currency></span></f:then>
 			<f:else><span class="ecom-configurator-select-package-price ecom-configurator-price-info"><f:translate id="index.package.no_price_label" /></span></f:else>
 		</f:if>
 	</f:if>

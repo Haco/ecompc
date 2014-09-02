@@ -12,8 +12,8 @@ plugin.tx_ecompc {
 		storagePid =
 	}
 	constants {
-		# cat=plugin.tx_ecompc//x10; type=boolean; label=Enable pricing:Show pricing if set (master switch!)
-		enablePricing = 1
+		# cat=plugin.tx_ecompc//x10; type=boolean; label=Enable price labels:Show price labels if set (master switch!)
+		showPriceLabels = 1
 		currency.default {
 			# cat=plugin.tx_ecompc//b2; type=string; label=Default currency [ISO 4217 Currency Codes]
 			short = EUR

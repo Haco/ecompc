@@ -29,6 +29,7 @@ namespace S3b0\Ecompc\Controller;
 /**
  * AjaxRequestController
  *
+ * @todo remove indexAction and corresponding Templates if not used!
  * @package S3b0
  * @subpackage Ecompc
  */
@@ -53,10 +54,15 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	}
 
 	/**
+	 * @todo remove dev log before GoingLive!
 	 * initialize view
 	 */
 	public function initializeView() {
-		$this->view->setVariablesToRender(array('sp', 'action', 'currencySetup', 'pricing', 'cObj', 'pid', 'content', 'debug', 'selectedCPkg'));
+		$this->view->setVariablesToRender(array('dev', 'priceLabels', 'action', 'currency', 'pricing', 'cObj', 'pid', 'content', 'debug', 'selectedCPkg'));
+		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $beUserAuth */
+		$beUserAuth = $this->objectManager->get('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication');
+		$beUserAuth->start();
+		$this->view->assign('dev', $beUserAuth->isAdmin());
 		parent::initializeView();
 	}
 
@@ -102,7 +108,27 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		$package = $this->packageRepository->findByUid($configurationPackage);
 		$this->view->assign('content', $this->renderTemplateView(array('package' => $package, 'options' => $this->getPackageOptions($package))));
 		$this->view->assign('selectedCPkg', count((array) $this->selectedConfiguration['packages']));
-		$this->view->assign('debug', $this->optionRepository->findAll());
+	}
+
+	/**
+	 * action setOption
+	 *
+	 * @param integer $option
+	 * @param integer $unset
+	 * @param integer $redirect
+	 * @return void
+	 */
+	public function setOptionAction($option, $unset = 0, $redirect = 0) {
+		/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+		$option = $this->optionRepository->findByUid($option);
+		parent::setOptionAction($option, $unset);
+
+		// @todo check options set, if finished fetch result!
+		$this->view->assign('content', '');
+		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey);
+		$this->view->assign('selectedCPkg', count((array) $this->selectedConfiguration['packages']));
+		#list($actionName, $controllerName, $extensionName, $arguments) = $redirect[$unset ?: $redirectAction]; // Set params for $this->redirect() method
+		#$this->redirect($actionName, $controllerName, $extensionName, $arguments);
 	}
 
 	/**
@@ -117,10 +143,10 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		$view->setControllerContext($this->controllerContext);
 		/** imitate initializeView() from \S3b0\Ecompc\Controller\StandardController and assign global templateContainerVariables */
 		$view->assignMultiple(array(
-			'sp' => $this->pricingEnabled, // checks whether prices are displayed or not!
+			'priceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
 			'action' => $this->request->getControllerActionName(), // current action
 			'instructions' => $this->cObj->getBodytext(), // short instructions for user
-			'currencySetup' => $this->currencySetup, // fetch currency TS
+			'currency' => $this->currency, // fetch currency TS
 			'pricing' => $this->selectedConfigurationPrice, // current configuration price
 			'cObj' => $this->cObj->getUid(),
 			'pid' => $GLOBALS['TSFE']->id
