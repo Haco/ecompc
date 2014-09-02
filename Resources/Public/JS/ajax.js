@@ -43,7 +43,19 @@ function ajaxCaller(targets, loader, id, request, backToIndex) {
 			if (backToIndex) { goBackToIndex(); }
 			/** Update process info */
 			$('#ecom-configurator-process-value').animate({value: result['selectedCPkg'] / totalCPkg});
-			$('.ecom-configurator-process-value-print').html(Math.floor(result['selectedCPkg'] / totalCPkg * 100));
+			$('.ecom-configurator-process-value-print').each(function(i,e) {
+				$({countNum: $(e).text()}).animate({countNum: Math.floor(result['selectedCPkg'] / totalCPkg * 100)}, {
+					duration: 800,
+					easing:'linear',
+					step: function() {
+						$(e).text(Math.floor(this.countNum));
+					},
+					complete: function() {
+						$(e).text(this.countNum);
+					}
+				});
+			});
+			/*$('.ecom-configurator-process-value-print').html(Math.floor(result['selectedCPkg'] / totalCPkg * 100));*/
 			/** Toggle Header Content */
 			if (request.actionName == 'index' || request.actionName == 'setOptionAction') {
 				$('#tx-ecompc-ajax-header-instructions').show();
