@@ -83,6 +83,11 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var boolean
 	 */
+	protected $inactive = FALSE;
+
+	/**
+	 * @var boolean
+	 */
 	protected $selected = FALSE;
 
 	/**
@@ -284,6 +289,20 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return boolean $inactive
+	 */
+	public function getInactive() {
+		return !$this->active;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isInactive() {
+		return !$this->active;
+	}
+
+	/**
 	 * @return float
 	 */
 	public function getPriceOutput() {
@@ -330,7 +349,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 			$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 
-		$this->selectedOptions->attach($selectedOption);
+		if (!$this->selectedOptions->contains($selectedOption)) $this->selectedOptions->attach($selectedOption);
 	}
 
 	/**
@@ -364,6 +383,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return boolean
 	 */
 	public function isSelected() {
+		return $this->selected;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getSelected() {
 		return $this->selected;
 	}
 

@@ -1,6 +1,6 @@
-/*
-* ecom Configurator :: app.js
-* */
+/**
+ * ecom Configurator :: app.js
+ */
 
 // Equalize height of checkbox and package selection on resize.
 (function($) {
@@ -85,3 +85,11 @@
 		}
 	});
 })(jQuery);
+
+window.onunload = function() {
+	$('.ecom-configurator-package-box').each(function() {
+		$(this).removeClass('active-package').addClass('inactive-package'); // Whole link
+		$(this).children('.ecom-configurator-package-state').removeClass('checked').addClass('unchecked'); // Checkbox
+	});
+	$('#ecom-configurator-result-canvas').html('').hide();
+};

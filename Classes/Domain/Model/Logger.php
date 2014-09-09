@@ -43,70 +43,37 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var integer
 	 */
-	protected $crdate;
-
-	/**
-	 * @var integer
-	 */
 	protected $tstamp;
 
 	/**
-	 * @var \S3b0\Ecompc\Domain\Model\Content
+	 * @var string
 	 */
-	protected $cObj;
+	protected $selectedConfiguration = '';
 
 	/**
-	 * @var array
+	 * @var \S3b0\Ecompc\Domain\Model\Configuration
 	 */
-	protected $selectedConfiguration = array(
-		'options' => array(),
-		'packages' => array()
-	);
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
-	 */
-	protected $options = NULL;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration>
-	 */
-	protected $configurations = NULL;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration>
-	 */
-	protected $availableConfigurations = NULL;
-
-	/**
-	 * @var boolean
-	 */
-	protected $priceEnabled = FALSE;
+	protected $configuration = NULL;
 
 	/**
 	 * @var string
 	 */
-	protected $currency = 'default';
-
-	/**
-	 * @var array
-	 */
-	protected $currencySetup = array();
+	protected $currency = 'Euro';
 
 	/**
 	 * @var float
 	 */
-	protected $priceBasic = 0.0;
-
-	/**
-	 * @var float
-	 */
-	protected $priceConfiguration = 0.0;
+	protected $price = 0.0;
 
 	/**
 	 * @var string
 	 */
-	protected $settings = '';
+	protected $ip = '127.0.0.1';
+
+	/**
+	 * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+	 */
+	protected $feUser = NULL;
 
 	/**
 	 * __construct
@@ -114,6 +81,8 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function __construct() {
 		//Do not remove the next line: It would break the functionality
 		$this->initStorageObjects();
+		$this->setPid(0);
+		$this->setSesId($GLOBALS['TSFE']->fe_user->id)->setTstamp(time());
 	}
 
 	/**
@@ -126,25 +95,6 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	protected function initStorageObjects() {
 		$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->configurations = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->availableConfigurations = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-	}
-
-	/**
-	 * @param Content $cObj
-	 * @param array   $settings
-	 */
-	public function initialize(\S3b0\Ecompc\Domain\Model\Content $cObj, array $settings) {
-		$this->setPid(0);
-		if ($GLOBALS['TSFE']->fe_user->user['uid']) {
-			$this->setSesId($GLOBALS['TSFE']->fe_user->id);
-		}
-		$this->setCObj($cObj);
-		$this->setSettings($settings);
-		$this->setConfigurations($cObj->getEcompcConfigurations());
-		$this->setAvailableConfigurations($this->getConfigurations());
-		$this->setPriceEnabled();
-		$this->setCrdate(time());
 	}
 
 	/**
@@ -156,24 +106,11 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $sesId
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
 	public function setSesId($sesId) {
 		$this->sesId = $sesId;
-	}
-
-	/**
-	 * @return integer
-	 */
-	public function getCrdate() {
-		return $this->crdate;
-	}
-
-	/**
-	 * @param integer $crdate
-	 */
-	public function setCrdate($crdate) {
-		$this->crdate = $crdate;
-		$this->setTstamp($crdate);
+		return $this;
 	}
 
 	/**
@@ -185,27 +122,15 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param integer $tstamp
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
 	public function setTstamp($tstamp) {
 		$this->tstamp = $tstamp;
+		return $this;
 	}
 
 	/**
-	 * @return Content
-	 */
-	public function getCObj() {
-		return $this->cObj;
-	}
-
-	/**
-	 * @param Content $cObj
-	 */
-	public function setCObj($cObj) {
-		$this->cObj = $cObj;
-	}
-
-	/**
-	 * @return array
+	 * @return string
 	 */
 	public function getSelectedConfiguration() {
 		return $this->selectedConfiguration;
@@ -213,209 +138,27 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param array $selectedConfiguration
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
 	public function setSelectedConfiguration(array $selectedConfiguration) {
-		$this->selectedConfiguration = $selectedConfiguration;
+		$this->selectedConfiguration = serialize($selectedConfiguration);
+		return $this;
 	}
 
 	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Option $option
+	 * @return \S3b0\Ecompc\Domain\Model\Configuration
 	 */
-	public function addOption(\S3b0\Ecompc\Domain\Model\Option $option) {
-		if ($this->options === NULL)
-			$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-
-		$option->setSelected(TRUE);
-		$option->getConfigurationPackage()->addSelectedOption($option);
-		$this->options->attach($option);
-	}
-
-	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Option $option
-	 */
-	public function removeOption(\S3b0\Ecompc\Domain\Model\Option $option){
-		$option->setSelected(FALSE);
-		$option->getConfigurationPackage()->removeSelectedOption($option);
-		$this->options->detach($option);
-	}
-
-	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
-	 */
-	public function getOptions() {
-		return $this->options;
-	}
-
-	/**
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
-	 */
-	public function setOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $options = NULL) {
-		$this->options = $options;
+	public function getConfiguration() {
+		return $this->configuration;
 	}
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
-	public function addConfiguration(\S3b0\Ecompc\Domain\Model\Configuration $configuration) {
-		if ($this->configurations === NULL)
-			$this->configurations = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-
-		$this->configurations->attach($configuration);
-	}
-
-	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration
-	 */
-	public function removeConfiguration(\S3b0\Ecompc\Domain\Model\Configuration $configuration){
-		$this->configurations->detach($configuration);
-	}
-
-	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration>
-	 */
-	public function getConfigurations() {
-		return $this->configurations;
-	}
-
-	/**
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration> $configurations
-	 */
-	public function setConfigurations(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $configurations = NULL) {
-		/**
-		 * Make sure that only one configuration entity is used in case of dynamic ones.
-		 * This is just FORBIDDEN, furthermore an error will be thrown by the controller in case of misconfiguration!
-		 *
-		 * If you feel funny or bored, please feel free to kick this limitation and have a lot of fun in rewriting.
-		 */
-		if ($this->cObj->isDynamicEcomProductConfigurator() && $configurations instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $configurations->count() > 1) {
-			$configurations->rewind();
-			$this->addConfiguration($configurations->current());
-		} else {
-			$this->configurations = $configurations;
-		}
-	}
-
-	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration
-	 */
-	public function addAvailableConfiguration(\S3b0\Ecompc\Domain\Model\Configuration $configuration) {
-		if ($this->availableConfigurations === NULL)
-			$this->availableConfigurations = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-
-		$this->availableConfigurations->attach($configuration);
-	}
-
-	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration
-	 */
-	public function removeAvailableConfiguration(\S3b0\Ecompc\Domain\Model\Configuration $configuration){
-		$this->availableConfigurations->detach($configuration);
-	}
-
-	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration>
-	 */
-	public function getAvailableConfigurations() {
-		return $this->availableConfigurations;
-	}
-
-	/**
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration> $availableConfigurations
-	 */
-	public function setAvailableConfigurations(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $availableConfigurations = NULL) {
-		$this->availableConfigurations = $availableConfigurations;
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public function isPriceEnabled() {
-		return $this->priceEnabled;
-	}
-
-	/**
-	 * @return void
-	 */
-	public function setPriceEnabled() {
-		if ($this->settings['enablePricing']) {
-			// Get Extension configuration (set @Extension Manager)
-			$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ecompc']);
-			// Get distributors frontend user groups (set @Extension Manager)
-			$distFeUserGroups = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(',', $extConf['distFeUserGroup'], TRUE);
-			// Set price flag (displays pricing if TRUE)
-			$this->priceEnabled = is_array($GLOBALS['TSFE']->fe_user->groupData['uid']) && count(array_intersect($distFeUserGroups, $GLOBALS['TSFE']->fe_user->groupData['uid']));
-		}
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getPriceBasic() {
-		return $this->priceBasic;
-	}
-
-	/**
-	 * @param float $priceBasic
-	 */
-	public function setPriceBasic($priceBasic) {
-		$this->priceBasic = $priceBasic;
-		$this->setPriceConfiguration($priceBasic);
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getPriceConfiguration() {
-		return $this->priceConfiguration;
-	}
-
-	/**
-	 * @param float $priceConfiguration
-	 */
-	public function setPriceConfiguration($priceConfiguration) {
-		$this->priceConfiguration = $priceConfiguration;
-	}
-
-	/**
-	 * @param float $summand
-	 */
-	public function addOnPriceConfiguration($summand) {
-		$this->priceConfiguration += floatval($summand);
-	}
-
-	/**
-	 * @param float $subtrahend
-	 */
-	public function substractFromPriceConfiguration($subtrahend) {
-		$this->priceConfiguration -= floatval($subtrahend);
-	}
-
-	/**
-	 * @param float $multiplier
-	 */
-	public function multiplyPriceConfigurationBy($multiplier){
-		$this->priceConfiguration *= floatval($multiplier);
-	}
-
-	/**
-	 * @param float $divisor
-	 */
-	public function dividePriceConfigurationBy($divisor) {
-		$this->priceConfiguration /= floatval($divisor);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getSettings() {
-		return $this->settings;
-	}
-
-	/**
-	 * @param array $settings
-	 */
-	public function setSettings(array $settings) {
-		$this->settings = $settings;
+	public function setConfiguration(\S3b0\Ecompc\Domain\Model\Configuration $configuration = NULL) {
+		$this->configuration = $configuration;
+		return $this;
 	}
 
 	/**
@@ -427,26 +170,64 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $currency
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
 	public function setCurrency($currency) {
 		$this->currency = $currency;
-		$this->setCurrencySetup();
-		$price = $this->getCObj()->getPriceInCurrency($currency, $this->currencySetup['exchange']);
-		$this->setPriceBasic($price);
+		return $this;
 	}
 
 	/**
-	 * @return array
+	 * @return float
 	 */
-	public function getCurrencySetup() {
-		return $this->currencySetup;
+	public function getPrice() {
+		return number_format($this->price, 2);
 	}
 
 	/**
-	 * @return void
+	 * @param float $price
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
-	public function setCurrencySetup() {
-		$this->currencySetup = $this->settings['currency'][$this->currency];
+	public function setPrice($price = 0.0) {
+		$this->price = $price;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIp() {
+		return $this->ip;
+	}
+
+	/**
+	 * @param string $ip
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
+	 */
+	public function setIp($ip, $parts = 4) {
+		$tokens = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode('.', $ip, TRUE, 4);
+
+		$ipParts = array_slice($tokens, 0, $parts);
+		$ipParts = array_pad($ipParts, 4, '*');
+
+		$this->ip = implode('.', $ipParts);
+		return $this;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+	 */
+	public function getFeUser() {
+		return $this->feUser;
+	}
+
+	/**
+	 * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $feUser
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
+	 */
+	public function setFeUser(\TYPO3\CMS\Extbase\Domain\Model\FrontendUser $feUser = NULL) {
+		$this->feUser = $feUser;
+		return $this;
 	}
 
 }

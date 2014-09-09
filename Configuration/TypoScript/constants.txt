@@ -36,5 +36,9 @@ plugin.tx_ecompc {
 			# cat=plugin.tx_ecompc//a3; type=options[,_top,_blank]; label=Target
 			target = _blank
 		}
+		log {
+			# cat=plugin.tx_ecompc//a01; type=options[0,1,2,3,4]; label=IP parts count:Parts of IP to track. Value 4 would track full IP, 0 instead would not track any.
+			ipParts = 2
+		}
 	}
 }

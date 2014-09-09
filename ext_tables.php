@@ -12,6 +12,7 @@ $extKey = 'ecompc';
 );
 
 $extendTca = array(
+	// Type def
 	'tx_' . $extKey . '_type' => array(
 		'exclude' => 1,
 		'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.type',
@@ -30,6 +31,7 @@ $extendTca = array(
 			'default' => -1
 		),
 	),
+	// Packages selectable
 	'tx_' . $extKey . '_pckg' => array(
 		'displayCond' => 'FIELD:tx_ecompc_type:>:-1',
 		'exclude' => 1,
@@ -57,11 +59,12 @@ $extendTca = array(
 			)
 		),
 	),
+	// Configuration(s) available
 	'tx_' . $extKey . '_conf' => array(
 		'displayCond' => array(
 			'AND' => array(
 				'FIELD:tx_ecompc_type:>:-1',
-				'FIELD:tx_ecompc_packages:REQ:true'
+				'FIELD:tx_ecompc_pckg:REQ:true'
 			)
 		),
 		'exclude' => 1,
@@ -88,6 +91,7 @@ $extendTca = array(
 			),
 		),
 	),
+	// Base Price in Default Currency
 	'tx_' . $extKey . '_bpdc' => array(
 		'l10n_mode' => 'exclude',
 		'exclude' => 1,
@@ -98,6 +102,7 @@ $extendTca = array(
 			'eval' => 'double2'
 		)
 	),
+	// Base Price in Foreign Currencies
 	'tx_' . $extKey . '_bpfc' => array(
 		'l10n_mode' => 'exclude',
 		'exclude' => 1,

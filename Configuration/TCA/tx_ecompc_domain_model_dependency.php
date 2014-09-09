@@ -34,7 +34,6 @@ return array(
 			'endtime' => 'endtime',
 		),
 		'searchFields' => 'mode,options,',
-		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ecompc') . 'Configuration/TCA/Dependency.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_dependency.png'
 	),
 	'interface' => array(

@@ -31,20 +31,14 @@ config.tx_extbase {
 				mapping {
 					tableName = tx_ecompc_domain_model_logger
 					columns {
-						crdate.mapOnProperty = crdate
-						tstamp.mapOnProperty = tstamp
 						ses_id.mapOnProperty = sesId
-						settings.mapOnProperty = settings
+						tstamp.mapOnProperty = tstamp
 						selected_configuration.mapOnProperty = selectedConfiguration
+						configuration.mapOnProperty = configuration
 						currency.mapOnProperty = currency
-						currency_setup.mapOnProperty = currencySetup
-						price_enabled.mapOnProperty = priceEnabled
-						price_basic.mapOnProperty = priceBasic
-						price_configuration.mapOnProperty = priceConfiguration
-						c_obj.mapOnProperty = cObj
-						options.mapOnProperty = options
-						configurations.mapOnProperty = configurations
-						available_configurations.mapOnProperty = availableConfigurations
+						price.mapOnProperty = price
+						ip_address.mapOnProperty = ip
+						fe_user.mapOnProperty = feUser
 					}
 				}
 			}
@@ -69,10 +63,10 @@ plugin.tx_ecompc {
 		# rewrittenPropertyMapper = 1
 	}
 	settings {
-		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion
+		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion;Standard->request
 		showPriceLabels = {$plugin.tx_ecompc.constants.showPriceLabels}
 		currency {
-			default {
+			def {
 				long = {$plugin.tx_ecompc.constants.currency.default.long}
 				short = {$plugin.tx_ecompc.constants.currency.default.short}
 				symbol = {$plugin.tx_ecompc.constants.currency.default.symbol}
@@ -116,6 +110,9 @@ plugin.tx_ecompc {
 			additionalParams = {$plugin.tx_ecompc.constants.requestForm.additionalParams}
 			target = {$plugin.tx_ecompc.constants.requestForm.target}
 		}
+		log {
+			ipParts = {$plugin.tx_ecompc.constants.log.ipParts}
+		}
 	}
 }
 
@@ -128,8 +125,8 @@ page.includeCSSLibs {
 }
 
 page.includeJSFooterlibs {
-	ecompcAppJS = EXT:ecompc/Resources/Public/JS/app.js
-	ecompcAjaxJS = EXT:ecompc/Resources/Public/JS/ajax.js
+	ecompcAppJS = EXT:ecompc/Resources/Public/JS/m.ap.js
+	ecompcAjaxJS = EXT:ecompc/Resources/Public/JS/m.ax.js
 }
 
 plugin.tx_ecompc._CSS_DEFAULT_STYLE (
@@ -176,7 +173,7 @@ EcompcAjaxRequest {
 		admPanel = 0
 		debug = 0
 		no_cache = 1
-		additionalHeaders = Content-type:application/json
+		additionalHeaders = Content-type:application/json|Cache-Control:no-cache, must-revalidate, max-age=0|Pragma:no-cache
 	}
 
 	10 = USER
@@ -188,9 +185,10 @@ EcompcAjaxRequest {
 		controller = AjaxRequest
 		switchableControllerActions {
 			AjaxRequest {
-				1 = selectPackageOptions
-				2 = setOption
-				3 = resetPackage
+				1 = updatePackages
+				2 = selectPackageOptions
+				3 = setOption
+				4 = resetPackage
 			}
 		}
 	}

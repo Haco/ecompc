@@ -32,7 +32,6 @@ return array(
 			'fe_group' => 'fe_group'
 		),
 		'searchFields' => 'frontend_label,sku,configuration_code_suffix,configuration_code_prefix,options,',
-		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ecompc') . 'Configuration/TCA/Configuration.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_configuration.gif'
 	),
 	'interface' => array(

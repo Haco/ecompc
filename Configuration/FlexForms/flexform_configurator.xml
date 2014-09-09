@@ -13,8 +13,8 @@
 					<settings.configurations>
 						<TCEforms>
 							<displayCond>
-								<numIndex index="0">FIELD:parentRec.ecompc_type:>:-1</numIndex>
-								<numIndex index="1">FIELD:settings.packages:REQ:true</numIndex>
+								<numIndex index="0">FIELD:parentRec.tx_ecompc_type:>:-1</numIndex>
+								<numIndex index="1">FIELD:parentRec.tx_ecompc_pckg:REQ:true</numIndex>
 							</displayCond>
 							<label></label>
 							<config>

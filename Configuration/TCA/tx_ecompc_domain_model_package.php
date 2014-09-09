@@ -36,7 +36,6 @@ return array(
 			'fe_group' => 'fe_group'
 		),
 		'searchFields' => 'backend_label,frontend_label,prompt,hint_text,image,visible_in_frontend,multiple_select,default_option,',
-		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ecompc') . 'Configuration/TCA/Package.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_package.png'
 	),
 	'interface' => array(

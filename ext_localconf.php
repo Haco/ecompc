@@ -7,13 +7,13 @@ if (!defined('TYPO3_MODE')) {
 	'S3b0.' . $_EXTKEY,
 	'Configurator',
 	array(
-		'Standard' => 'index,reset,selectRegion',
-		'AjaxRequest' => 'selectPackageOptions,setOption,resetPackage'
+		'Standard' => 'index,reset,selectRegion,request',
+		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
 	),
 	// non-cacheable actions
 	array(
-		'Standard' => 'index,reset,selectRegion',
-		'AjaxRequest' => 'selectPackageOptions,setOption,resetPackage'
+		'Standard' => 'index,reset,selectRegion,request',
+		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
 	)
 );
 

@@ -146,7 +146,7 @@ a:focus {
 #tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
 	padding-left: 40px;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-configprice {
+#tx-ecompc-canvas .tx-ecompc-configurator-head #tx-ecompc-config-header-cfgp {
 	color: #0083cb;
 	font-weight: bold;
 }

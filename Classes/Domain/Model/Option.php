@@ -372,8 +372,8 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param float  $exchange
 	 * @return float
 	 */
-	public function getPriceInCurrency($currency = 'default', $exchange = 0.00) {
-		if ($currency === 'default')
+	public function getPriceInCurrency($currency = 'EUR', $exchange = 0.00) {
+		if ($currency === 'EUR')
 			return $this->getPrice();
 
 		$priceList = $this->getPriceList();

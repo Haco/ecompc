@@ -29,7 +29,6 @@ namespace S3b0\Ecompc\Controller;
 /**
  * AjaxRequestController
  *
- * @todo remove indexAction and corresponding Templates if not used!
  * @package S3b0
  * @subpackage Ecompc
  */
@@ -43,6 +42,15 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 */
 	protected $defaultViewObjectName = 'TYPO3\\CMS\\Extbase\\Mvc\\View\\JsonView';
 
+	/**
+	 * Initializes the controller before invoking an action method.
+	 *
+	 * Override this method to solve tasks which all actions have in
+	 * common.
+	 *
+	 * @return void
+	 * @api
+	 */
 	public function initializeAction() {
 		if ($this->request->hasArgument('cObj')) {
 			$this->cObj = $this->contentRepository->findByUid($this->request->getArgument('cObj'));
@@ -54,47 +62,82 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	}
 
 	/**
-	 * @todo remove dev log before GoingLive!
-	 * initialize view
+	 * Initializes the view before invoking an action method.
+	 *
+	 * Override this method to solve assign variables common for all actions
+	 * or prepare the view in another way before the action is called.
+	 *
+	 * @return void
+	 * @api
 	 */
 	public function initializeView() {
-		$this->view->setVariablesToRender(array('dev', 'priceLabels', 'action', 'currency', 'pricing', 'cObj', 'pid', 'content', 'debug', 'selectedCPkg'));
-		/** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $beUserAuth */
-		$beUserAuth = $this->objectManager->get('TYPO3\\CMS\\Core\\Authentication\\BackendUserAuthentication');
-		$beUserAuth->start();
-		$this->view->assign('dev', $beUserAuth->isAdmin());
+		/**
+		 * cfgp   -> configuration price
+		 * selcps -> indicator for selected packages used at JS calculation of progress
+		 */
+		$this->view->setVariablesToRender(array(
+			'action', 'pid', 'cObj', 'showPriceLabels', 'currency', 'pricing', 'cfgp', 'cfgres', 'content', 'package', 'packagesLinksInnerHTML', 'selcps', 'proceed'
+		));
 		parent::initializeView();
 	}
 
 	/**
-	 * action index
+	 * action updatePackages
 	 */
-	public function indexAction() {
-		$templateVariableContainer = array();
-		$process = 0;
+	public function updatePackagesAction() {
+		$packageLinks = array();
 		// Fetch packages
-		if ($packages = $this->cObj->getEcompcPackages()) {
-			$visiblePackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-			$isActive = TRUE;
+		if ($packages = $this->cObj->getEcompcPackagesFE()) {
+			$isActive = FALSE;
+			$prev = NULL;
 			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-			foreach ($packages as $package) {
-				if ($package->isVisibleInFrontend()) {
-					$package->setActive($isActive);
-					$visiblePackages->attach($package);
-					$isActive = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']);
+			foreach (array_reverse($packages->toArray()) as $package) {
+				if (!$isActive && array_key_exists($package->getUid(), $this->selectedConfiguration['packages'])) {
+					$isActive = TRUE;
+					if ($prev instanceof \S3b0\Ecompc\Domain\Model\Package) {
+						$prev->setActive(TRUE);
+						$packageLinks[$prev->getUid()] = array(
+							$prev->isActive(),
+							(bool) $prev->getSelectedOptions()->count(),
+							$this->renderTemplateView('GetPackageLinkInnerHTML', array('package' => $prev))
+						);
+					}
 				}
+				$package->setActive($isActive);
+				$packageLinks[$package->getUid()] = array(
+					$package->isActive(),
+					(bool) $package->getSelectedOptions()->count(),
+					$this->renderTemplateView('GetPackageLinkInnerHTML', array('package' => $package))
+				);
+				/** @var \S3b0\Ecompc\Domain\Model\Package $prev */
+				$prev = $package;
 			}
-			// Get process state update (ratio of selected to visible packages) => float from 0 to 1 (*100 = %)
-			$process = count((array) $this->selectedConfiguration['packages']) / $visiblePackages->count();
 		}
 
-		if ($process === 1)
-			$templateVariableContainer['configurationResult'] = $this->getConfigurationResult(); // Get configuration code | SKU
+		$this->view->assignMultiple(array(
+			'packagesLinksInnerHTML' => $packageLinks,
+			'selcps' => count((array) $this->selectedConfiguration['packages']),
+		));
+		if (count((array) $this->selectedConfiguration['packages']) == $this->cObj->getEcompcPackagesFE()->count()) {
+			$result = $this->getConfigurationResult(TRUE);
+			$this->view->assign('cfgres', $this->renderTemplateView(
+				'getResult',
+				array(
+					'configurationResult' => $result[0],
+					'configurationSummary' => $result[1],
+					'requestFormAdditionalParams' => $result[2])
+			));
+		}
+	}
 
-		$templateVariableContainer['packages'] = $packages;
-		$templateVariableContainer['process'] = $process;
-
-		$this->view->assign('content', $this->renderTemplateView($templateVariableContainer));
+	/**
+	 * action GetPackageLinkInnerHTML
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 * @return void
+	 */
+	public function GetPackageLinkInnerHTMLAction(\S3b0\Ecompc\Domain\Model\Package $package) {
+		$this->view->assign('package', $package);
 	}
 
 	/**
@@ -106,35 +149,81 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	public function selectPackageOptionsAction($configurationPackage) {
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		$package = $this->packageRepository->findByUid($configurationPackage);
-		$this->view->assign('content', $this->renderTemplateView(array('package' => $package, 'options' => $this->getPackageOptions($package))));
-		$this->view->assign('selectedCPkg', count((array) $this->selectedConfiguration['packages']));
+		$this->view->assignMultiple(array(
+			'content' => $this->renderTemplateView('', array('package' => $package, 'options' => $this->getPackageOptions($package))),
+			'selcps' => count((array) $this->selectedConfiguration['packages'])
+		));
 	}
 
 	/**
 	 * action setOption
 	 *
-	 * @param integer $option
-	 * @param integer $unset
-	 * @param integer $redirect
+	 * @param integer $opt Option uid
+	 * @param integer $uns set/Unset indicator
+	 * @param integer $vpn Visible Packages Number
 	 * @return void
 	 */
-	public function setOptionAction($option, $unset = 0, $redirect = 0) {
+	public function setOptionAction($opt, $uns = 0, $vpn = 0) {
 		/** @var \S3b0\Ecompc\Domain\Model\Option $option */
-		$option = $this->optionRepository->findByUid($option);
-		parent::setOptionAction($option, $unset);
+		$option = $this->optionRepository->findByUid($opt);
+		parent::setOptionAction($option, $uns);
 
-		// @todo check options set, if finished fetch result!
-		$this->view->assign('content', '');
+		// Redirect; depends on multipleSelect or unset flag
+		if ($option->getConfigurationPackage()->isMultipleSelect() || $uns) {
+			$this->view->assignMultiple(array(
+				'proceed' => 'selectPackageOptions',
+				'package' => $option->getConfigurationPackage()->getUid()
+			));
+		} else {
+			$this->view->assign('proceed', 'index');
+		}
+		// Fetch updated configuration
 		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey);
-		$this->view->assign('selectedCPkg', count((array) $this->selectedConfiguration['packages']));
-		#list($actionName, $controllerName, $extensionName, $arguments) = $redirect[$unset ?: $redirectAction]; // Set params for $this->redirect() method
-		#$this->redirect($actionName, $controllerName, $extensionName, $arguments);
+		$this->view->assignMultiple(array(
+			'cfgp' => $this->getUpdatedConfigurationPrice(),
+			'selcps' => count((array) $this->selectedConfiguration['packages'])
+		));
 	}
 
 	/**
-	 * @return mixed
+	 * action resetPackage
+	 *
+	 * @param int $package
+	 * @return void
 	 */
-	public function renderTemplateView() {
+	public function resetPackageAction($package = 0) {
+		$this->selectedConfiguration['options'] = array_diff((array) $this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionsUids($this->packageRepository->findByUid($package)));
+		unset($this->selectedConfiguration['packages'][$package]);
+		$this->feSession->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
+
+		$this->view->assignMultiple(array(
+			'package' => $package,
+			'cfgp' => $this->getUpdatedConfigurationPrice(),
+			'selcps' => count((array) $this->selectedConfiguration['packages'])
+		));
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getUpdatedConfigurationPrice() {
+		$this->initializeOptions();
+		$floatToFormat = array_pop($this->getConfigurationPrice());
+		if (empty($floatToFormat)) {
+			$floatToFormat = 0.0;
+		} else {
+			$floatToFormat = floatval($floatToFormat);
+		}
+		return $this->formatCurrency($floatToFormat);
+	}
+
+	/**
+	 * @param string                                     $controllerActionName
+	 * @param array                                      $arguments
+	 *
+	 * @return string
+	 */
+	protected function renderTemplateView($controllerActionName = '', array $arguments) {
 		/** @var \TYPO3\CMS\Fluid\View\TemplateView $view */
 		$view = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\TemplateView');
 		/** @var \TYPO3\CMS\Fluid\Core\Compiler\TemplateCompiler $templateCompiler */
@@ -143,38 +232,46 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		$view->setControllerContext($this->controllerContext);
 		/** imitate initializeView() from \S3b0\Ecompc\Controller\StandardController and assign global templateContainerVariables */
 		$view->assignMultiple(array(
-			'priceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
-			'action' => $this->request->getControllerActionName(), // current action
+			'action' => $controllerActionName ?: $this->request->getControllerActionName(), // current action
 			'instructions' => $this->cObj->getBodytext(), // short instructions for user
-			'currency' => $this->currency, // fetch currency TS
-			'pricing' => $this->selectedConfigurationPrice, // current configuration price
-			'cObj' => $this->cObj->getUid(),
-			'pid' => $GLOBALS['TSFE']->id
+			'pid' => $GLOBALS['TSFE']->id,
+			'cObj' => $this->cObj->getUid()
 		));
+		if ($this->showPriceLabels) {
+			$view->assignMultiple(array(
+				'showPriceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
+				'currency' => $this->currency, // fetch currency TS
+				'pricing' => $this->selectedConfigurationPrice // current configuration price
+			));
+		}
 		/** Assign Action specific templateContainerVariables committed as first method argument [ func_get_arg(0) ] */
-		$view->assignMultiple(func_get_arg(0));
-		return $view->render($this->request->getControllerActionName());
+		$view->assignMultiple($arguments);
+		return preg_replace('/[\t\n\r]/i', '', $view->render($controllerActionName ?: $this->request->getControllerActionName()));
 	}
 
-	public static function updateStorage(\S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
-		$ajaxRequestController->setRepositoryStoragePidSettings($ajaxRequestController->packageRepository);
-		$ajaxRequestController->setRepositoryStoragePidSettings($ajaxRequestController->optionRepository);
+	/**
+	 * @param \S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController
+	 */
+	protected static function updateStorage(\S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
+		$ajaxRequestController::setRepositoryStoragePidSettings($ajaxRequestController->packageRepository, $ajaxRequestController);
+		$ajaxRequestController::setRepositoryStoragePidSettings($ajaxRequestController->optionRepository, $ajaxRequestController);
 	}
 
 	/**
 	 * @param \TYPO3\CMS\Extbase\Persistence\Repository $repository
+	 * @param \S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController
 	 *
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
 	 */
-	public function setRepositoryStoragePidSettings(\TYPO3\CMS\Extbase\Persistence\Repository $repository) {
+	private static function setRepositoryStoragePidSettings(\TYPO3\CMS\Extbase\Persistence\Repository $repository, \S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
 		// Set Query settings
 		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
-		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
-		$querySettings->setRespectStoragePage($this->request->hasArgument('storagePid') || $this->cObj->getStoragePidArray());
-		if ($this->request->hasArgument('storagePid')) {
-			$querySettings->setStoragePageIds(array($this->request->getArgument('storagePid')));
-		} elseif ($this->cObj->getStoragePidArray()) {
-			$querySettings->setStoragePageIds($this->cObj->getStoragePidArray());
+		$querySettings = $ajaxRequestController->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
+		$querySettings->setRespectStoragePage($ajaxRequestController->request->hasArgument('storagePid') || $ajaxRequestController->cObj->getStoragePidArray());
+		if ($ajaxRequestController->request->hasArgument('storagePid')) {
+			$querySettings->setStoragePageIds(array($ajaxRequestController->request->getArgument('storagePid')));
+		} elseif ($ajaxRequestController->cObj->getStoragePidArray()) {
+			$querySettings->setStoragePageIds($ajaxRequestController->cObj->getStoragePidArray());
 		}
 		$repository->setDefaultQuerySettings($querySettings);
 	}

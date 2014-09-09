@@ -77,7 +77,16 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * @var array
 	 */
-	protected $currency = array();
+	protected $currency = array(
+		'long' => 'Euro',
+		'short' => 'EUR',
+		'symbol' => '€',
+		'region' => 'Europe',
+		'llRef' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.eur.region',
+		'flagIcon' => 'EXT:ecompc/Resources/Public/Images/Flags/EUR.png',
+		'prependCurrency' => 0,
+		'exchange' => 0.1
+	);
 
 	/**
 	 * configurationRepository
@@ -110,6 +119,22 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @inject
 	 */
 	protected $contentRepository;
+
+	/**
+	 * loggerRepository
+	 *
+	 * @var \S3b0\Ecompc\Domain\Repository\LoggerRepository
+	 * @inject
+	 */
+	protected $loggerRepository;
+
+	/**
+	 * frontendUserRepository
+	 *
+	 * @var \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository
+	 * @inject
+	 */
+	protected $frontendUserRepository;
 
 	/**
 	 * feSession
@@ -148,8 +173,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'options' => array(),
 			'packages' => array()
 		);
-		// Fetch currency configuration from TS
-		$this->currency = $this->settings['currency'][$this->feSession->get('currency')];
+		if ($this->showPriceLabels) {
+			// Fetch currency configuration from TS
+			$this->currency = $this->settings['currency'][$this->feSession->get('currency')];
+		}
 		// Initialize Options
 		$this->initializeOptions();
 		// Set selectable configurations
@@ -171,12 +198,12 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->view->assignMultiple(array(
 			'action' => $this->request->getControllerActionName(), // current action
 			'instructions' => $this->cObj->getBodytext(), // short instructions for user
-			'cObj' => $this->cObj->getUid(),
-			'pid' => $GLOBALS['TSFE']->id
+			'pid' => $GLOBALS['TSFE']->id,
+			'cObj' => $this->cObj->getUid()
 		));
 		if ($this->showPriceLabels) {
 			$this->view->assignMultiple(array(
-				'priceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
+				'showPriceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
 				'currency' => $this->currency, // fetch currency TS
 				'pricing' => $this->selectedConfigurationPrice // current configuration price
 			));
@@ -208,33 +235,41 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			} elseif (!$this->feSession->get('currency') && $currency && array_key_exists($currency, (array) $this->settings['currency'])) {
 				$this->feSession->store('currency', $currency); // Store region selection
 				$this->currency = $this->settings['currency'][$currency];
-				$this->view->assign('currency', $this->currency);
-				$this->initializeOptions(NULL, FALSE);
+				$this->redirectToPage();
 			}
 		}
 
 		$process = 0;
-		// Fetch packages
-		$visiblePackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		if ($packages = $this->cObj->getEcompcPackages()) {
-			$isActive = TRUE;
-			foreach ($packages as $package) {
-				if ($package->isVisibleInFrontend()) {
-					$package->setActive($isActive);
-					$visiblePackages->attach($package);
-					$isActive = array_key_exists($package->getUid(), $this->selectedConfiguration['packages']);
+		// Fetch packages | Set (in)active states
+		if ($packages = $this->cObj->getEcompcPackagesFE()) {
+			$isActive = FALSE;
+			$prev = NULL;
+			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+			foreach (array_reverse($packages->toArray()) as $package) {
+				if (!$isActive && array_key_exists($package->getUid(), $this->selectedConfiguration['packages'])) {
+					$isActive = TRUE;
+					if ($prev instanceof \S3b0\Ecompc\Domain\Model\Package) {
+						$prev->setActive(TRUE);
+					}
 				}
+				$package->setActive($isActive);
+				/** @var \S3b0\Ecompc\Domain\Model\Package $prev */
+				$prev = $package;
+			}
+			if (!$isActive) {
+				$package->setActive(TRUE);
 			}
 			// Get process state update (ratio of selected to visible packages) => float from 0 to 1 (*100 = %)
-			$process = count((array) $this->selectedConfiguration['packages']) / $visiblePackages->count();
+			$process = count((array) $this->selectedConfiguration['packages']) / $packages->count();
 		}
 
 		if ($process === 1)
 			$this->view->assign('configurationResult', $this->getConfigurationResult()); // Get configuration code | SKU
 
-		$this->view->assign('totalCItems', $visiblePackages->count());
-		$this->view->assign('packages', $packages);
-		$this->view->assign('process', $process);
+		$this->view->assignMultiple(array(
+			'packages' => $packages,
+			'process' => $process
+		));
 	}
 
 	/**
@@ -318,7 +353,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				array('selectPackageOptions', NULL, NULL, array('package' => $option->getConfigurationPackage()))
 			);
 			list($actionName, $controllerName, $extensionName, $arguments) = $redirect[$unset ?: $redirectAction]; // Set params for $this->redirect() method
-			$this->forward($actionName, $controllerName, $extensionName, $arguments);
+			$this->redirect($actionName, $controllerName, $extensionName, $arguments);
 		}
 	}
 
@@ -334,7 +369,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		unset($this->selectedConfiguration['packages'][$package->getUid()]);
 
 		$this->feSession->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
-		$this->forward('selectPackageOptions', NULL, NULL, array('package' => $package));
+		$this->redirect('selectPackageOptions', NULL, NULL, array('package' => $package));
 	}
 
 	/**
@@ -345,7 +380,26 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function resetAction() {
 		$this->feSession->store($this->configurationSessionStorageKey, array());
-		$this->forward('index');
+		$this->redirectToPage();
+	}
+
+	public function requestAction() {
+		/** @var \S3b0\Ecompc\Domain\Model\Logger $logger */
+		$logger = $this->objectManager->get('S3b0\\Ecompc\\Domain\\Model\\Logger');
+		$pricing = $this->getConfigurationPrice();
+		$logger->setSelectedConfiguration((array) $this->selectedConfiguration)
+			->setCurrency($this->currency['long'])
+			->setPrice($pricing[1])
+			->setIp(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REMOTE_ADDR'), $this->settings['log']['ipParts'])
+			->setConfiguration($this->selectableConfigurations->getFirst());
+		if ($GLOBALS['TSFE']->loginUser) {
+			$logger->setFeUser($this->frontendUserRepository->findByUid($GLOBALS['TSFE']->fe_user->user['uid']));
+		}
+
+		$this->loggerRepository->add($logger);
+		$result = $this->getConfigurationResult(TRUE);
+		$this->feSession->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
+		$this->redirectToPage($this->settings['requestForm']['pid'], $result[2]); //target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}"
 	}
 
 	/**
@@ -355,7 +409,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function selectRegionAction() {
 		if ($this->feSession->get('currency'))
-			$this->forward('index');
+			$this->redirectToPage();
 
 		$this->view->assign('currencies', $this->checkForCurrencies($this->settings, TRUE));
 	}
@@ -363,6 +417,27 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**********************************
 	 ******** NON-ACTION METHODS ******
 	 **********************************/
+
+	/**
+	 * Redirects to current page without any params or CacheHash values!
+	 *
+	 * @param integer $pid
+	 * @param array   $arguments
+	 *
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+	 */
+	public function redirectToPage($pid = NULL, $arguments = array()) {
+		if (!$this->request instanceof \TYPO3\CMS\Extbase\Mvc\Web\Request) {
+			throw new \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException('redirect() only supports web requests.', 1220539734);
+		}
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SSL')) {
+			$this->uriBuilder->setAbsoluteUriScheme('https');
+		}
+		$uri = $this->uriBuilder->reset()->setCreateAbsoluteUri(TRUE)->setArguments((array) $arguments);
+		$uri = $pid ? $uri->setTargetPageUid($pid) : $uri->setUseCacheHash(FALSE);
+		$this->redirectToUri($uri->build());
+	}
 
 	/**
 	 * Checking currencies set by TS
@@ -373,7 +448,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @internal
 	 * @return boolean|array
 	 */
-	final public static function checkForCurrencies(array $settings, $returnFiltered = FALSE) {
+	final protected static function checkForCurrencies(array $settings, $returnFiltered = FALSE) {
 		if (!array_key_exists('currency', $settings))
 			return FALSE;
 
@@ -385,15 +460,15 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		);
 
 		$processCurrencies = $returnCurrencies = $settings['currency'];
-		foreach ($processCurrencies as $k => $currency) {
+		foreach ($processCurrencies as $typoScriptKey => $currency) {
 			// Add key for identification to currencies.
-			$returnCurrencies[$k]['key'] = $k;
+			$returnCurrencies[$typoScriptKey]['key'] = $typoScriptKey;
 			// Drop elements not matching required fields
 			$required = array_intersect_key($currency, $requiredFieldsPattern);
-			if (count($required) !== count($requiredFieldsPattern) || $k === 'default') {
-				unset($processCurrencies[$k]);
-				if ($k !== 'default')
-					unset($returnCurrencies[$k]);
+			if (count($required) !== count($requiredFieldsPattern) || $typoScriptKey === 'def') {
+				unset($processCurrencies[$typoScriptKey]);
+				if ($typoScriptKey !== 'def')
+					unset($returnCurrencies[$typoScriptKey]);
 				continue;
 			}
 		}
@@ -406,7 +481,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 *
 	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array|null
 	 */
-	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
+	protected function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
 		$processOptions = array();
 		// Fetch selectable options for current package
 		$this->getSelectableOptions($package, $processOptions);
@@ -469,7 +544,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @param  array                            $configuration
 	 * @return boolean
 	 */
-	public function checkOptionDependencies(\S3b0\Ecompc\Domain\Model\Option $option, array $configuration) {
+	protected function checkOptionDependencies(\S3b0\Ecompc\Domain\Model\Option $option, array $configuration) {
 		if (!$option->getDependency()) return TRUE;
 		$check = TRUE;
 
@@ -497,8 +572,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @param array $configuration
 	 * @return void
 	 */
-	public function autoSetOptions(array &$configuration) {
-		if ($packages = $this->cObj->getEcompcPackages()) {
+	protected function autoSetOptions(array &$configuration) {
+		if ($packages = $this->cObj->getEcompcPackagesFE()) {
+			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 			foreach ($packages as $package) {
 				if (array_key_exists($package->getUid(), (array) $configuration['packages']))
 					continue;
@@ -506,9 +582,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				if ($packageOptions = $this->getPackageOptions($package)) {
 					if (count($packageOptions) === 1) {
 						// Add option to NEW package
-						$configuration['options'][] = $packageOptions[0]->getUid();
-						$configuration['packages'][$package->getUid()][] = $packageOptions[0]->getUid();
-						$this->selectedOptions->attach($packageOptions[0]);
+						$configuration['options'][] = $packageOptions->getFirst()->getUid();
+						$configuration['packages'][$package->getUid()][] = $packageOptions->getFirst()->getUid();
+						$this->selectedOptions->attach($packageOptions->getFirst());
+						$this->selectedPackages->attach($package);
 					}
 				}
 			}
@@ -531,46 +608,23 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**
-	 * Calculates the price for configurations already during configuration process
+	 * @param boolean $returnContentAndSkipAssignToView
 	 *
-	 * @return array
-	 */
-	public function getConfigurationPrice() {
-		$base = $this->cObj->getEcompcBasePriceInDefaultCurrency();
-		if ($this->feSession->get('currency') && $this->feSession->get('currency') !== 'default') {
-			$priceList = $this->cObj->getEcompcBasePriceInForeignCurrencies();
-			$base = floatval($priceList[$this->feSession->get('currency')]['vDEF']);
-			if (!$base && $this->currency['exchange'])
-				$base = $this->cObj->getEcompcBasePriceInDefaultCurrency() * floatval($this->currency['exchange']);
-		}
-
-		// Get configuration price
-		$config = $base;
-		if ($this->selectedOptions) {
-			foreach ($this->selectedOptions as $option)
-				$config += $option->getConfigurationPackage()->isPercentPricing() ? floatval($config * $option->getPricePercental()) : $option->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currency['exchange']));
-		}
-
-		return array($base, $config);
-	}
-
-	/**
 	 * @return mixed
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
-	public function getConfigurationResult() {
+	protected function getConfigurationResult($returnContentAndSkipAssignToView = FALSE) {
 		// In case of dynamic configurations get first configuration record...
 		if ($this->cObj->isDynamicEcomProductConfigurator()) {
-			return $this->getConfigurationCode($this->selectableConfigurations->getFirst());
+			return $this->getConfigurationCode($this->selectableConfigurations->getFirst(), $returnContentAndSkipAssignToView);
 		}
 
 		// ...otherwise check for suitable configurations and return result in case of one remaining, of not throw 404 Error
 		if ($this->selectableConfigurations->count() !== 1) {
-			// @todo enable error on finish!
-			#$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
+			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
 		} else {
-			return $this->getConfigurationCode($this->selectableConfigurations->getFirst());
+			return $this->getConfigurationCode($this->selectableConfigurations->getFirst(), $returnContentAndSkipAssignToView);
 		}
 	}
 
@@ -578,9 +632,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * set configuration code
 	 *
 	 * @param  \S3b0\Ecompc\Domain\Model\Configuration $configuration
+	 * @param  boolean                                 $returnContentAndSkipAssignToView
 	 * @return string
 	 */
-	public function getConfigurationCode(\S3b0\Ecompc\Domain\Model\Configuration $configuration) {
+	protected function getConfigurationCode(\S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnContentAndSkipAssignToView = FALSE) {
 		$ccWrapper = $this->cObj->isDynamicEcomProductConfigurator() && $configuration->getConfigurationCodePrefix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodePrefix', $this->extensionName) . '">' . $configuration->getConfigurationCodePrefix() . '</span>' : '';
 		$ccWrapper .= '%s';
 		$ccWrapper .= $this->cObj->isDynamicEcomProductConfigurator() && $configuration->getConfigurationCodeSuffix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodeSuffix', $this->extensionName) . '">' . $configuration->getConfigurationCodeSuffix() . '</span>' : '';
@@ -614,78 +669,167 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		}
 
 		// OVERWRITE CONFIG CODE @SKU-BASED CONFIGURATORS
-		if ($this->cObj->isStaticEcomProductConfigurator())
+		if ($this->cObj->isStaticEcomProductConfigurator()) {
 			$plain = $code = $configuration->getSku();
+		}
 
 		$this->view->assignMultiple(array(
 			'configurationSummary' => sprintf($summaryHMTLTableWrapper, $summaryHTML),
 			'requestFormAdditionalParams' => json_decode(
 				sprintf(
 					$this->settings['requestForm']['additionalParams'],
-					sprintf($ccPlainWrapper, $plain),
-					$configuration->getFrontendLabel(),
-					$summaryPlain
+					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(sprintf($ccPlainWrapper, $plain)),
+					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($configuration->getFrontendLabel()),
+					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($summaryPlain)
 				),
 				TRUE
 			)
 		));
 
-		return sprintf($ccWrapper, $code);
+		return $returnContentAndSkipAssignToView ? array(
+			sprintf($ccWrapper, $code), sprintf($summaryHMTLTableWrapper, $summaryHTML), json_decode(
+				sprintf(
+					$this->settings['requestForm']['additionalParams'],
+					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(sprintf($ccPlainWrapper, $plain)),
+					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($configuration->getFrontendLabel()),
+					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($summaryPlain)
+				),
+				TRUE
+			)
+		) : sprintf($ccWrapper, $code);
+	}
+
+	/**
+	 * Calculates the price for configurations already during configuration process
+	 *
+	 * @return array
+	 */
+	protected function getConfigurationPrice() {
+		$base = $this->cObj->getEcompcBasePriceInDefaultCurrency();
+		if (!$base) return array(0.0, 0.0);
+		if ($this->currency['short'] !== 'EUR') {
+			$priceList = $this->cObj->getEcompcBasePriceInForeignCurrencies();
+			$base = floatval($priceList[$this->currency['short']]['vDEF']);
+			if (!$base && $this->currency['exchange'])
+				$base = $this->cObj->getEcompcBasePriceInDefaultCurrency() * floatval($this->currency['exchange']);
+		}
+
+		// Get configuration price
+		$config = $base;
+		if ($this->selectedOptions) {
+			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+			foreach ($this->selectedOptions as $option)
+				$config += $option->getConfigurationPackage()->isPercentPricing() ? floatval($config * $option->getPricePercental()) : $option->getPriceInCurrency($this->currency['short'], floatval($this->currency['exchange']));
+		}
+
+		return array($base, $config);
 	}
 
 	/**
 	 * Initialize Options
 	 *
 	 * @param null|\TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $selectedOptions
-	 * @param boolean $firstRun
+	 * @param boolean $firstRun indicates to handle as it was the initial run
 	 */
 	protected function initializeOptions($selectedOptions = NULL, $firstRun = TRUE) {
+		/** Initialize Storage Objects */
 		if ($firstRun) {
 			$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 		// If argument package is set, fetch corresponding options only to improve performance
 		$options = $this->request->hasArgument('package') ? $this->optionRepository->findByConfigurationPackage($this->request->getArgument('package')) : $this->optionRepository->findAll();
 		if ($options) {
+			$parsedPackages = array();
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 			foreach ($options as $option) {
 				/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 				$package = $option->getConfigurationPackage();
-				// SET SELECTED OPTIONS | ADD TO CORRESPONDING PACKAGE
+				$package->setSelected(array_key_exists($package->getUid(), $this->selectedConfiguration['packages']));
+				$optionIsActive = in_array($option->getUid(), $this->selectedConfiguration['options']);
+				/*******************************************************
+				 * Set selected options & Add to corresponding package *
+				 *******************************************************/
 				if ($firstRun && in_array($option->getUid(), (array) $this->selectedConfiguration['options'])) {
 					$package->addSelectedOption($option);
 					$this->selectedOptions->attach($option);
 				}
-				// PROCESS PRICING | SET CORRESPONDING PROPERTIES
-				if ($this->showPriceLabels && $this->feSession->get('currency')) {
-					// Calculate percent price [working on packages WITHOUT multipleSelect() flag set ONLY!]
+				/**************************************************
+				 * Process pricing | Set corresponding properties *
+				 **************************************************/
+				if ($this->showPriceLabels && $this->cObj->getEcompcBasePriceInDefaultCurrency()) {
+					if (!in_array($package->getUid(), $parsedPackages)) {
+						$package->setPriceOutput(0.0); // Reset package price information
+					}
+					/*****************************************************************************************
+					 * Calculate PERCENT price [working on packages WITHOUT multipleSelect() flag set ONLY!] *
+					 *****************************************************************************************/
 					if ($package->isPercentPricing() && !$package->isMultipleSelect()) {
-						$configurationPrice = $package->isSelected() ? floatval($this->selectedConfigurationPrice[1] / ($this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()], 1)->getPricePercental() + 1)) : 0.0;
-						$selectedOptionPrice = floatval($this->selectedConfigurationPrice[1] - $configurationPrice);
+						$currentConfigurationPrice = end($this->getConfigurationPrice());
+						$configurationPrice = $package->isSelected() ? floatval($currentConfigurationPrice / ($this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()], 1)->getPricePercental() + 1)) : 0.0;
+						$selectedOptionPrice = floatval($currentConfigurationPrice - $configurationPrice);
 						if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages']) && !($selectedOptions instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($option, $selectedOptions->toArray()))) {
-							$option->setUnitPrice(in_array($option->getUid(), $this->selectedConfiguration['options']) ? $selectedOptionPrice : floatval($configurationPrice * $option->getPricePercental()));
-							$option->setPriceOutput(in_array($option->getUid(), $this->selectedConfiguration['options']) ? $selectedOptionPrice : floatval($configurationPrice * $option->getPricePercental() - $selectedOptionPrice));
+							$option->setUnitPrice($optionIsActive ? $selectedOptionPrice : floatval($configurationPrice * $option->getPricePercental()));
+							$option->setPriceOutput($optionIsActive ? $selectedOptionPrice : floatval($configurationPrice * $option->getPricePercental() - $selectedOptionPrice));
 						} else {
-							$option->setUnitPrice($selectedOptions instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($option, $selectedOptions->toArray()) ? $selectedOptionPrice : floatval($this->selectedConfigurationPrice[1] * $option->getPricePercental()));
-							$option->setPriceOutput($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : floatval($this->selectedConfigurationPrice[1] * $option->getPricePercental()));
+							$option->setUnitPrice($selectedOptions instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($option, $selectedOptions->toArray()) ? $selectedOptionPrice : floatval($currentConfigurationPrice * $option->getPricePercental()));
+							$option->setPriceOutput($selectedOptions && in_array($option, $selectedOptions->toArray()) ? 0.00 : floatval($currentConfigurationPrice * $option->getPricePercental()));
 						}
-					// Calculate static price
+					/***************************
+					 * Calculate STATIC prices *
+					 ***************************/
 					} else {
-						$option->setUnitPrice($option->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currency['exchange'])));
-						$priceOutput = $package->isMultipleSelect() || !$selectedOptions ? $option->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currency['exchange'])) : $option->getPriceInCurrency($this->feSession->get('currency')) - $selectedOptions->getFirst()->getPriceInCurrency($this->feSession->get('currency'), floatval($this->currency['exchange']));
+						$option->setUnitPrice($option->getPriceInCurrency($this->currency['short'], floatval($this->currency['exchange'])));
+						$priceOutput = $package->isMultipleSelect() || !$selectedOptions ? $option->getPriceInCurrency($this->currency['short'], floatval($this->currency['exchange'])) : $option->getPriceInCurrency($this->currency['short']) - $selectedOptions->getFirst()->getPriceInCurrency($this->currency['short'], floatval($this->currency['exchange']));
 						$option->setPriceOutput($priceOutput);
 					}
-					if (in_array($option->getUid(), $this->selectedConfiguration['options']))
+					/*****************************************************
+					 * Update Package price information & Add to storage *
+					 *****************************************************/
+					if ($optionIsActive) {
 						$package->sumPriceOutput($option->getUnitPrice());
+					}
 				}
-				// PROCESS SKU BASED CONFIGURATOR SPECIALS
+				/*******************************************
+				 * process SKU based configurator SPECIALS *
+				 *******************************************/
+// TODO processing
+				/*
 				if ($firstRun && $this->cObj->isStaticEcomProductConfigurator() && $package->isSelected() && $this->selectedConfiguration['options']) {
 					$selectedOptions = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options']);
 					if ($package->getSelectedOptions()->contains($option)) {
 
 					}
 				}
+				*/
+				$parsedPackages[] = $package->getUid();
 			}
 		}
+	}
+
+	/**
+	 * @param float   $floatToFormat
+	 * @param boolean $signed
+	 *
+	 * @return string
+	 */
+	protected function formatCurrency($floatToFormat = 0.0, $signed = FALSE) {
+		$output = number_format($floatToFormat, 2, $this->currency['decimalSeparator'] ?: ',', $this->currency['thousandsSeparator'] ?: '.');
+		// Add algebraic sign if positive
+		if ($floatToFormat > 0 && $signed) {
+			$output = '+' . $output;
+		} elseif (number_format($floatToFormat, 2) == 0.00 && $signed) {
+			$output = '+' . $output;
+			//return \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('price.inclusive', 'ecompc');
+		}
+		if ($this->currency['symbol'] !== '') {
+			$currencySeparator = $this->currency['separateCurrency'] ?: ' ';
+			if ($this->currency['prependCurrency']) {
+				$output = $this->currency['symbol'] . $currencySeparator . $output;
+			} else {
+				$output .= $currencySeparator . $this->currency['symbol'];
+			}
+		}
+		return $output;
 	}
 
 }
