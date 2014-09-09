@@ -85,7 +85,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		'llRef' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.eur.region',
 		'flagIcon' => 'EXT:ecompc/Resources/Public/Images/Flags/EUR.png',
 		'prependCurrency' => 0,
-		'exchange' => 0.1
+		'exchange' => 1.0
 	);
 
 	/**
@@ -680,7 +680,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$this->settings['requestForm']['additionalParams'],
 					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(sprintf($ccPlainWrapper, $plain)),
 					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($configuration->getFrontendLabel()),
-					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($summaryPlain)
+					$summaryPlain
 				),
 				TRUE
 			)
@@ -692,7 +692,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$this->settings['requestForm']['additionalParams'],
 					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(sprintf($ccPlainWrapper, $plain)),
 					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($configuration->getFrontendLabel()),
-					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($summaryPlain)
+					$summaryPlain
 				),
 				TRUE
 			)
