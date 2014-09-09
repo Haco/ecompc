@@ -172,7 +172,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		if ($configurationPackages instanceof \ArrayAccess || is_array($configurationPackages)) {
 			foreach ($configurationPackages as $configurationPackage) {
 				$selItems[] = array($configurationPackage['backend_label'] ?: $configurationPackage['frontend_label'], '--div--');
-				if ($configurationOptions = BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_option', 'configuration_package', $configurationPackage['uid'], 'AND NOT deleted AND sys_language_uid IN (-1,0) ORDER BY tx_ecompc_domain_model_option.frontend_label, tx_ecompc_domain_model_option.backend_label')) {
+				if ($configurationOptions = BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_option', 'configuration_package', $configurationPackage['uid'], 'AND NOT deleted AND sys_language_uid IN (-1,0) ORDER BY tx_ecompc_domain_model_option.sorting')) {
 					foreach ($configurationOptions as $configurationOption) {
 						$addItem = array($this->getLabelforTableOption($configurationOption), $configurationOption['uid'], 'clear.gif', '', '', $rowIndex, 'radio');
 						if ($configurationPackage['multiple_select']) {

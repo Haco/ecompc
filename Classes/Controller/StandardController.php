@@ -517,17 +517,19 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$selectableOptions = $this->optionRepository->findByConfigurationPackage($package); // Set basic settings
 
 		// Parse configurations, if any | @case SKU (default)
-		if (!$this->cObj->isDynamicEcomProductConfigurator() && $this->selectableConfigurations) {
+		if ($this->cObj->isStaticEcomProductConfigurator() && $this->selectableConfigurations) {
 			$selectableOptions = array();
 			foreach ($this->selectableConfigurations as $configuration) {
 				if ($configurationOptions = $configuration->getOptions()) {
+					/** @var \S3b0\Ecompc\Domain\Model\Option $configurationOption */
 					foreach ($configurationOptions as $configurationOption) {
 						if ($configurationOption->getConfigurationPackage() === $package)
-							$selectableOptions[] = $configurationOption;
+							$selectableOptions[$configurationOption->getSorting()] = $configurationOption;
 					}
 				}
 			}
 			$selectableOptions = array_unique($selectableOptions);
+			ksort($selectableOptions);
 		}
 
 		// Run dependency check

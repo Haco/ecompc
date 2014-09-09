@@ -42,6 +42,14 @@ config.tx_extbase {
 					}
 				}
 			}
+			S3b0\Ecompc\Domain\Model\Option {
+				mapping {
+					tableName = tx_ecompc_domain_model_option
+					columns {
+						sorting.mapOnProperty = sorting
+					}
+				}
+			}
 		}
 	}
 }
