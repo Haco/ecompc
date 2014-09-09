@@ -8,8 +8,8 @@ $extTranslationPath = 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xl
 return array(
 	'ctrl' => array(
 		'title'	=> 'ecom Configurator Log',
-		'label' => 'uid',
-		'label_alt' => 'ses_id, tstamp',
+		'label' => 'tstamp',
+		'label_alt' => 'ses_id',
 		'label_alt_force' => TRUE,
 		'default_sortby' => 'ORDER BY tstamp',
 		'tstamp' => 'tstamp',
@@ -18,7 +18,7 @@ return array(
 
 		//'hideTable' => 1,
 		'searchFields' => 'ses_id, tstamp, selected_configuration, configuration, currency, price, ip_address, fe_user',
-		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_logger.gif'
+		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('belog') . 'ext_icon.gif'
 	),
 	'interface' => array(
 		'showRecordFieldList' => 'ses_id, tstamp, selected_configuration, configuration, currency, price, ip_address, fe_user'
@@ -42,7 +42,7 @@ return array(
 		),
 		'tstamp' => array(
 			'exclude' => 1,
-			'label' => 'Timestamp',
+			'label' => 'DateTime',
 			'config' => array(
 				'type' => 'input',
 				'size' => 10,
