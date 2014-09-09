@@ -427,15 +427,20 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
-	public function redirectToPage($pid = NULL, $arguments = array()) {
+	public function redirectToPage($pid = NULL, $arguments = array(), $useCachHash = FALSE) {
 		if (!$this->request instanceof \TYPO3\CMS\Extbase\Mvc\Web\Request) {
 			throw new \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException('redirect() only supports web requests.', 1220539734);
 		}
 		if (\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SSL')) {
 			$this->uriBuilder->setAbsoluteUriScheme('https');
 		}
-		$uri = $this->uriBuilder->reset()->setCreateAbsoluteUri(TRUE)->setArguments((array) $arguments);
-		$uri = $pid ? $uri->setTargetPageUid($pid) : $uri->setUseCacheHash(FALSE);
+		$uri = $this->uriBuilder
+			->reset()
+			->setCreateAbsoluteUri(TRUE)
+			->setArguments((array) $arguments)
+			->setTargetPageUid($pid)
+			->setUseCacheHash($useCachHash);
+
 		$this->redirectToUri($uri->build());
 	}
 
