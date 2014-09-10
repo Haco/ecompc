@@ -380,7 +380,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function resetAction() {
 		$this->feSession->store($this->configurationSessionStorageKey, array());
-		$this->redirectToPage();
+		$this->redirectToUri(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'));
 	}
 
 	public function requestAction() {
@@ -423,11 +423,12 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 *
 	 * @param integer $pid
 	 * @param array   $arguments
+	 * @param boolean $useCacheHash
 	 *
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
-	public function redirectToPage($pid = NULL, $arguments = array(), $useCachHash = FALSE) {
+	public function redirectToPage($pid = NULL, $arguments = array(), $useCacheHash = FALSE) {
 		if (!$this->request instanceof \TYPO3\CMS\Extbase\Mvc\Web\Request) {
 			throw new \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException('redirect() only supports web requests.', 1220539734);
 		}
@@ -439,11 +440,15 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$uri = $this->uriBuilder
 			->reset()
 			->setTargetPageUid($pid)
-			->setUseCacheHash($useCachHash)
+			->setUseCacheHash($useCacheHash)
 			->setArguments($arguments)
 			->setCreateAbsoluteUri(TRUE)
 			->setAddQueryString(TRUE)
 			->setArgumentsToBeExcludedFromQueryString(array('tx_ecompc_configurator'));
+
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SSL')) {
+			$this->uriBuilder->setAbsoluteUriScheme('https');
+		}
 
 		$this->redirectToUri($uri->build());
 	}

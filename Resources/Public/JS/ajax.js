@@ -74,6 +74,9 @@ function ajaxCaller(targets, loader, pageUid, request, onSuccessFunction, update
 				default :
 					break;
 			}
+			if (result['action'] == 'selectPackageOptions') {
+				initTriggerHint();
+			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log('Request failed with ' + textStatus + ': ' + errorThrown +  '!');
@@ -222,3 +225,56 @@ function resetPackage(pageUid, cObj, configurationPackage) {
 	});
 
 })(jQuery);
+
+function initTriggerHint() {
+	var triggerHint = '#tx-ecompc-canvas .ecom-configurator-select-package-option-info',
+		hintBoxSelector = '#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box',
+		windowHeight,
+		popupHeight,
+		scrollPosition,
+		currentHintBox;
+
+	// Hide the Box Function
+	function hideHintBox(hintBox) {
+		$(hintBox).fadeOut('fast', function() {
+			$(this).css({'display': 'none', 'opacity': 0, 'top': 0});
+		});
+	}
+	// Popup on click
+	$(triggerHint).on('click', function() {
+		// First hide every active hint box
+		hideHintBox(hintBoxSelector);
+
+		// Setting new vars
+		windowHeight = $(document).height();
+		currentHintBox = $(this).parents('.ecom-configurator-select-package-option-wrap').next('.ecom-configurator-select-package-option-info-hint-box');
+
+		// Calculate position of the hint-box
+		popupHeight = $(currentHintBox).outerHeight();
+		// Check if popup high exceeds window height
+		if (windowHeight <= popupHeight) {
+			// Then set position top 10px
+			scrollPosition = 15;
+		} else {
+			// Else arrange it in center position
+			scrollPosition = (windowHeight - popupHeight) / 2;
+		}
+		// Show Popup
+		currentHintBox.css('display', 'block').animate({'top': scrollPosition, 'opacity': 1}, 'fast');
+
+		// Prevent Option-a-tag from executing
+		return false;
+	});
+	// Hide hint-box on click and ESC key
+	$('#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box .close-popover-x, #tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box, body').on('click keyup', function(e) {
+		// If the keyup event is triggered
+		if (e.type == 'keyup') {
+			if (e.keyCode == 27) {
+				hideHintBox(hintBoxSelector);
+			}
+			// If click event is triggered
+		} else {
+			hideHintBox(hintBoxSelector);
+		}
+	});
+}
