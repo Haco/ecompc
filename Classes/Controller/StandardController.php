@@ -443,7 +443,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			->setArguments($arguments)
 			->setCreateAbsoluteUri(TRUE)
 			->setAddQueryString(TRUE)
-			->setArgumentsToBeExcludedFromQueryString(array('tx_ecompc_configurator' => array()));
+			->setArgumentsToBeExcludedFromQueryString(array('tx_ecompc_configurator'));
 
 		$this->redirectToUri($uri->build());
 	}
