@@ -431,6 +431,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		if (!$this->request instanceof \TYPO3\CMS\Extbase\Mvc\Web\Request) {
 			throw new \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException('redirect() only supports web requests.', 1220539734);
 		}
+
+		$arguments['L'] = $GLOBALS['TSFE']->sys_language_uid;
 		if (\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SSL')) {
 			$this->uriBuilder->setAbsoluteUriScheme('https');
 		}
