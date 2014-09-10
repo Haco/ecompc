@@ -125,7 +125,8 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 				array(
 					'configurationResult' => $result[0],
 					'configurationSummary' => $result[1],
-					'requestFormAdditionalParams' => $result[2])
+					'requestFormAdditionalParams' => $result[2]
+				)
 			));
 		}
 	}

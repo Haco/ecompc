@@ -260,7 +260,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				$package->setActive(TRUE);
 			}
 			// Get process state update (ratio of selected to visible packages) => float from 0 to 1 (*100 = %)
-			$process = count((array) $this->selectedConfiguration['packages']) / $packages->count();
+			$process = count($this->selectedConfiguration['packages']) / $packages->count();
 		}
 
 		if ($process === 1)
@@ -365,7 +365,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function resetPackageAction(\S3b0\Ecompc\Domain\Model\Package $package) {
-		$this->selectedConfiguration['options'] = array_diff((array) $this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionsUids($package));
+		$this->selectedConfiguration['options'] = array_diff($this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionsUids($package));
 		unset($this->selectedConfiguration['packages'][$package->getUid()]);
 
 		$this->feSession->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
@@ -387,7 +387,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		/** @var \S3b0\Ecompc\Domain\Model\Logger $logger */
 		$logger = $this->objectManager->get('S3b0\\Ecompc\\Domain\\Model\\Logger');
 		$pricing = $this->getConfigurationPrice();
-		$logger->setSelectedConfiguration((array) $this->selectedConfiguration)
+		$logger->setSelectedConfiguration($this->selectedConfiguration)
 			->setCurrency($this->currency['long'])
 			->setPrice($pricing[1])
 			->setIp(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REMOTE_ADDR'), $this->settings['log']['ipParts'])
@@ -495,7 +495,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
 		// Fetch selected options for current package only
 		$selectedOptions = NULL;
-		if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages'])) {
+		if (array_key_exists($package->getUid(), $this->selectedConfiguration['packages'])) {
 			$selectedOptions = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()]);
 		}
 
@@ -559,6 +559,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			if ($packages = $option->getDependency()->getPackages()) {
 				$checkAgainstArray = array();
 				foreach ($packages as $package) {
+					if (!is_array($configuration['packages'][$package->getUid()]) || count((array) $configuration['packages'][$package->getUid()]) === 0) {
+						continue;
+					}
 					if ($selectedOptions = $this->optionRepository->findOptionsByUidList($configuration['packages'][$package->getUid()])) {
 						foreach ($selectedOptions as $selectedOption) {
 							// @modes {0 : explicit deny, 1 : explicit allow}
@@ -756,7 +759,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				/*******************************************************
 				 * Set selected options & Add to corresponding package *
 				 *******************************************************/
-				if ($firstRun && in_array($option->getUid(), (array) $this->selectedConfiguration['options'])) {
+				if ($firstRun && in_array($option->getUid(), $this->selectedConfiguration['options'])) {
 					$package->addSelectedOption($option);
 					$this->selectedOptions->attach($option);
 				}
@@ -774,7 +777,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 						$currentConfigurationPrice = end($this->getConfigurationPrice());
 						$configurationPrice = $package->isSelected() ? floatval($currentConfigurationPrice / ($this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()], 1)->getPricePercental() + 1)) : 0.0;
 						$selectedOptionPrice = floatval($currentConfigurationPrice - $configurationPrice);
-						if (array_key_exists($package->getUid(), (array) $this->selectedConfiguration['packages']) && !($selectedOptions instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($option, $selectedOptions->toArray()))) {
+						if (array_key_exists($package->getUid(), $this->selectedConfiguration['packages']) && !($selectedOptions instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($option, $selectedOptions->toArray()))) {
 							$option->setUnitPrice($optionIsActive ? $selectedOptionPrice : floatval($configurationPrice * $option->getPricePercental()));
 							$option->setPriceOutput($optionIsActive ? $selectedOptionPrice : floatval($configurationPrice * $option->getPricePercental() - $selectedOptionPrice));
 						} else {
