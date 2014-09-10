@@ -76,9 +76,10 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		 * selcps -> indicator for selected packages used at JS calculation of progress
 		 */
 		$this->view->setVariablesToRender(array(
-			'action', 'pid', 'cObj', 'showPriceLabels', 'currency', 'pricing', 'cfgp', 'cfgres', 'content', 'package', 'packagesLinksInnerHTML', 'selcps', 'proceed'
+			'action', 'pid', 'L', 'cObj', 'showPriceLabels', 'currency', 'pricing', 'cfgp', 'cfgres', 'content', 'package', 'packagesLinksInnerHTML', 'selcps', 'proceed'
 		));
 		parent::initializeView();
+		$this->view->assign('L', $GLOBALS['TSFE']->sys_language_uid);
 	}
 
 	/**

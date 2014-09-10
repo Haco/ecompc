@@ -199,7 +199,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'action' => $this->request->getControllerActionName(), // current action
 			'instructions' => $this->cObj->getBodytext(), // short instructions for user
 			'pid' => $GLOBALS['TSFE']->id,
-			'cObj' => $this->cObj->getUid()
+			'cObj' => $this->cObj->getUid(),
+			'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid
 		));
 		if ($this->showPriceLabels) {
 			$this->view->assignMultiple(array(

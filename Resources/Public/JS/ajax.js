@@ -20,7 +20,7 @@ function goBackToIndex() {
 	$('#tx-ecompc-package-select-index').fadeIn();
 }
 
-function ajaxCaller(targets, loader, pageUid, request, onSuccessFunction, updateIndex) {
+function ajaxCaller(targets, loader, pageUid, lang, request, onSuccessFunction, updateIndex) {
 	addAjaxLoader(loader);
 	var targetsAndArrayKeys = targets.replace(' ', '').split(',');
 	$.ajax({
@@ -32,6 +32,7 @@ function ajaxCaller(targets, loader, pageUid, request, onSuccessFunction, update
 		data: {
 			eID: 'EcomProductConfigurator',
 			id: pageUid,
+			L: lang,
 			type: 1407764086,
 			request: request
 		},
@@ -51,7 +52,7 @@ function ajaxCaller(targets, loader, pageUid, request, onSuccessFunction, update
 			onAjaxSuccessUpdateIndex(result);
 			onAjaxSuccessUpdatePackages(result);
 			if (updateIndex) {
-				ajaxCaller('', '#tx-ecompc-ajax-loader', result['pid'], {
+				ajaxCaller('', '#tx-ecompc-ajax-loader', result['pid'], result['L'], {
 					actionName: 'updatePackages',
 					arguments: {
 						cObj: result['cObj']
@@ -63,7 +64,7 @@ function ajaxCaller(targets, loader, pageUid, request, onSuccessFunction, update
 					goBackToIndex();
 					break;
 				case 'selectPackageOptions':
-					ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', result['pid'], {
+					ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', result['pid'], result['L'], {
 						actionName: 'selectPackageOptions',
 						arguments: {
 							configurationPackage: result['package'],
@@ -157,7 +158,7 @@ function onAjaxSuccessGeneric(result, indexView) {
 }
 
 /** Updating packages function */
-function updatePackage(pageUid, cObj, option, unset) {
+function updatePackage(pageUid, lang, cObj, option, unset) {
 	var request = {
 		actionName: 'setOption',
 		arguments: {
@@ -167,10 +168,10 @@ function updatePackage(pageUid, cObj, option, unset) {
 		}
 	};
 
-	ajaxCaller('', '#tx-ecompc-ajax-loader', pageUid, request, null, 1);
+	ajaxCaller('', '#tx-ecompc-ajax-loader', pageUid, lang, request, null, 1);
 }
 
-function resetPackage(pageUid, cObj, configurationPackage) {
+function resetPackage(pageUid, lang, cObj, configurationPackage) {
 	var request = {
 		actionName: 'resetPackage',
 		arguments: {
@@ -179,11 +180,11 @@ function resetPackage(pageUid, cObj, configurationPackage) {
 		}
 	};
 
-	ajaxCaller('', '#tx-ecompc-ajax-loader', pageUid, request, function(result) {
+	ajaxCaller('', '#tx-ecompc-ajax-loader', pageUid, lang, request, function(result) {
 		remAjaxLoader('#tx-ecompc-ajax-loader');
 		onAjaxSuccessGeneric(result);
 		onAjaxSuccessUpdateIndex(result);
-		ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', result['pid'], {
+		ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', result['pid'], result['L'], {
 			actionName: 'selectPackageOptions',
 			arguments: {
 				configurationPackage: result['package'],
@@ -206,6 +207,7 @@ function resetPackage(pageUid, cObj, configurationPackage) {
 		var pageUid = $(this).attr('data-page');
 		var configurationPackage = $(this).attr('data-package');
 		var cObj = $(this).attr('data-cObj');
+		var lang = $(this).attr('data-lang');
 		var request = {
 			actionName: 'selectPackageOptions',
 			arguments: {
@@ -215,7 +217,7 @@ function resetPackage(pageUid, cObj, configurationPackage) {
 		};
 
 		$('#tx-ecompc-package-select-index').hide();
-		ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', pageUid, request);
+		ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', pageUid, lang, request);
 	});
 
 	$('#tx-ecompc-ajax-header-backlink').on('click', function(e) {

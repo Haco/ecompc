@@ -1,6 +1,6 @@
 <f:for each="{options}" as="option" iteration="optionIterator">
 	<!--<f:link.action action="setOption" arguments="{option:option,redirectAction:package.multipleSelect,unset:option.selected}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">-->
-	<a href="javascript:void(0)" onclick="updatePackage({pid}, {cObj}, {option.uid}, {option.selected -> f:s3b0.num()})" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">
+	<a href="javascript:void(0)" onclick="updatePackage({pid}, {sys_language_uid -> f:format.number(decimals:0)}, {cObj}, {option.uid}, {option.selected -> f:format.number(decimals:0)})" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">
 		<f:render partial="Misc/SetOptionLinkInnerHTML" arguments="{_all}" />
 	</a>
 	<!--</f:link.action>-->
@@ -12,7 +12,7 @@
 </f:for>
 
 <f:if condition="{package.selectedOptions -> f:count()}">
-	<a href="javascript:void(0)" onclick="resetPackage({pid}, {cObj}, {package.uid})" class="ecom-configurator-reset-button"><f:translate id="optionlist.reset_selection" /></a>
+	<a href="javascript:void(0)" onclick="resetPackage({pid}, {sys_language_uid -> f:format.number(decimals:0)}, {cObj}, {package.uid})" class="ecom-configurator-reset-button"><f:translate id="optionlist.reset_selection" /></a>
 </f:if>
 
 <f:comment>
