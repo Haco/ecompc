@@ -438,12 +438,14 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		}
 		$uri = $this->uriBuilder
 			->reset()
-			->setCreateAbsoluteUri(TRUE)
 			->setTargetPageUid($pid)
 			->setUseCacheHash($useCachHash)
-			->setArguments($arguments);
+			->setArguments($arguments)
+			->setCreateAbsoluteUri(TRUE)
+			->setAddQueryString(TRUE)
+			->setArgumentsToBeExcludedFromQueryString(array('tx_ecompc_configurator' => array()));
 
-		$this->redirectToUri($uri->buildFrontendUri());
+		$this->redirectToUri($uri->build());
 	}
 
 	/**
