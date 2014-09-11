@@ -177,6 +177,7 @@ return array(
 			),
 		),
 		'configuration_code_segment' => array(
+			'l10n_mode' => 'mergeIfNotBlank',
 			'l10n_display' => 'defaultAsReadonly',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.configuration_code_segment',

@@ -400,7 +400,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->loggerRepository->add($logger);
 		$result = $this->getConfigurationResult(TRUE);
 		$this->feSession->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
-		$this->redirectToPage($this->settings['requestForm']['pid'], $result[2]); //target="{settings.requestForm.target}" additionalParams="{requestFormAdditionalParams}"
+		$this->redirectToPage($this->settings['requestForm']['pid'], $result[2]);
 	}
 
 	/**

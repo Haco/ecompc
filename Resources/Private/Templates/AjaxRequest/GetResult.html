@@ -11,7 +11,7 @@
 			<small>{configurationResult -> f:format.raw()}</small>
 		</h2>
 		<a href="#" class="action-button-default ecom-configurator-result-review-config dropdown" title="{f:translate(id:'index.summary_button_title')}"><f:translate id="index.summary_button" /></a>
-		<f:link.action action="request" controller="Standard" noCacheHash="1" class="action-button-default"><f:translate id="index.request_your_device" /></f:link.action>
+		<f:link.action action="request" controller="Standard" noCacheHash="1" class="action-button-default" target="{settings.requestForm.target}"><f:translate id="index.request_your_device" /></f:link.action>
 	</div>
 	<div class="ecom-configurator-summary-table">
 		{configurationSummary -> f:format.html()}

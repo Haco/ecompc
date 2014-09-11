@@ -33,8 +33,8 @@ plugin.tx_ecompc {
 			pid = 0
 			# cat=plugin.tx_ecompc//a2; type=string; label=Additional Params:JSON Array with placeholders %x$s
 			additionalParams = {"tx_powermail_pi1":{"field":{"1":"%1$s","2":"%2$s","3":"%3$s"}}}
-			# cat=plugin.tx_ecompc//a3; type=options[,_top,_blank]; label=Target
-			target = _blank
+			# cat=plugin.tx_ecompc//a3; type=options[,_self,_top,_blank]; label=Target
+			target = _self
 		}
 		log {
 			# cat=plugin.tx_ecompc//a01; type=options[0,1,2,3,4]; label=IP parts count:Parts of IP to track. Value 4 would track full IP, 0 instead would not track any.
