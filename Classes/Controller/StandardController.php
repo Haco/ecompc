@@ -167,7 +167,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Set price flag (displays pricing if TRUE)
 		$this->showPriceLabels = $this->settings['showPriceLabels'] ? count(array_intersect($distFeUserGroups, (array) $GLOBALS['TSFE']->fe_user->groupData['uid'])) : FALSE;
 		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
-		$this->configurationSessionStorageKey .= '-c' . $this->cObj->getUid();
+		$this->configurationSessionStorageKey .= '-c' . $this->cObj->_getProperty('_localizedUid');
 		// Get current configuration (Array: options=array(options)|packages=array(package => option(s)))
 		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey) ?: array(
 			'options' => array(),
@@ -199,7 +199,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'action' => $this->request->getControllerActionName(), // current action
 			'instructions' => $this->cObj->getBodytext(), // short instructions for user
 			'pid' => $GLOBALS['TSFE']->id,
-			'cObj' => $this->cObj->getUid(),
+			'cObj' => $this->cObj->_getProperty('_localizedUid'),
 			'sys_language_uid' => (int) $GLOBALS['TSFE']->sys_language_content
 		));
 		if ($this->showPriceLabels) {
@@ -227,7 +227,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
 		// Failure if no configuration has been found
 		if (!$this->cObj->getEcompcConfigurations())
-			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_config_found', $this->extensionName) . ' [ttc:#' . $this->cObj->getUid() . '@pid:#' . $this->cObj->getPid() . ']');
+			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_config_found', $this->extensionName) . ' [ttc:#' . $this->cObj->_getProperty('_localizedUid') . '@pid:#' . $this->cObj->getPid() . ']');
 
 		// Check for currency when distributor is logged in
 		if ($this->showPriceLabels) {
@@ -434,7 +434,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			throw new \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException('redirect() only supports web requests.', 1220539734);
 		}
 
-		$arguments['L'] = $GLOBALS['TSFE']->sys_language_uid;
+		$arguments['L'] = $GLOBALS['TSFE']->sys_language_content;
 		if (\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SSL')) {
 			$this->uriBuilder->setAbsoluteUriScheme('https');
 		}
@@ -605,7 +605,6 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 						$configuration['options'][] = $packageOptions->getFirst()->getUid();
 						$configuration['packages'][$package->getUid()][] = $packageOptions->getFirst()->getUid();
 						$this->selectedOptions->attach($packageOptions->getFirst());
-						$this->selectedPackages->attach($package);
 					}
 				}
 			}
@@ -619,11 +618,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	protected function setSelectableConfigurations(&$current = NULL) {
-		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->getUid());
+		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->_getProperty('_localizedUid'));
 
 		// Overwrite for SKU-based configurations
 		if (!$this->cObj->isDynamicEcomProductConfigurator()) {
-			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedOptions);
+			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->_getProperty('_localizedUid'), $this->selectedOptions);
 		}
 	}
 
@@ -698,8 +697,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'requestFormAdditionalParams' => json_decode(
 				sprintf(
 					$this->settings['requestForm']['additionalParams'],
-					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(sprintf($ccPlainWrapper, $plain)),
-					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($configuration->getFrontendLabel()),
+					sprintf($ccPlainWrapper, $plain),
+					$configuration->getFrontendLabel(),
 					$summaryPlain
 				),
 				TRUE
@@ -710,8 +709,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			sprintf($ccWrapper, $code), sprintf($summaryHMTLTableWrapper, $summaryHTML), json_decode(
 				sprintf(
 					$this->settings['requestForm']['additionalParams'],
-					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS(sprintf($ccPlainWrapper, $plain)),
-					\TYPO3\CMS\Core\Utility\GeneralUtility::rawUrlEncodeJS($configuration->getFrontendLabel()),
+					sprintf($ccPlainWrapper, $plain),
+					$configuration->getFrontendLabel(),
 					$summaryPlain
 				),
 				TRUE
