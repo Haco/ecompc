@@ -200,7 +200,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'instructions' => $this->cObj->getBodytext(), // short instructions for user
 			'pid' => $GLOBALS['TSFE']->id,
 			'cObj' => $this->cObj->getUid(),
-			'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid
+			'sys_language_uid' => (int) $GLOBALS['TSFE']->sys_language_content
 		));
 		if ($this->showPriceLabels) {
 			$this->view->assignMultiple(array(
@@ -500,7 +500,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$processOptions = array();
 		// Fetch selectable options for current package
 		$this->getSelectableOptions($package, $processOptions);
-		if (!$processOptions)
+		if (count($processOptions) === 0)
 			return NULL;
 
 		// Fetch selected options for current package only

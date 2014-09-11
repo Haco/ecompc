@@ -172,6 +172,7 @@ return array(
 			),
 		),
 		'frontend_label' => array(
+			'l10n_mode' => 'prefixLangTitle',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.frontend_label',
 			'config' => array(
@@ -181,6 +182,7 @@ return array(
 			),
 		),
 		'prompt' => array(
+			'l10n_mode' => 'prefixLangTitle',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.prompt',
 			'config' => array(
@@ -190,6 +192,7 @@ return array(
 			),
 		),
 		'hint_text' => array(
+			'l10n_mode' => 'mergeIfNotBlank',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.hint_text',
 			'config' => array(
@@ -213,7 +216,7 @@ return array(
 			),
 		),
 		'image' => array(
-			'l10n_mode' => 'exclude',
+			'l10n_mode' => 'mergeIfNotBlank',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.image',
 			'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
@@ -246,7 +249,7 @@ return array(
 				),
 		),
 		'visible_in_frontend' => array(
-			'l10n_mode' => 'exclude',
+			'l10n_display' => 'defaultAsReadonly',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.visible_in_frontend',
 			'config' => array(
@@ -256,7 +259,7 @@ return array(
 		),
 		'multiple_select' => array(
 			'displayCond' => 'FIELD:percent_pricing:REQ:false',
-			'l10n_mode' => 'exclude',
+			'l10n_display' => 'defaultAsReadonly',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.multiple_select',
 			'config' => array(
@@ -266,7 +269,7 @@ return array(
 		),
 		'percent_pricing' => array(
 			'displayCond' => 'FIELD:multiple_select:REQ:false',
-			'l10n_mode' => 'exclude',
+			'l10n_display' => 'defaultAsReadonly',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.percent_pricing',
 			'config' => array(
@@ -276,7 +279,7 @@ return array(
 		),
 		'default_option' => array(
 			'displayCond' => 'FIELD:visible_in_frontend:REQ:false',
-			'l10n_mode' => 'exclude',
+			'l10n_display' => 'defaultAsReadonly',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.default_option',
 			'config' => array(

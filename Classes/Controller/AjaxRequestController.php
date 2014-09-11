@@ -79,7 +79,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			'action', 'pid', 'L', 'cObj', 'showPriceLabels', 'currency', 'pricing', 'cfgp', 'cfgres', 'content', 'package', 'packagesLinksInnerHTML', 'selcps', 'proceed'
 		));
 		parent::initializeView();
-		$this->view->assign('L', $GLOBALS['TSFE']->sys_language_uid);
+		$this->view->assign('L', (int) $GLOBALS['TSFE']->sys_language_content);
 	}
 
 	/**
@@ -152,7 +152,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		$package = $this->packageRepository->findByUid($configurationPackage);
 		$this->view->assignMultiple(array(
-			'content' => $this->renderTemplateView('', array('package' => $package, 'options' => $this->getPackageOptions($package))),
+			'content' => $this->renderTemplateView('', array('package' => $package, 'options' => $this->getPackageOptions($package), 'sys_language_uid' => $GLOBALS['TSFE']->sys_language_content)),
 			'selcps' => count((array) $this->selectedConfiguration['packages'])
 		));
 	}

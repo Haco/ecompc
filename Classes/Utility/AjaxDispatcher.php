@@ -87,6 +87,11 @@
 		/**
 		 * @var integer
 		 */
+		protected $language = 0;
+
+		/**
+		 * @var integer
+		 */
 		protected $pageType = 1407764086;
 
 		/**
@@ -139,6 +144,7 @@
 			$GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', $TYPO3_CONF_VARS, $pid, 0, TRUE );
 			$GLOBALS['TSFE']->fe_user = \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
 			$GLOBALS['TSFE']->id = $this->pageUid;
+			$GLOBALS['TSFE']->sys_language_content = $this->language;
 //          ATTENTION CAUSING 500 INTERNAL ERROR
 //			/** @var \TYPO3\CMS\Frontend\Page\PageRepository sys_page */
 //			$GLOBALS['TSFE']->sys_page = CoreUtility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
@@ -190,6 +196,7 @@
 
 			$this
 				->setPageUid(CoreUtility\GeneralUtility::_GP('id') ?: 1)
+				->setLanguage(CoreUtility\GeneralUtility::_GP('L') ?: 0)
 				->setPageType(CoreUtility\GeneralUtility::_GP('type') ?: 1)
 				->setVendorName($this->requestArguments['vendorName'] ?: 'S3b0')
 				->setExtensionName($this->requestArguments['extensionName'] ?: 'Ecompc')
@@ -288,6 +295,15 @@
 		 */
 		public function setPageUid($pageUid) {
 			$this->pageUid = CoreUtility\MathUtility::canBeInterpretedAsInteger($pageUid) ? CoreUtility\MathUtility::convertToPositiveInteger($pageUid) : 1;
+			return $this;
+		}
+
+		/**
+		 * @param int $language
+		 * @return \S3b0\Ecompc\Utility\AjaxDispatcher
+		 */
+		public function setLanguage($language) {
+			$this->language = $language;
 			return $this;
 		}
 

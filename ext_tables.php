@@ -14,6 +14,7 @@ $extKey = 'ecompc';
 $extendTca = array(
 	// Type def
 	'tx_' . $extKey . '_type' => array(
+		'l10n_display' => 'defaultAsReadonly',
 		'exclude' => 1,
 		'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.type',
 		'config' => array(
@@ -33,6 +34,7 @@ $extendTca = array(
 	),
 	// Packages selectable
 	'tx_' . $extKey . '_pckg' => array(
+		'l10n_display' => 'defaultAsReadonly',
 		'displayCond' => 'FIELD:tx_ecompc_type:>:-1',
 		'exclude' => 1,
 		'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.available_packages',
@@ -61,6 +63,7 @@ $extendTca = array(
 	),
 	// Configuration(s) available
 	'tx_' . $extKey . '_conf' => array(
+		'l10n_display' => 'defaultAsReadonly',
 		'displayCond' => array(
 			'AND' => array(
 				'FIELD:tx_ecompc_type:>:-1',
@@ -80,11 +83,11 @@ $extendTca = array(
 				'expandSingle' => 1,
 				'newRecordLinkAddTitle' => 1,
 				'levelLinksPosition' => 'bottom',
-				'showPossibleLocalizationRecords' => 1,
-				'showAllLocalizationLink' => 1,
+				'showPossibleLocalizationRecords' => 0,
+				'showAllLocalizationLink' => 0,
 			),
 			'behaviour' => array(
-				'localizationMode' => 'select',
+				'localizationMode' => 'keep',
 				'localizeChildrenAtParentLocalization' => 0,
 				'disableMovingChildrenWithParent' => 0,
 				'enableCascadingDelete' => 1

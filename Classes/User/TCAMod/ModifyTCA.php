@@ -310,11 +310,11 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Adding an item!
 		//$PA['items'][] = array($pObj->sL('Added label by PHP function|Tilfjet Dansk tekst med PHP funktion'), 999);
 
-		if (sizeof($PA['items']) && $PA['row']['pckg']) {
+		if (sizeof($PA['items']) && $PA['row']['packages']) {
 			$configurationPackages = array();
 			$referringOption = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_option', $PA['row']['ref_option'], 'pid,configuration_package');
 
-			$packages = array_map('intval', CoreUtility\GeneralUtility::trimExplode(',', $PA['row']['pckg']));
+			$packages = array_map('intval', CoreUtility\GeneralUtility::trimExplode(',', $PA['row']['packages']));
 
 			foreach ($PA['items'] as $item) {
 				$data = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_option', $item[1], '*');
@@ -342,7 +342,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 				$PA['items'][] = array($configurationPackage['label'], '--div--');
 				$PA['items'] = array_merge($PA['items'], $configurationPackage['items']);
 			}
-		} elseif (!$PA['row']['pckg']) {
+		} elseif (!$PA['row']['packages']) {
 			$PA['items'] = array();
 		}
 

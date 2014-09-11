@@ -39,9 +39,11 @@ class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * Set repository wide settings
 	 */
 	public function initializeObject() {
-		//$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
-		//$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
-		//$this->setDefaultQuerySettings($querySettings);
+//		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
+//		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
+//		$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
+//		$querySettings->setRespectSysLanguage(TRUE);  // Respect language
+//		$this->setDefaultQuerySettings($querySettings);
 	}
 
 	/**
