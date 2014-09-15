@@ -116,6 +116,7 @@ plugin.tx_ecompc {
 		requestForm {
 			pid = {$plugin.tx_ecompc.constants.requestForm.pid}
 			additionalParams = {$plugin.tx_ecompc.constants.requestForm.additionalParams}
+			additionalParamsQueryString = {$plugin.tx_ecompc.constants.requestForm.additionalParamsQueryString}
 			target = {$plugin.tx_ecompc.constants.requestForm.target}
 		}
 		log {
@@ -182,6 +183,7 @@ EcompcAjaxRequest {
 		debug = 0
 		no_cache = 1
 		additionalHeaders = Content-type:application/json|Cache-Control:no-cache, must-revalidate, max-age=0|Pragma:no-cache
+		linkVars = L
 	}
 
 	10 = USER

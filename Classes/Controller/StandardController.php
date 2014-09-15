@@ -400,7 +400,21 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->loggerRepository->add($logger);
 		$result = $this->getConfigurationResult(TRUE);
 		$this->feSession->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
-		$this->redirectToPage($this->settings['requestForm']['pid'], $result[2]);
+
+		// Build link & redirect
+		$linkConfiguration = array(
+			'returnLast' => 'url',
+			'parameter' => $this->settings['requestForm']['pid'],
+			'additionalParams' => $result[3],
+			'useCacheHash' => FALSE,
+			'addQueryString' => FALSE
+		);
+		$linkConfiguration['additionalParams'] .= '&L=' . $GLOBALS['TSFE']->sys_language_content;
+		/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer */
+		$contentObjectRenderer = $this->objectManager->get('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+		$uri = $contentObjectRenderer->typoLink('', $linkConfiguration);
+		$this->redirectToUri($uri);
+#		$this->redirectToPage($this->settings['requestForm']['pid'], $result[2]);
 	}
 
 	/**
@@ -506,7 +520,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Fetch selected options for current package only
 		$selectedOptions = NULL;
 		if (array_key_exists($package->getUid(), $this->selectedConfiguration['packages'])) {
-			$selectedOptions = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()]);
+			$selectedOptions = $this->optionRepository->findOptionsByUidList((array) $this->selectedConfiguration['packages'][$package->getUid()]);
 		}
 
 		// Include pricing for enabled users!
@@ -572,7 +586,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					if (!is_array($configuration['packages'][$package->getUid()]) || count((array) $configuration['packages'][$package->getUid()]) === 0) {
 						continue;
 					}
-					if ($selectedOptions = $this->optionRepository->findOptionsByUidList($configuration['packages'][$package->getUid()])) {
+					if ($selectedOptions = $this->optionRepository->findOptionsByUidList((array) $configuration['packages'][$package->getUid()])) {
 						foreach ($selectedOptions as $selectedOption) {
 							// @modes {0 : explicit deny, 1 : explicit allow}
 							$checkAgainstArray[] = $dependency->getMode() === 0 ? !$dependency->getPackageOptions($package)->contains($selectedOption) : $dependency->getPackageOptions($package)->contains($selectedOption);
@@ -669,14 +683,16 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$summaryPlain = '';
 		$summaryHTML = '';
 
+		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ($this->cObj->getEcompcPackagesFE() as $package) {
 			if (!$package->isVisibleInFrontend()) {
 				$code .= sprintf($ccSegmentWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getConfigurationCodeSegment());
 				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
 				$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($this->cObj->isStaticEcomProductConfigurator() ? '' : ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']'));
 				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($this->cObj->isStaticEcomProductConfigurator() ? '' : ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']'));
-			} elseif ($options = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()])) {
+			} elseif ($options = $this->optionRepository->findOptionsByUidList((array) $this->selectedConfiguration['packages'][$package->getUid()])) {
 				$optionsList = array();
+				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 				foreach ($options as $option) {
 					$code .= sprintf($ccSegmentWrapper, $option->getConfigurationPackage()->getFrontendLabel(), $option->getConfigurationCodeSegment());
 					$plain .= $option->getConfigurationCodeSegment();
@@ -714,6 +730,12 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$summaryPlain
 				),
 				TRUE
+			),
+			sprintf(
+				$this->settings['requestForm']['additionalParamsQueryString'],
+				sprintf($ccPlainWrapper, $plain),
+				$configuration->getFrontendLabel(),
+				$summaryPlain
 			)
 		) : sprintf($ccWrapper, $code);
 	}
@@ -784,7 +806,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					 *****************************************************************************************/
 					if ($package->isPercentPricing() && !$package->isMultipleSelect()) {
 						$currentConfigurationPrice = end($this->getConfigurationPrice());
-						$configurationPrice = $package->isSelected() ? floatval($currentConfigurationPrice / ($this->optionRepository->findOptionsByUidList($this->selectedConfiguration['packages'][$package->getUid()], 1)->getPricePercental() + 1)) : 0.0;
+						$configurationPrice = $package->isSelected() ? floatval($currentConfigurationPrice / ($this->optionRepository->findOptionsByUidList((array) $this->selectedConfiguration['packages'][$package->getUid()], 1)->getPricePercental() + 1)) : 0.0;
 						$selectedOptionPrice = floatval($currentConfigurationPrice - $configurationPrice);
 						if (array_key_exists($package->getUid(), $this->selectedConfiguration['packages']) && !($selectedOptions instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult && in_array($option, $selectedOptions->toArray()))) {
 							$option->setUnitPrice($optionIsActive ? $selectedOptionPrice : floatval($configurationPrice * $option->getPricePercental()));
@@ -814,7 +836,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 // TODO processing
 				/*
 				if ($firstRun && $this->cObj->isStaticEcomProductConfigurator() && $package->isSelected() && $this->selectedConfiguration['options']) {
-					$selectedOptions = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options']);
+					$selectedOptions = $this->optionRepository->findOptionsByUidList((array) $this->selectedConfiguration['options']);
 					if ($package->getSelectedOptions()->contains($option)) {
 
 					}

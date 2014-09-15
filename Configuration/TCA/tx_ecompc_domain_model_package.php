@@ -249,6 +249,7 @@ return array(
 				),
 		),
 		'visible_in_frontend' => array(
+			'l10n_mode' => 'mergeIfNotBlank',
 			'l10n_display' => 'defaultAsReadonly',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.visible_in_frontend',
@@ -258,8 +259,9 @@ return array(
 			)
 		),
 		'multiple_select' => array(
-			'displayCond' => 'FIELD:percent_pricing:REQ:false',
+			'l10n_mode' => 'mergeIfNotBlank',
 			'l10n_display' => 'defaultAsReadonly',
+			'displayCond' => 'FIELD:percent_pricing:REQ:false',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.multiple_select',
 			'config' => array(
@@ -268,8 +270,9 @@ return array(
 			)
 		),
 		'percent_pricing' => array(
-			'displayCond' => 'FIELD:multiple_select:REQ:false',
+			'l10n_mode' => 'mergeIfNotBlank',
 			'l10n_display' => 'defaultAsReadonly',
+			'displayCond' => 'FIELD:multiple_select:REQ:false',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.percent_pricing',
 			'config' => array(
@@ -278,8 +281,9 @@ return array(
 			)
 		),
 		'default_option' => array(
-			'displayCond' => 'FIELD:visible_in_frontend:REQ:false',
+			'l10n_mode' => 'mergeIfNotBlank',
 			'l10n_display' => 'defaultAsReadonly',
+			'displayCond' => 'FIELD:visible_in_frontend:REQ:false',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.default_option',
 			'config' => array(

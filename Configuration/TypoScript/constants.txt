@@ -33,7 +33,9 @@ plugin.tx_ecompc {
 			pid = 0
 			# cat=plugin.tx_ecompc//a2; type=string; label=Additional Params:JSON Array with placeholders %x$s
 			additionalParams = {"tx_powermail_pi1":{"field":{"1":"%1$s","2":"%2$s","3":"%3$s"}}}
-			# cat=plugin.tx_ecompc//a3; type=options[,_self,_top,_blank]; label=Target
+			# cat=plugin.tx_ecompc//a3; type=string; label=Additional Params Query String:Add Query String
+			additionalParamsQueryString = &tx_powermail_pi1[field][1]=%1$s&tx_powermail_pi1[field][2]=%2$s&tx_powermail_pi1[field][3]=%3$s
+			# cat=plugin.tx_ecompc//a4; type=options[,_self,_top,_blank]; label=Target
 			target = _self
 		}
 		log {

@@ -48,9 +48,10 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * Set repository wide settings
 	 */
 	public function initializeObject() {
-		//$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
-		//$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
-		//$this->setDefaultQuerySettings($querySettings);
+		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
+//		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
+//		$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
+//		$this->setDefaultQuerySettings($querySettings);
 	}
 
 	/**
@@ -60,10 +61,11 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface|\S3b0\Ecompc\Domain\Model\Option
 	 */
 	public function findOptionsByUidList(array $list, $getFirst = FALSE) {
-		if (!sizeof($list))
+		if (!count($list))
 			return NULL;
 
 		$query = $this->createQuery();
+		$query->getQuerySettings()->setRespectSysLanguage(FALSE);
 		$result = $query->matching(
 			$query->in('uid', $list)
 		)->execute();

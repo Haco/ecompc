@@ -26,6 +26,7 @@ namespace S3b0\Ecompc\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 
 /**
  * The repository for Contents (extending tt_content repo)
@@ -35,6 +36,9 @@ namespace S3b0\Ecompc\Domain\Repository;
  */
 class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
+	/**
+	 * @var array
+	 */
 	protected $defaultOrderings = array(
 		'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
 	);
@@ -46,6 +50,22 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
 		$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
 		$this->setDefaultQuerySettings($querySettings);
+	}
+
+	/**
+	 * @param null $uid
+	 * @param bool $respectSysLanguage
+	 *
+	 * @return null|object
+	 */
+	public function findByUid($uid = NULL, $respectSysLanguage = FALSE) {
+		if (!$uid)
+			return NULL;
+
+		$query = $this->createQuery();
+		$query->getQuerySettings()->setRespectStoragePage(FALSE);
+		$query->getQuerySettings()->setRespectSysLanguage($respectSysLanguage);
+		return $query->matching($query->equals('uid', $uid))->execute()->getFirst();
 	}
 
 	/**
