@@ -6,6 +6,12 @@
 			<trans-unit id="pi.title">
 				<source>Product Configurator</source>
 			</trans-unit>
+			<trans-unit id="pi2.title">
+				<source>Configuration Resolver</source>
+			</trans-unit>
+			<trans-unit id="pi2.wiz.description">
+				<source></source>
+			</trans-unit>
 			<trans-unit id="ff_sTitle_setup">
 				<source>Basic Setup</source>
 			</trans-unit>

@@ -65,12 +65,18 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			return NULL;
 
 		$query = $this->createQuery();
+		$query->getQuerySettings()->setRespectStoragePage(FALSE);
 		$query->getQuerySettings()->setRespectSysLanguage(FALSE);
 		$result = $query->matching(
 			$query->in('uid', $list)
 		)->execute();
 
 		return $getFirst ? $result->getFirst() : $result;
+	}
+
+	public function findByConfigurationPackage(\S3b0\Ecompc\Domain\Model\Package $package) {
+		$query = $this->createQuery();
+		return $query->matching($query->equals('configuration_package', $package))->execute();
 	}
 
 	/**

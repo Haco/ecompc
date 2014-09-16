@@ -11,11 +11,15 @@ $extKey = 'ecompc';
 	'Product Configurator'
 );
 
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+	$extKey,
+	'Resolver',
+	'Configuration Resolver'
+);
+
 $extendTca = array(
 	// Type def
 	'tx_' . $extKey . '_type' => array(
-		'l10n_mode' => 'mergeIfNotBlank',
-		'l10n_display' => 'defaultAsReadonly',
 		'exclude' => 1,
 		'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.type',
 		'config' => array(
@@ -28,9 +32,7 @@ $extendTca = array(
 				array('Dynamic [Config Code]', 1)
 			),
 			'size' => 1,
-			'minitems' => 1,
-			'eval' => '',
-			'default' => -1
+			'minitems' => 1
 		),
 	),
 	// Packages selectable

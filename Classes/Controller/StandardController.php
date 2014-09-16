@@ -167,7 +167,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		// Set price flag (displays pricing if TRUE)
 		$this->showPriceLabels = $this->settings['showPriceLabels'] ? count(array_intersect($distFeUserGroups, (array) $GLOBALS['TSFE']->fe_user->groupData['uid'])) : FALSE;
 		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
-		$this->configurationSessionStorageKey .= '-c' . $this->cObj->_getProperty('_localizedUid');
+		$this->configurationSessionStorageKey .= '-c' . $this->cObj->getPid();
 		// Get current configuration (Array: options=array(options)|packages=array(package => option(s)))
 		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey) ?: array(
 			'options' => array(),
@@ -384,6 +384,14 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->redirectToUri(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'));
 	}
 
+	/**
+	 * action request
+	 *
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+	 * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+	 * @return void
+	 */
 	public function requestAction() {
 		/** @var \S3b0\Ecompc\Domain\Model\Logger $logger */
 		$logger = $this->objectManager->get('S3b0\\Ecompc\\Domain\\Model\\Logger');
@@ -397,8 +405,13 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			$logger->setFeUser($this->frontendUserRepository->findByUid($GLOBALS['TSFE']->fe_user->user['uid']));
 		}
 
+		// Write to DB and persist to obtain a uid for current log
 		$this->loggerRepository->add($logger);
-		$result = $this->getConfigurationResult(TRUE);
+		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager */
+		$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+		$persistenceManager->add($logger);
+		$persistenceManager->persistAll();
+		$result = $this->getConfigurationResult(TRUE, $logger->getUid());
 		$this->feSession->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
 
 		// Build link & redirect
@@ -409,7 +422,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'useCacheHash' => FALSE,
 			'addQueryString' => FALSE
 		);
-		$linkConfiguration['additionalParams'] .= '&L=' . $GLOBALS['TSFE']->sys_language_content;
+		$linkConfiguration['additionalParams'] .= '&L=' . $GLOBALS['TSFE']->sys_language_content . '&txecmlid=' . $logger->getUid();
 		/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer */
 		$contentObjectRenderer = $this->objectManager->get('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$uri = $contentObjectRenderer->typoLink('', $linkConfiguration);
@@ -606,7 +619,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @param array $configuration
 	 * @return void
 	 */
-	protected function autoSetOptions(array &$configuration) {
+	private function autoSetOptions(array &$configuration) {
 		if ($packages = $this->cObj->getEcompcPackagesFE()) {
 			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 			foreach ($packages as $package) {
@@ -632,32 +645,33 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	protected function setSelectableConfigurations(&$current = NULL) {
-		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->_getProperty('_localizedUid'));
+		$current = $current ?: $this->configurationRepository->findByTtContentUid($this->cObj->getUid());
 
 		// Overwrite for SKU-based configurations
-		if (!$this->cObj->isDynamicEcomProductConfigurator()) {
-			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->_getProperty('_localizedUid'), $this->selectedOptions);
+		if ($this->cObj->isStaticEcomProductConfigurator()) {
+			$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedOptions);
 		}
 	}
 
 	/**
-	 * @param boolean $returnContentAndSkipAssignToView
+	 * @param boolean $returnArray
+	 * @param integer $loggerUid
 	 *
-	 * @return mixed
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+	 * @return mixed
 	 */
-	protected function getConfigurationResult($returnContentAndSkipAssignToView = FALSE) {
+	protected function getConfigurationResult($returnArray = FALSE, $loggerUid = 0) {
 		// In case of dynamic configurations get first configuration record...
 		if ($this->cObj->isDynamicEcomProductConfigurator()) {
-			return $this->getConfigurationCode($this->selectableConfigurations->getFirst(), $returnContentAndSkipAssignToView);
+			return $this->getConfigurationCode($this->selectableConfigurations->getFirst(), $returnArray, $loggerUid);
 		}
 
 		// ...otherwise check for suitable configurations and return result in case of one remaining, of not throw 404 Error
 		if ($this->selectableConfigurations->count() !== 1) {
 			$this->throwStatus(404, ExtbaseUtility\LocalizationUtility::translate('404.no_unique_sku_found', $this->extensionName));
 		} else {
-			return $this->getConfigurationCode($this->selectableConfigurations->getFirst(), $returnContentAndSkipAssignToView);
+			return $this->getConfigurationCode($this->selectableConfigurations->getFirst(), $returnArray, $loggerUid);
 		}
 	}
 
@@ -665,16 +679,18 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * set configuration code
 	 *
 	 * @param  \S3b0\Ecompc\Domain\Model\Configuration $configuration
-	 * @param  boolean                                 $returnContentAndSkipAssignToView
+	 * @param  boolean                                 $returnArray
+	 * @param  integer                                 $loggerUid
+	 *
 	 * @return string
 	 */
-	protected function getConfigurationCode(\S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnContentAndSkipAssignToView = FALSE) {
+	protected function getConfigurationCode(\S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
 		$ccWrapper = $this->cObj->isDynamicEcomProductConfigurator() && $configuration->getConfigurationCodePrefix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodePrefix', $this->extensionName) . '">' . $configuration->getConfigurationCodePrefix() . '</span>' : '';
 		$ccWrapper .= '%s';
 		$ccWrapper .= $this->cObj->isDynamicEcomProductConfigurator() && $configuration->getConfigurationCodeSuffix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodeSuffix', $this->extensionName) . '">' . $configuration->getConfigurationCodeSuffix() . '</span>' : '';
 		$ccPlainWrapper = $this->cObj->isDynamicEcomProductConfigurator() ? $configuration->getConfigurationCodePrefix() . '%s' . $configuration->getConfigurationCodeSuffix() : $ccWrapper;
 		$ccSegmentWrapper = '<span class="ecompc-syntax-help" title="%1$s">%2$s</span>';
-		$summaryPlainWrapper = '%1$s: %2$s\n';
+		$summaryPlainWrapper = '%1$s: %2$s' . PHP_EOL;
 		$summaryHMTLTableWrapper = '<table>%s</table>';
 		$summaryHTMLTableRowWrapper = '<tr><td><b>%1$s:</b></td><td>%2$s</td></tr>';
 
@@ -715,27 +731,32 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$this->settings['requestForm']['additionalParams'],
 					sprintf($ccPlainWrapper, $plain),
 					$configuration->getFrontendLabel(),
-					$summaryPlain
+					$summaryPlain,
+					$loggerUid
 				),
 				TRUE
 			)
 		));
 
-		return $returnContentAndSkipAssignToView ? array(
-			sprintf($ccWrapper, $code), sprintf($summaryHMTLTableWrapper, $summaryHTML), json_decode(
+		return $returnArray ? array(
+			sprintf($ccWrapper, $code),
+			sprintf($summaryHMTLTableWrapper, $summaryHTML),
+			/*json_decode(
 				sprintf(
 					$this->settings['requestForm']['additionalParams'],
 					sprintf($ccPlainWrapper, $plain),
 					$configuration->getFrontendLabel(),
-					$summaryPlain
+					$summaryPlain,
+					$loggerUid
 				),
 				TRUE
-			),
+			),*/
 			sprintf(
 				$this->settings['requestForm']['additionalParamsQueryString'],
 				sprintf($ccPlainWrapper, $plain),
 				$configuration->getFrontendLabel(),
-				$summaryPlain
+				$summaryPlain,
+				$loggerUid
 			)
 		) : sprintf($ccWrapper, $code);
 	}
@@ -845,32 +866,6 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				$parsedPackages[] = $package->getUid();
 			}
 		}
-	}
-
-	/**
-	 * @param float   $floatToFormat
-	 * @param boolean $signed
-	 *
-	 * @return string
-	 */
-	protected function formatCurrency($floatToFormat = 0.0, $signed = FALSE) {
-		$output = number_format($floatToFormat, 2, $this->currency['decimalSeparator'] ?: ',', $this->currency['thousandsSeparator'] ?: '.');
-		// Add algebraic sign if positive
-		if ($floatToFormat > 0 && $signed) {
-			$output = '+' . $output;
-		} elseif (number_format($floatToFormat, 2) == 0.00 && $signed) {
-			$output = '+' . $output;
-			//return \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('price.inclusive', 'ecompc');
-		}
-		if ($this->currency['symbol'] !== '') {
-			$currencySeparator = $this->currency['separateCurrency'] ?: ' ';
-			if ($this->currency['prependCurrency']) {
-				$output = $this->currency['symbol'] . $currencySeparator . $output;
-			} else {
-				$output .= $currencySeparator . $this->currency['symbol'];
-			}
-		}
-		return $output;
 	}
 
 }

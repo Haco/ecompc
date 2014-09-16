@@ -130,10 +130,10 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return string
+	 * @return array
 	 */
 	public function getSelectedConfiguration() {
-		return $this->selectedConfiguration;
+		return unserialize($this->selectedConfiguration);
 	}
 
 	/**

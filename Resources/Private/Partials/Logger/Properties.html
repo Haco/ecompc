@@ -1,0 +1,10 @@
+<tr>
+	<td><f:render partial="Misc/OptionList" arguments="{options:options}" /></td>
+	<f:if condition="{log.feUser}">
+		<td>{log.currency}</td>
+		<td>{log.price}</td>
+		<td>{log.feUser.name} [{log.feUser.username}]</td>
+	</f:if>
+	<td>{log.tstamp -> f:format.date(format:'r')}</td>
+	<td>{log.ip}</td>
+</tr>

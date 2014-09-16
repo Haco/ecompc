@@ -4,6 +4,9 @@ body {
 a:focus {
 	outline: 1px dotted black;
 }
+table.vtop tr td {
+	vertical-align: top;
+}
 .divider {
 	border-bottom: 1px solid #cccccc;
 	margin: 1em 0;
@@ -172,6 +175,7 @@ a:focus {
 }
 #tx-ecompc-canvas .ecom-configurator-result h2 {
 	color: #0083cb;
+	line-height: 2em;
 }
 #tx-ecompc-canvas .ecom-configurator-result h2 > small {
 	font-size: 1.5em;

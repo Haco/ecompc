@@ -49,6 +49,12 @@
 				'description'	=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi.wiz.description'),
 				'params'		=> '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=ecompc_configurator'
 			);
+			$wizardItems['plugins_tx_' . self::KEY . '_resolver'] = array(
+				'icon'			=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath(self::KEY) . 'ext_icon2.gif',
+				'title'			=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi2.title'),
+				'description'	=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi2.wiz.description'),
+				'params'		=> '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=ecompc_resolver'
+			);
 
 			return $wizardItems;
 		}

@@ -220,6 +220,32 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	}
 
 	/**
+	 * @param float   $floatToFormat
+	 * @param boolean $signed
+	 *
+	 * @return string
+	 */
+	protected function formatCurrency($floatToFormat = 0.0, $signed = FALSE) {
+		$output = number_format($floatToFormat, 2, $this->currency['decimalSeparator'] ?: ',', $this->currency['thousandsSeparator'] ?: '.');
+		// Add algebraic sign if positive
+		if ($floatToFormat > 0 && $signed) {
+			$output = '+' . $output;
+		} elseif (number_format($floatToFormat, 2) == 0.00 && $signed) {
+			$output = '+' . $output;
+			/*return ExtbaseUtility\LocalizationUtility::translate('price.inclusive', 'ecompc');*/
+		}
+		if ($this->currency['symbol'] !== '') {
+			$currencySeparator = $this->currency['separateCurrency'] ?: ' ';
+			if ($this->currency['prependCurrency']) {
+				$output = $this->currency['symbol'] . $currencySeparator . $output;
+			} else {
+				$output .= $currencySeparator . $this->currency['symbol'];
+			}
+		}
+		return $output;
+	}
+
+	/**
 	 * @param string                                     $controllerActionName
 	 * @param array                                      $arguments
 	 *

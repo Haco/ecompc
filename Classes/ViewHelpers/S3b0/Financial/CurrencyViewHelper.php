@@ -50,10 +50,11 @@ class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	 * @param boolean $separateCurrency (optional) Separate the currency sign from the number by a single space, defaults to true due to backwards compatibility
 	 * @param integer $decimals (optional) Set decimals places.
 	 * @param boolean $signed (optional) Select if algebraic sign should be added
+	 * @param boolean $zeroLabel (optional) If set a text like 'incl.' will be added instead of zero values
 	 * @return string the formatted amount.
 	 * @api
 	 */
-	public function render($currencySign = '', $decimalSeparator = ',', $thousandsSeparator = '.', $prependCurrency = FALSE, $separateCurrency = TRUE, $decimals = 2, $signed = TRUE) {
+	public function render($currencySign = '', $decimalSeparator = ',', $thousandsSeparator = '.', $prependCurrency = FALSE, $separateCurrency = TRUE, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE) {
 		$floatToFormat = $this->renderChildren();
 		if (empty($floatToFormat)) {
 			$floatToFormat = 0.0;
@@ -64,9 +65,10 @@ class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 		// Add algebraic sign if positive
 		if ($floatToFormat > 0 && $signed) {
 			$output = '+' . $output;
+		} elseif (number_format($floatToFormat, 2) == 0.00 && $zeroLabel) {
+			return \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('price.inclusive', 'ecompc');
 		} elseif (number_format($floatToFormat, 2) == 0.00 && $signed) {
 			$output = '+' . $output;
-			//return \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('price.inclusive', 'ecompc');
 		}
 
 		if ($currencySign !== '') {
