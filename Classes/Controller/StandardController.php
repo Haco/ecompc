@@ -422,7 +422,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'useCacheHash' => FALSE,
 			'addQueryString' => FALSE
 		);
-		$linkConfiguration['additionalParams'] .= '&L=' . $GLOBALS['TSFE']->sys_language_content . '&txecmlid=' . $logger->getUid();
+		$linkConfiguration['additionalParams'] .= '&L=' . $GLOBALS['TSFE']->sys_language_content;
 		/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer */
 		$contentObjectRenderer = $this->objectManager->get('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$uri = $contentObjectRenderer->typoLink('', $linkConfiguration);
@@ -690,13 +690,13 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$ccWrapper .= $this->cObj->isDynamicEcomProductConfigurator() && $configuration->getConfigurationCodeSuffix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodeSuffix', $this->extensionName) . '">' . $configuration->getConfigurationCodeSuffix() . '</span>' : '';
 		$ccPlainWrapper = $this->cObj->isDynamicEcomProductConfigurator() ? $configuration->getConfigurationCodePrefix() . '%s' . $configuration->getConfigurationCodeSuffix() : $ccWrapper;
 		$ccSegmentWrapper = '<span class="ecompc-syntax-help" title="%1$s">%2$s</span>';
-		$summaryPlainWrapper = '%1$s: %2$s' . PHP_EOL;
+		/*$summaryPlainWrapper = '%1$s: %2$s' . PHP_EOL;*/
 		$summaryHMTLTableWrapper = '<table>%s</table>';
 		$summaryHTMLTableRowWrapper = '<tr><td><b>%1$s:</b></td><td>%2$s</td></tr>';
 
 		$code = '';
 		$plain = '';
-		$summaryPlain = '';
+		/*$summaryPlain = '';*/
 		$summaryHTML = '';
 
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
@@ -704,7 +704,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			if (!$package->isVisibleInFrontend()) {
 				$code .= sprintf($ccSegmentWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getConfigurationCodeSegment());
 				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
-				$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($this->cObj->isStaticEcomProductConfigurator() ? '' : ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']'));
+				/*$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($this->cObj->isStaticEcomProductConfigurator() ? '' : ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']'));*/
 				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($this->cObj->isStaticEcomProductConfigurator() ? '' : ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']'));
 			} elseif ($options = $this->optionRepository->findOptionsByUidList((array) $this->selectedConfiguration['packages'][$package->getUid()])) {
 				$optionsList = array();
@@ -714,7 +714,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$plain .= $option->getConfigurationCodeSegment();
 					$optionsList[] = $option->getFrontendLabel() . ($this->cObj->isStaticEcomProductConfigurator() ? '' : ' [' . $option->getConfigurationCodeSegment() . ']');
 				}
-				$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), implode(PHP_EOL, $optionsList));
+				/*$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), implode(PHP_EOL, $optionsList));*/
 				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), implode('<br />', $optionsList));
 			}
 		}
@@ -731,7 +731,6 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$this->settings['requestForm']['additionalParams'],
 					sprintf($ccPlainWrapper, $plain),
 					$configuration->getFrontendLabel(),
-					$summaryPlain,
 					$loggerUid
 				),
 				TRUE
@@ -746,7 +745,6 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$this->settings['requestForm']['additionalParams'],
 					sprintf($ccPlainWrapper, $plain),
 					$configuration->getFrontendLabel(),
-					$summaryPlain,
 					$loggerUid
 				),
 				TRUE
@@ -755,7 +753,6 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				$this->settings['requestForm']['additionalParamsQueryString'],
 				sprintf($ccPlainWrapper, $plain),
 				$configuration->getFrontendLabel(),
-				$summaryPlain,
 				$loggerUid
 			)
 		) : sprintf($ccWrapper, $code);
