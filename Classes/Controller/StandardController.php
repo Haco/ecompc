@@ -418,7 +418,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$linkConfiguration = array(
 			'returnLast' => 'url',
 			'parameter' => $this->settings['requestForm']['pid'],
-			'additionalParams' => $result[3],
+			'additionalParams' => $result[2],
 			'useCacheHash' => FALSE,
 			'addQueryString' => FALSE
 		);
