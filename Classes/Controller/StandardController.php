@@ -700,7 +700,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$summaryHTML = '';
 
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-		foreach ($this->cObj->getEcompcPackagesFE() as $package) {
+		foreach ($this->cObj->getEcompcPackages() as $package) {
 			if (!$package->isVisibleInFrontend()) {
 				$code .= sprintf($ccSegmentWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getConfigurationCodeSegment());
 				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
