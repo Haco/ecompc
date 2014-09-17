@@ -422,6 +422,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'useCacheHash' => FALSE,
 			'addQueryString' => TRUE,
 			'addQueryString.' => array(
+				'method' => 'GET,POST',
 				'exclude' => 'tx_ecompc_configurator'
 			),
 			'forceAbsoluteUrl' => TRUE
