@@ -424,13 +424,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'addQueryString.' => array(
 				'method' => 'GET,POST',
 				'exclude' => 'tx_ecompc_configurator'
-			),
-			'forceAbsoluteUrl' => TRUE
+			)
 		);
-		/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer */
-		$contentObjectRenderer = $this->objectManager->get('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-		$uri = $contentObjectRenderer->typoLink('', $linkConfiguration);
-		$this->redirectToUri($uri);
+
+		$this->redirectToUri($this->configurationManager->getContentObject()->typoLink('', $linkConfiguration));
 #		$this->redirectToPage($this->settings['requestForm']['pid'], $result[2]);
 	}
 
