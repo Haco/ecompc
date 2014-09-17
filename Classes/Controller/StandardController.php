@@ -418,11 +418,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$linkConfiguration = array(
 			'returnLast' => 'url',
 			'parameter' => $this->settings['requestForm']['pid'],
-			'additionalParams' => $result[2],
+			'additionalParams' => $result[2] . '&L=' . $GLOBALS['TSFE']->sys_language_content,
 			'useCacheHash' => FALSE,
-			'addQueryString' => FALSE
+			'addQueryString' => FALSE,
+			'forceAbsoluteUrl' => TRUE
 		);
-		$linkConfiguration['additionalParams'] .= '&L=' . $GLOBALS['TSFE']->sys_language_content;
 		/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer */
 		$contentObjectRenderer = $this->objectManager->get('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$uri = $contentObjectRenderer->typoLink('', $linkConfiguration);
