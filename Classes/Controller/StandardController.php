@@ -796,7 +796,12 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 		// If argument package is set, fetch corresponding options only to improve performance
-		$options = $this->request->hasArgument('package') ? $this->optionRepository->findByConfigurationPackage($this->request->getArgument('package')) : $this->optionRepository->findAll();
+		if ($this->request->hasArgument('package') && ($this->request->getArgument('package') instanceof \S3b0\Ecompc\Domain\Model\Package || CoreUtility\MathUtility::canBeInterpretedAsInteger($this->request->getArgument('package')))) {
+			$package = $this->request->getArgument('package') instanceof \S3b0\Ecompc\Domain\Model\Package ? $this->request->getArgument('package') : $this->packageRepository->findByUid(CoreUtility\MathUtility::convertToPositiveInteger($this->request->getArgument('package')));
+			$options = $this->optionRepository->findByConfigurationPackage($package);
+		} else {
+			$options = $this->optionRepository->findAll();
+		}
 		if ($options) {
 			$parsedPackages = array();
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
