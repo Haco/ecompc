@@ -420,7 +420,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'parameter' => $this->settings['requestForm']['pid'],
 			'additionalParams' => $result[2] . '&L=' . $GLOBALS['TSFE']->sys_language_content,
 			'useCacheHash' => FALSE,
-			'addQueryString' => FALSE,
+			'addQueryString' => TRUE,
 			'addQueryString.' => array(
 				'exclude' => 'tx_ecompc_configurator'
 			),
