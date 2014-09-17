@@ -414,20 +414,18 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$result = $this->getConfigurationResult(TRUE, $logger->getUid());
 		$this->feSession->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
 
-		// Build link & redirect
+/*		// Build link & redirect
 		$linkConfiguration = array(
 			'returnLast' => 'url',
 			'parameter' => $this->settings['requestForm']['pid'],
 			'additionalParams' => $result[2] . '&L=' . $GLOBALS['TSFE']->sys_language_content,
-			'useCacheHash' => FALSE/*,
-			'addQueryString' => FALSE,
-			'forceAbsoluteUrl' => TRUE*/
-		);
+			'useCacheHash' => FALSE
+		);*/
 		/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer */
-		$contentObjectRenderer = $this->objectManager->get('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+/*		$contentObjectRenderer = $this->objectManager->get('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$uri = $contentObjectRenderer->typoLink('', $linkConfiguration);
-		$this->redirectToUri($uri);
-#		$this->redirectToPage($this->settings['requestForm']['pid'], $result[2]);
+		$this->redirectToUri($uri);*/
+		$this->redirectToPage($this->settings['requestForm']['pid'], $result[2]);
 	}
 
 	/**
@@ -740,7 +738,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		return $returnArray ? array(
 			sprintf($ccWrapper, $code),
 			sprintf($summaryHMTLTableWrapper, $summaryHTML),
-			/*json_decode(
+			json_decode(
 				sprintf(
 					$this->settings['requestForm']['additionalParams'],
 					sprintf($ccPlainWrapper, $plain),
@@ -748,12 +746,6 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$loggerUid
 				),
 				TRUE
-			),*/
-			sprintf(
-				$this->settings['requestForm']['additionalParamsQueryString'],
-				sprintf($ccPlainWrapper, $plain),
-				$configuration->getFrontendLabel(),
-				$loggerUid
 			)
 		) : sprintf($ccWrapper, $code);
 	}
