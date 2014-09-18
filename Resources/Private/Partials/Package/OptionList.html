@@ -1,7 +1,9 @@
 <f:for each="{options}" as="option" iteration="optionIterator">
-	<f:link.action action="setOption" arguments="{option:option,redirectAction:package.multipleSelect,unset:option.selected}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">
+	<!--<f:link.action action="setOption" arguments="{option:option,redirectAction:package.multipleSelect,unset:option.selected}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">-->
+	<a href="javascript:void(0)" onclick="updatePackage({pid}, {sys_language_uid -> f:format.number(decimals:0)}, {cObj}, {option.uid}, {option.selected -> f:format.number(decimals:0)})" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.selected -> f:format.number(decimals:0)}')}">
 		<f:render partial="Misc/SetOptionLinkInnerHTML" arguments="{_all}" />
-	</f:link.action>
+	</a>
+	<!--</f:link.action>-->
 	<span class="ecom-configurator-select-package-option-info-hint-box">
 		<span class="close-popover-x" title="Close Info Box">&times;</span>
 		<f:format.html>{option.hintText}</f:format.html>
@@ -10,7 +12,10 @@
 </f:for>
 
 <f:if condition="{package.selectedOptions -> f:count()}">
-	<f:link.action action="resetPackage" arguments="{package : package}" class="ecom-configurator-reset-button"><f:translate id="optionlist.reset_selection" /></f:link.action>
+	<a href="javascript:void(0)" onclick="resetPackage({pid}, {sys_language_uid -> f:format.number(decimals:0)}, {cObj}, {package.uid})" class="ecom-configurator-reset-button"><f:translate id="optionlist.reset_selection" /></a>
 </f:if>
-<div class="divider"></div>
-<f:if condition="{package.multipleSelect}"><f:link.action class="action-button-default" action="index"><f:translate id="optionlist.confirm_selection" /></f:link.action></f:if>
+
+<f:comment>
+	<div class="divider"></div>
+	<a href="javascript:void(0)" class="action-button-default" onclick="goBackToIndex()"><f:translate id="optionlist.confirm_selection" /></a>
+</f:comment>

@@ -39,6 +39,16 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $bodytext;
 
 	/**
+	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Page>
+	 */
+	protected $storage = NULL;
+
+	/**
+	 * @var int
+	 */
+	protected $recursive = 0;
+
+	/**
 	 * @var int
 	 */
 	protected $ecompcType = 0;
@@ -54,18 +64,18 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $ecompcConfigurations = NULL;
 
 	/**
-	 * ecompcBasePrice
+	 * ecompcBasePriceInDefaultCurrency
 	 *
 	 * @var float
 	 */
-	protected $ecompcBasePrice = 0.0;
+	protected $ecompcBasePriceInDefaultCurrency = 0.0;
 
 	/**
-	 * ecompcBasePriceList
+	 * ecompcBasePriceInForeignCurrencies
 	 *
 	 * @var string
 	 */
-	protected $ecompcBasePriceList = '';
+	protected $ecompcBasePriceInForeignCurrencies = '';
 
 	/**
 	 * __construct
@@ -84,6 +94,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	protected function initStorageObjects() {
+		$this->storage = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$this->ecompcPackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$this->ecompcConfigurations = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 	}
@@ -93,6 +104,54 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function getBodytext() {
 		return $this->bodytext;
+	}
+
+	/**
+	 * Adds a Storage
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Page $page
+	 * @return void
+	 */
+	public function addStorage(\S3b0\Ecompc\Domain\Model\Page $page) {
+		$this->storage->attach($page);
+	}
+
+	/**
+	 * Removes a Storage
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Page $page
+	 * @return void
+	 */
+	public function removeStorage(\S3b0\Ecompc\Domain\Model\Page $page) {
+		$this->storage->detach($page);
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Page> $storage
+	 */
+	public function getStorage() {
+		return $this->storage;
+	}
+
+	/**
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Page> $storage
+	 */
+	public function setStorage($storage) {
+		$this->storage = $storage;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getRecursive() {
+		return $this->recursive;
+	}
+
+	/**
+	 * @param int $recursive
+	 */
+	public function setRecursive($recursive) {
+		$this->recursive = $recursive;
 	}
 
 	/**
@@ -146,6 +205,27 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $ecompcPackages
+	 */
+	public function getEcompcPackagesFE() {
+		if ($this->ecompcPackages === NULL) {
+			$this->ecompcPackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+		if (!$this->ecompcPackages->count()) {
+			return NULL;
+		}
+
+		$return = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+		foreach ($this->ecompcPackages as $package) {
+			if ($package->isVisibleInFrontend())
+				$return->attach($package);
+		}
+
+		return $return;
+	}
+
+	/**
 	 * Adds a Configuration
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration
@@ -180,50 +260,98 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the ecompcBasePrice
+	 * Returns the ecompcBasePriceInDefaultCurrency
 	 *
-	 * @return float $ecompcBasePrice
+	 * @return float $ecompcBasePriceInDefaultCurrency
 	 */
-	public function getEcompcBasePrice() {
-		return $this->ecompcBasePrice;
+	public function getEcompcBasePriceInDefaultCurrency() {
+		return $this->ecompcBasePriceInDefaultCurrency;
 	}
 
 	/**
-	 * Sets the ecompcBasePrice
+	 * Sets the ecompcBasePriceInDefaultCurrency
 	 *
-	 * @param float $ecompcBasePrice
+	 * @param float $ecompcBasePriceInDefaultCurrency
 	 * @return void
 	 */
-	public function setEcompcBasePrice($ecompcBasePrice) {
-		$this->ecompcBasePrice = $ecompcBasePrice;
+	public function setEcompcBasePriceInDefaultCurrency($ecompcBasePriceInDefaultCurrency) {
+		$this->ecompcBasePriceInDefaultCurrency = $ecompcBasePriceInDefaultCurrency;
 	}
 
 	/**
-	 * Returns the ecompcBasePriceList
+	 * Returns the ecompcBasePriceInForeignCurrencies
 	 *
-	 * @return string $ecompcBasePriceList
+	 * @return string $ecompcBasePriceInForeignCurrencies
 	 */
-	public function getEcompcBasePriceList() {
-		$convArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->ecompcBasePriceList);
-		return $convArray['data']['sDEF']['lDEF'];
+	public function getEcompcBasePriceInForeignCurrencies() {
+		$converted2Array = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->ecompcBasePriceInForeignCurrencies);
+		return $converted2Array['data']['sDEF']['lDEF'];
 	}
 
 	/**
-	 * Sets the ecompcBasePriceList
+	 * Sets the ecompcBasePriceInForeignCurrencies
 	 *
-	 * @param string $ecompcBasePriceList
-	 * @return void
+	 * @param string $ecompcBasePriceInForeignCurrencies
+	 *
+*@return void
 	 */
-	public function setEcompcBasePriceList($ecompcBasePriceList) {
-		$this->ecompcBasePriceList = $ecompcBasePriceList;
+	public function setEcompcBasePriceInForeignCurrencies($ecompcBasePriceInForeignCurrencies) {
+		$this->ecompcBasePriceInForeignCurrencies = $ecompcBasePriceInForeignCurrencies;
 	}
 
+	/**
+	 * @param string $currency
+	 * @param float  $exchange
+	 *
+	 * @return float
+	 */
+	public function getPriceInCurrency($currency = 'default', $exchange = 0.00) {
+		if ($currency === 'default')
+			return $this->getEcompcBasePriceInDefaultCurrency();
+
+		$foreignCurrencies = $this->getEcompcBasePriceInForeignCurrencies();
+		$price = strlen($currency) === 3 && array_key_exists($currency, $foreignCurrencies) ? floatval($foreignCurrencies[$currency]['vDEF']) : 0.00;
+
+		return $price > 0 ? $price : ($this->getEcompcBasePriceInDefaultCurrency() * $exchange);
+	}
+
+	/**
+	 * @return boolean
+	 */
 	public function isDynamicEcomProductConfigurator() {
 		return $this->getEcompcType() === 1;
 	}
 
+	/**
+	 * @return boolean
+	 */
 	public function isStaticEcomProductConfigurator() {
 		return $this->getEcompcType() !== 1;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getStoragePidArray() {
+		$pidArray = array();
+
+		if ($this->getStorage() instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->getStorage()->count()) {
+			/** @var \S3b0\Ecompc\Domain\Model\Page $storage */
+			foreach ($this->getStorage() as $storage) {
+				/** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
+				$pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+				if ($rootLine = $pageRepository->getRootLine($storage->getUid())) {
+					$limit = $this->getRecursive() < count($rootLine) ? $this->getRecursive() + 1 : count($rootLine);
+					for ($i = 0; $i < $limit; $i++) {
+						$current = current($rootLine);
+						$pidArray[] = $current['uid'];
+						next($rootLine);
+					}
+				}
+			}
+		}
+
+		return array_unique($pidArray);
 	}
 
 }

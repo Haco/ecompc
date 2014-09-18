@@ -18,11 +18,11 @@ Otherwise your changes will be overwritten the next time you save the extension 
 	<div class="select-region-wrap">
 		<h2><f:translate id="selectregion.choose_text" /></h2>
 		<div class="select-region-currencies">
-			<f:for each="{currencies}" as="currency">
-				<f:link.action action="index" arguments="{currency: currency.key}" class="selectregion-choose-flag">
-					<f:image src="{currency.flagIcon}" alt="{currency.region} - {currency.long}" width="200" /><br />
-					<f:translate id="{currency.llRef}" default="{currency.region}" /> ( {currency.symbol} )
-				</f:link.action>
+			<f:for each="{currencies}" as="currencyTS">
+				<f:link.page additionalParams="{tx_ecompc_configurator:'{currency:currencyTS.key}'}" noCacheHash="1" class="selectregion-choose-flag">
+					<f:image src="{currencyTS.flagIcon}" alt="{currencyTS.region} - {currencyTS.long}" width="200" /><br />
+					<f:translate id="{currencyTS.llRef}" default="{currencyTS.region}" /> ( {currencyTS.symbol} )
+				</f:link.page>
 			</f:for>
 		</div>
 

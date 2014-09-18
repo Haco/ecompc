@@ -36,7 +36,6 @@ return array(
 			'fe_group' => 'fe_group'
 		),
 		'searchFields' => 'backend_label,frontend_label,prompt,hint_text,image,visible_in_frontend,multiple_select,default_option,',
-		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ecompc') . 'Configuration/TCA/Package.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_package.png'
 	),
 	'interface' => array(
@@ -173,6 +172,7 @@ return array(
 			),
 		),
 		'frontend_label' => array(
+			'l10n_mode' => 'prefixLangTitle',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.frontend_label',
 			'config' => array(
@@ -182,6 +182,7 @@ return array(
 			),
 		),
 		'prompt' => array(
+			'l10n_mode' => 'prefixLangTitle',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.prompt',
 			'config' => array(
@@ -191,6 +192,7 @@ return array(
 			),
 		),
 		'hint_text' => array(
+			'l10n_mode' => 'mergeIfNotBlank',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.hint_text',
 			'config' => array(
@@ -214,7 +216,7 @@ return array(
 			),
 		),
 		'image' => array(
-			'l10n_mode' => 'exclude',
+			'l10n_mode' => 'mergeIfNotBlank',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.image',
 			'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
@@ -247,7 +249,7 @@ return array(
 				),
 		),
 		'visible_in_frontend' => array(
-			'l10n_mode' => 'exclude',
+			'l10n_mode' => 'mergeIfNotBlank',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.visible_in_frontend',
 			'config' => array(
@@ -256,8 +258,8 @@ return array(
 			)
 		),
 		'multiple_select' => array(
+			'l10n_mode' => 'mergeIfNotBlank',
 			'displayCond' => 'FIELD:percent_pricing:REQ:false',
-			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.multiple_select',
 			'config' => array(
@@ -266,8 +268,8 @@ return array(
 			)
 		),
 		'percent_pricing' => array(
+			'l10n_mode' => 'mergeIfNotBlank',
 			'displayCond' => 'FIELD:multiple_select:REQ:false',
-			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.percent_pricing',
 			'config' => array(
@@ -276,14 +278,14 @@ return array(
 			)
 		),
 		'default_option' => array(
+			'l10n_mode' => 'mergeIfNotBlank',
 			'displayCond' => 'FIELD:visible_in_frontend:REQ:false',
-			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.default_option',
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'tx_ecompc_domain_model_option',
-				'foreign_table_where' => 'AND tx_ecompc_domain_model_option.pid=###CURRENT_PID### AND NOT tx_ecompc_domain_model_option.deleted AND tx_ecompc_domain_model_option.sys_language_uid IN (-1,0) AND tx_ecompc_domain_model_option.configuration_package=###THIS_UID### ORDER BY tx_ecompc_domain_model_option.frontend_label, tx_ecompc_domain_model_option.backend_label',
+				'foreign_table_where' => 'AND tx_ecompc_domain_model_option.pid=###CURRENT_PID### AND NOT tx_ecompc_domain_model_option.deleted AND tx_ecompc_domain_model_option.sys_language_uid IN (-1,0) AND tx_ecompc_domain_model_option.configuration_package IN (###THIS_UID###,###REC_FIELD_l10n_parent###) ORDER BY tx_ecompc_domain_model_option.frontend_label, tx_ecompc_domain_model_option.backend_label',
 				'items' => array(
 					array($extTranslationPath . 'select.prompt', '')
 				),

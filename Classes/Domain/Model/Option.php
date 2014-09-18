@@ -36,6 +36,11 @@ namespace S3b0\Ecompc\Domain\Model;
 class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
+	 * @var int
+	 */
+	protected $sorting = 0;
+
+	/**
 	 * @var string
 	 */
 	protected $backendLabel = '';
@@ -123,6 +128,20 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	protected function initStorageObjects() {
 		$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getSorting() {
+		return $this->sorting;
+	}
+
+	/**
+	 * @param int $sorting
+	 */
+	public function setSorting($sorting) {
+		$this->sorting = $sorting;
 	}
 
 	/**
@@ -372,14 +391,14 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param float  $exchange
 	 * @return float
 	 */
-	public function getPriceInCurrency($currency = 'default', $exchange = 0.00) {
-		if ($currency === 'default')
+	public function getPriceInCurrency($currency = 'EUR', $exchange = 0.00) {
+		if ($currency === 'EUR')
 			return $this->getPrice();
 
 		$priceList = $this->getPriceList();
 		$price = strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
 
-		return $price > 0 ? $price : $this->getPrice() * $exchange;
+		return $price > 0 ? $price : ($this->getPrice() * $exchange);
 	}
 
 }

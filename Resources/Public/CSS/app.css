@@ -4,9 +4,21 @@ body {
 a:focus {
 	outline: 1px dotted black;
 }
+table.vtop tr td {
+	vertical-align: top;
+}
 .divider {
 	border-bottom: 1px solid #cccccc;
 	margin: 1em 0;
+}
+#tx-ecompc-ajax-loader.ajaxloader {
+	background: rgba(255, 255, 255, .8) url("../../../../../../typo3/sysext/t3skin/images/spinner/big-f0f0f0.gif") center center no-repeat scroll;
+	height: 100%;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 1000;
 }
 #tx-ecompc-canvas .action-button-default {
 	display: inline-block;
@@ -28,6 +40,9 @@ a:focus {
 	font-size: 1em;
 	*display: inline;
 	zoom: 1
+}
+#tx-ecompc-canvas .action-button-default#tx-ecompc-ajax-header-backlink {
+	display: none;
 }
 #tx-ecompc-canvas .action-button-default:hover,
 #tx-ecompc-canvas .action-button-default:focus {
@@ -134,7 +149,7 @@ a:focus {
 #tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
 	padding-left: 40px;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-configprice {
+#tx-ecompc-canvas .tx-ecompc-configurator-head #tx-ecompc-config-header-cfgp {
 	color: #0083cb;
 	font-weight: bold;
 }
@@ -160,6 +175,7 @@ a:focus {
 }
 #tx-ecompc-canvas .ecom-configurator-result h2 {
 	color: #0083cb;
+	line-height: 2em;
 }
 #tx-ecompc-canvas .ecom-configurator-result h2 > small {
 	font-size: 1.5em;

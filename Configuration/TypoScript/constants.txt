@@ -12,8 +12,8 @@ plugin.tx_ecompc {
 		storagePid =
 	}
 	constants {
-		# cat=plugin.tx_ecompc//x10; type=boolean; label=Enable pricing:Show pricing if set (master switch!)
-		enablePricing = 1
+		# cat=plugin.tx_ecompc//x10; type=boolean; label=Enable price labels:Show price labels if set (master switch!)
+		showPriceLabels = 1
 		currency.default {
 			# cat=plugin.tx_ecompc//b2; type=string; label=Default currency [ISO 4217 Currency Codes]
 			short = EUR
@@ -31,10 +31,18 @@ plugin.tx_ecompc {
 		requestForm {
 			# cat=plugin.tx_ecompc//a1; type=int; label=Form pid:Page uid for request form
 			pid = 0
-			# cat=plugin.tx_ecompc//a2; type=string; label=Additional Params:JSON Array with placeholders %x$s
-			additionalParams = {"tx_powermail_pi1":{"field":{"1":"%1$s","2":"%2$s","3":"%3$s"}}}
-			# cat=plugin.tx_ecompc//a3; type=options[,_top,_blank]; label=Target
-			target = _blank
+			# cat=plugin.tx_ecompc//a2; type=string; label=Additional Params:JSON Array with placeholders %x$s [f1:code|f2:name|f3:logUid]
+			additionalParams = {"tx_powermail_pi1":{"field":{"1":"%1$s","2":"%2$s"}},"txecmlog":"%3$u"}
+			# cat=plugin.tx_ecompc//a3; type=string; label=Additional Params Query String:Add Query String [f1:code|f2:name|f3:logUid]
+			additionalParamsQueryString = &tx_powermail_pi1[field][1]=%1$s&tx_powermail_pi1[field][2]=%2$s&txecmlog=%3$u
+			# cat=plugin.tx_ecompc//a4; type=options[,_self,_top,_blank]; label=Target
+			target = _self
 		}
+		log {
+			# cat=plugin.tx_ecompc//a01; type=options[0,1,2,3,4]; label=IP parts count:Parts of IP to track. Value 4 would track full IP, 0 instead would not track any.
+			ipParts = 2
+		}
+		# cat=plugin.tx_ecompc//a3; type=string; label=Pages to add CSS/JS Files to:Separate pids by pipe "|"
+		piPages = 0
 	}
 }

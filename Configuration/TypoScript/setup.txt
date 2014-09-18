@@ -13,10 +13,40 @@ config.tx_extbase {
 					columns {
 						bodytext.mapOnProperty = bodytext
 						tx_ecompc_type.mapOnProperty = ecompcType
-						tx_ecompc_packages.mapOnProperty = ecompcPackages
-						tx_ecompc_configurations.mapOnProperty = ecompcConfigurations
-						tx_ecompc_base_price.mapOnProperty = ecompcBasePrice
-						tx_ecompc_base_price_list.mapOnProperty = ecompcBasePriceList
+						tx_ecompc_pckg.mapOnProperty = ecompcPackages
+						tx_ecompc_conf.mapOnProperty = ecompcConfigurations
+						tx_ecompc_bpdc.mapOnProperty = ecompcBasePriceInDefaultCurrency
+						tx_ecompc_bpfc.mapOnProperty = ecompcBasePriceInForeignCurrencies
+						pages.mapOnProperty = storage
+						recursive.mapOnProperty = recursive
+					}
+				}
+			}
+			S3b0\Ecompc\Domain\Model\Page {
+				mapping {
+					tableName = pages
+				}
+			}
+			S3b0\Ecompc\Domain\Model\Logger {
+				mapping {
+					tableName = tx_ecompc_domain_model_logger
+					columns {
+						ses_id.mapOnProperty = sesId
+						tstamp.mapOnProperty = tstamp
+						selected_configuration.mapOnProperty = selectedConfiguration
+						configuration.mapOnProperty = configuration
+						currency.mapOnProperty = currency
+						price.mapOnProperty = price
+						ip_address.mapOnProperty = ip
+						fe_user.mapOnProperty = feUser
+					}
+				}
+			}
+			S3b0\Ecompc\Domain\Model\Option {
+				mapping {
+					tableName = tx_ecompc_domain_model_option
+					columns {
+						sorting.mapOnProperty = sorting
 					}
 				}
 			}
@@ -41,10 +71,10 @@ plugin.tx_ecompc {
 		# rewrittenPropertyMapper = 1
 	}
 	settings {
-		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion
-		enablePricing = {$plugin.tx_ecompc.constants.enablePricing}
+		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion;Standard->request
+		showPriceLabels = {$plugin.tx_ecompc.constants.showPriceLabels}
 		currency {
-			default {
+			def {
 				long = {$plugin.tx_ecompc.constants.currency.default.long}
 				short = {$plugin.tx_ecompc.constants.currency.default.short}
 				symbol = {$plugin.tx_ecompc.constants.currency.default.symbol}
@@ -86,7 +116,11 @@ plugin.tx_ecompc {
 		requestForm {
 			pid = {$plugin.tx_ecompc.constants.requestForm.pid}
 			additionalParams = {$plugin.tx_ecompc.constants.requestForm.additionalParams}
+			additionalParamsQueryString = {$plugin.tx_ecompc.constants.requestForm.additionalParamsQueryString}
 			target = {$plugin.tx_ecompc.constants.requestForm.target}
+		}
+		log {
+			ipParts = {$plugin.tx_ecompc.constants.log.ipParts}
 		}
 	}
 }
@@ -94,14 +128,17 @@ plugin.tx_ecompc {
 ##############################
 # JavaScript and CSS section #
 ##############################
+[globalVar = TSFE:id = {$plugin.tx_ecompc.constants.piPages}]
 page.includeCSSLibs {
 	ecompc = EXT:ecompc/Resources/Public/CSS/app.css
 	ecompc.import = 1
 }
 
 page.includeJSFooterlibs {
-	ecompcJS = EXT:ecompc/Resources/Public/JS/app.js
+	ecompcAppJS = EXT:ecompc/Resources/Public/JS/m.ap.js
+	ecompcAjaxJS = EXT:ecompc/Resources/Public/JS/m.ax.js
 }
+[global]
 
 plugin.tx_ecompc._CSS_DEFAULT_STYLE (
 	textarea.f3-form-error {
@@ -136,3 +173,39 @@ plugin.tx_ecompc._CSS_DEFAULT_STYLE (
 	}
 
 )
+
+EcompcAjaxRequest = PAGE
+EcompcAjaxRequest {
+	typeNum = 1407764086
+
+	config {
+		disableAllHeaderCode = 1
+		xhtml_cleaning = 0
+		admPanel = 0
+		debug = 0
+		no_cache = 1
+		additionalHeaders = Content-type:application/json|Cache-Control:no-cache, must-revalidate, max-age=0|Pragma:no-cache
+		linkVars = L
+	}
+
+	10 = USER
+	10 {
+		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+		vendorName = S3b0
+		extensionName = Ecompc
+		pluginName = Configurator
+		controller = AjaxRequest
+		switchableControllerActions {
+			AjaxRequest {
+				1 = updatePackages
+				2 = selectPackageOptions
+				3 = setOption
+				4 = resetPackage
+			}
+		}
+	}
+
+	view < plugin.tx_ecompc.view
+	persistence < plugin.tx_ecompc.persistence
+	settings < plugin.tx_ecompc.settings
+}

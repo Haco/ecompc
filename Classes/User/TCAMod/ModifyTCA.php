@@ -154,7 +154,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		$contentElement = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'tx_ecompc_type,tx_ecompc_packages');
+		$contentElement = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'tx_ecompc_type,tx_ecompc_pckg');
 		if (CoreUtility\MathUtility::convertToPositiveInteger($contentElement['tx_ecompc_type']) === 1)
 			return '';
 
@@ -163,7 +163,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Prepare some values:
 		$config = $PA['fieldConf']['config'];
 
-		$configurationPackages = $contentElement['tx_ecompc_packages'] ? BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_package', '1', '1', 'AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0) AND uid IN (' . $contentElement['tx_ecompc_packages'] . ')') : null;
+		$configurationPackages = $contentElement['tx_ecompc_pckg'] ? BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_package', '1', '1', 'AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0) AND uid IN (' . $contentElement['tx_ecompc_pckg'] . ')') : null;
 
 		// Fill items Array manually
 		$selItems = $this->initItemArray($PA['fieldConf']);
@@ -172,7 +172,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		if ($configurationPackages instanceof \ArrayAccess || is_array($configurationPackages)) {
 			foreach ($configurationPackages as $configurationPackage) {
 				$selItems[] = array($configurationPackage['backend_label'] ?: $configurationPackage['frontend_label'], '--div--');
-				if ($configurationOptions = BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_option', 'configuration_package', $configurationPackage['uid'], 'AND NOT deleted AND sys_language_uid IN (-1,0) ORDER BY tx_ecompc_domain_model_option.frontend_label, tx_ecompc_domain_model_option.backend_label')) {
+				if ($configurationOptions = BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_option', 'configuration_package', $configurationPackage['uid'], 'AND NOT deleted AND sys_language_uid IN (-1,0) ORDER BY tx_ecompc_domain_model_option.sorting')) {
 					foreach ($configurationOptions as $configurationOption) {
 						$addItem = array($this->getLabelforTableOption($configurationOption), $configurationOption['uid'], 'clear.gif', '', '', $rowIndex, 'radio');
 						if ($configurationPackage['multiple_select']) {

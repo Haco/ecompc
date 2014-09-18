@@ -26,62 +26,33 @@ namespace S3b0\Ecompc\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 
 /**
- * The repository for Contents (extending tt_content repo)
- *
  * @package S3b0
  * @subpackage Ecompc
  */
-class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class LoggerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 	/**
-	 * @var array
-	 */
-	protected $defaultOrderings = array(
-		'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
-	);
-
-	/**
-	 * Set repository wide settings
+	 * Repository wide settings
 	 */
 	public function initializeObject() {
+		/** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface */
 		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
-		$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
+		$querySettings->setRespectStoragePage(FALSE);
+		// $querySettings->setStoragePageIds(array(0));
 		$this->setDefaultQuerySettings($querySettings);
 	}
 
 	/**
-	 * @param null $uid
-	 * @param bool $respectSysLanguage
+	 * Replaces an existing object with the same identifier by the given object
 	 *
-	 * @return null|object
+	 * @param object $modifiedObject The modified object
+	 * @return void
+	 * @api
 	 */
-	public function findByUid($uid = NULL, $respectSysLanguage = FALSE) {
-		if (!$uid)
-			return NULL;
-
-		$query = $this->createQuery();
-		$query->getQuerySettings()->setRespectStoragePage(FALSE);
-		$query->getQuerySettings()->setRespectSysLanguage($respectSysLanguage);
-		return $query->matching($query->equals('uid', $uid))->execute()->getFirst();
+	public function update($modifiedObject) {
+		$modifiedObject->setTstamp(time());
+		parent::update($modifiedObject);
 	}
-
-	/**
-	 * @return boolean
-	 */
-	public function hasDuplicateContentElementsWithPlugin() {
-		$query = $this->createQuery();
-
-		return $query
-			->matching(
-				$query->logicalAnd(
-					$query->equals('pid', $GLOBALS['TSFE']->id),
-					$query->equals('list_type', 'ecompc_configurator')
-				)
-			)
-			->execute()->count() > 1;
-	}
-
 }

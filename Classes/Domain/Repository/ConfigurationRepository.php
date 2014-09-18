@@ -59,6 +59,16 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 		)->execute();
 	}
 
+	public function findByTtContentUid($uid) {
+		if (!$uid)
+			return NULL;
+
+		$query = $this->createQuery();
+		return $query->matching(
+			$query->equals('tt_content_uid', $uid)
+		)->execute();
+	}
+
 	/**
 	 * Returns configurations containing latest options selected! @use for SKU-based configurators
 	 *

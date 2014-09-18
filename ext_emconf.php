@@ -16,15 +16,16 @@ $EM_CONF['ecompc'] = array(
 	'category' => 'plugin',
 	'author' => 'Sebastian Iffland',
 	'author_email' => 'sebastian.iffland@ecom-ex.com',
-	'state' => 'alpha',
+	'state' => 'beta',
 	'internal' => '',
-	'uploadfolder' => '1',
+	'uploadfolder' => '0',
 	'createDirs' => '',
-	'clearCacheOnLoad' => 0,
-	'version' => '',
+	'clearCacheOnLoad' => 1,
+	'version' => '0.2.1',
 	'constraints' => array(
 		'depends' => array(
 			'typo3' => '6.2',
+			'php' => '5.4.0-5.5.99'
 		),
 		'conflicts' => array(
 		),
