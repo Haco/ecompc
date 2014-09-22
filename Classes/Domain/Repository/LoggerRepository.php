@@ -40,7 +40,6 @@ class LoggerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		/** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface */
 		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
 		$querySettings->setRespectStoragePage(FALSE);
-		// $querySettings->setStoragePageIds(array(0));
 		$this->setDefaultQuerySettings($querySettings);
 	}
 
@@ -52,7 +51,9 @@ class LoggerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @api
 	 */
 	public function update($modifiedObject) {
-		$modifiedObject->setTstamp(time());
+		if ($modifiedObject instanceof \S3b0\Ecompc\Domain\Model\Logger) {
+			$modifiedObject->setTstamp(time());
+		}
 		parent::update($modifiedObject);
 	}
 }

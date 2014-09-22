@@ -37,7 +37,9 @@ use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 	/**
-	 * @var array
+	 * Sets the default orderings
+	 *
+	 * @var array $defaultOrderings
 	 */
 	protected $defaultOrderings = array(
 		'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
@@ -55,33 +57,29 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	/**
 	 * @param null $uid
 	 * @param bool $respectSysLanguage
+	 * @param bool $respectStoragePage
 	 *
 	 * @return null|object
 	 */
-	public function findByUid($uid = NULL, $respectSysLanguage = FALSE) {
-		if (!$uid)
+	public function findByUid($uid = NULL, $respectSysLanguage = FALSE, $respectStoragePage = FALSE) {
+		if (!(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)))
 			return NULL;
 
 		$query = $this->createQuery();
-		$query->getQuerySettings()->setRespectStoragePage(FALSE);
+		$query->getQuerySettings()->setRespectStoragePage($respectStoragePage);
 		$query->getQuerySettings()->setRespectSysLanguage($respectSysLanguage);
+
 		return $query->matching($query->equals('uid', $uid))->execute()->getFirst();
 	}
 
 	/**
+	 * @param  string $plugin
 	 * @return boolean
 	 */
-	public function hasDuplicateContentElementsWithPlugin() {
+	public function hasDuplicateContentElementsWithPlugin($plugin = 'ecompc_configurator') {
 		$query = $this->createQuery();
 
-		return $query
-			->matching(
-				$query->logicalAnd(
-					$query->equals('pid', $GLOBALS['TSFE']->id),
-					$query->equals('list_type', 'ecompc_configurator')
-				)
-			)
-			->execute()->count() > 1;
+		return $query->matching($query->logicalAnd($query->equals('pid', $GLOBALS['TSFE']->id), $query->equals('list_type', $plugin)))->execute()->count() > 1;
 	}
 
 }

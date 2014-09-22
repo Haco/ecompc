@@ -36,47 +36,35 @@ namespace S3b0\Ecompc\Domain\Repository;
 class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 	/**
-	 * Set repository wide settings
-	 */
-	public function initializeObject() {
-//		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
-//		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
-//		$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
-//		$querySettings->setRespectSysLanguage(TRUE);  // Respect language
-//		$this->setDefaultQuerySettings($querySettings);
-	}
-
-	/**
-	 * @param array $list
+	 * @param array $uidList
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function findPackagesByUidList(array $list) {
-		if (!sizeof($list))
+	public function findPackagesByUidList(array $uidList) {
+		if (!count($uidList))
 			return NULL;
 
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+		$db = $GLOBALS['TYPO3_DB'];
 		$query = $this->createQuery();
-		return $query->matching(
-			$query->in('uid', $list)
-		)->execute();
+
+		return $query->matching($query->in('uid', $db->cleanIntArray($uidList)))->execute();
 	}
 
 	/**
-	 * @param array $list
+	 * @param array $uidList
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function findVisiblePackagesByUidList(array $list) {
-		if (!sizeof($list))
+	public function findVisiblePackagesByUidList(array $uidList) {
+		if (!count($uidList))
 			return NULL;
 
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+		$db = $GLOBALS['TYPO3_DB'];
 		$query = $this->createQuery();
-		return $query->matching(
-			$query->logicalAnd(
-				$query->in('uid', $list),
-				$query->equals('visible_in_frontend', 1)
-			)
-		)->execute();
+
+		return $query->matching($query->logicalAnd($query->in('uid', $db->cleanIntArray($uidList)), $query->equals('visible_in_frontend', 1)))->execute();
 	}
 
 }
