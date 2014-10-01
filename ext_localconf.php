@@ -5,14 +5,28 @@ if (!defined('TYPO3_MODE')) {
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 	'S3b0.' . $_EXTKEY,
-	'Configurator',
+	'configurator_dynamic',
 	array(
-		'Standard' => 'index,reset,selectRegion,request',
+		'DynamicConfiguration' => 'index,reset,selectRegion,request',
 		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
 	),
 	// non-cacheable actions
 	array(
-		'Standard' => 'index,reset,selectRegion,request',
+		'DynamicConfiguration' => 'index,reset,selectRegion,request',
+		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+	)
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+	'S3b0.' . $_EXTKEY,
+	'configurator_sku',
+	array(
+		'SkuConfiguration' => 'index,reset,selectRegion,request',
+		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+	),
+	// non-cacheable actions
+	array(
+		'SkuConfiguration' => 'index,reset,selectRegion,request',
 		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
 	)
 );

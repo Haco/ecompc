@@ -30,15 +30,19 @@ Otherwise your changes will be overwritten the next time you save the extension 
 			<f:for each="{packages}" as="package" iteration="packageIterator">
 
 				<f:if condition="{package.visibleInFrontend}">
+					<div id="tx-ecompc-package-{package.uid}">
 					<a href="" data-pckg-state="{package.active -> f:format.number(decimals: 0)}" data-cObj="{cObj}" data-package="{package.uid}" data-page="{pid}" data-lang="{sys_language_uid -> f:format.number(decimals:0)}" class="ecom-configurator-package-box {f:if(condition:package.inactive,then:'in')}active-package" id="tx-ecompc-configure-package-{package.uid}" tabindex="{packageIterator.cycle}">
 						<f:render partial="Package/LinkInnerHMTL" arguments="{package : package, currency : currency, showPriceLabels : showPriceLabels}"/>
 					</a>
+					</div>
 				</f:if>
 
 			</f:for>
 			<f:link.action action="reset" noCacheHash="1" class="ecom-configurator-reset-button"><f:translate id="index.reset_configuration" /></f:link.action>
 		</div>
-		<div id="tx-ecompc-package-select-option-index"></div>
+		<div id="tx-ecompc-package-select-option-index">
+
+		</div>
 	</div>
 
 	<div class="divider"></div>

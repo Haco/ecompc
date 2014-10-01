@@ -391,7 +391,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param float  $exchange
 	 * @return float
 	 */
-	public function getPriceInCurrency($currency = 'EUR', $exchange = 0.00) {
+	public function getPriceInCurrency($currency = 'EUR', $exchange = 1.0) {
 		if ($currency === 'EUR')
 			return $this->getPrice();
 
@@ -399,6 +399,31 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$price = strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
 
 		return $price > 0 ? $price : ($this->getPrice() * $exchange);
+	}
+
+	/**
+	 * @param boolean $includePricing
+	 * @param array   $currency
+	 *
+	 * @return array
+	 */
+	public function getSummaryForJSONView($includePricing = FALSE, $currency = array()) {
+		$returnArray = array(
+			'uid' => $this->getUid(),
+			'state' => $this->getConfigurationPackage()->getSelectedOptions()->contains($this),
+			#'package' => $this->getConfigurationPackage()->getUid(),
+			#'disabled' => $this->getDisabled(),
+			'title' => $this->getFrontendLabel(),
+			'hint' => (bool) strlen($this->getHintText())
+		);
+
+		if ($includePricing) {
+			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
+			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
+			$returnArray['price'] = $currencyVH->render($this->getPriceInCurrency($currency['short'], $currency['exchange']), $currency['symbol'], $currency['prependCurrency']);
+		}
+
+		return $returnArray;
 	}
 
 }

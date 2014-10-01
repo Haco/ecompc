@@ -73,23 +73,20 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 	/**
 	 * Returns configurations containing latest options selected! @use for SKU-based configurators
 	 *
-	 * @param int                                          $uid
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions
+	 * @param int   $uid
+	 * @param array $selectedOptions
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function findByTtContentUidApplyingSelectedOptions($uid = 0, \TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions) {
+	public function findByTtContentUidApplyingSelectedOptions($uid = 0, array $selectedOptions) {
 		if (!(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)))
 			return NULL;
 
 		$query = $this->createQuery();
-
-		$constraint = array($query->equals('tt_content_uid', $uid));
-		foreach ($selectedOptions as $option) {
-			$constraint[] = $query->contains('options', $option);
-		}
-
-		return $query->matching($query->logicalAnd($constraint))->execute();
+		return $query->matching($query->logicalAnd(
+			$query->equals('tt_content_uid', $uid),
+			$query->in('options', $selectedOptions)
+		))->execute();
 	}
 
 }

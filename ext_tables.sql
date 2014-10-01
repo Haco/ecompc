@@ -2,11 +2,10 @@
 # Table structure for table 'tt_content'
 #
 CREATE TABLE tt_content (
-	tx_ecompc_type int(11) DEFAULT '0' NOT NULL,
-	tx_ecompc_pckg text,
-	tx_ecompc_conf int(11) unsigned DEFAULT '0',
-	tx_ecompc_bpdc double(11,2) DEFAULT '0.00' NOT NULL,
-	tx_ecompc_bpfc text NOT NULL,
+	tx_ecompc_packages text,
+	tx_ecompc_configurations int(11) unsigned DEFAULT '0',
+	tx_ecompc_base_price_default double(11,2) DEFAULT '0.00' NOT NULL,
+	tx_ecompc_base_price_foreign text NOT NULL,
 );
 
 #

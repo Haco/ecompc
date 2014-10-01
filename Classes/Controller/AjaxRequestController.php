@@ -52,13 +52,31 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 * @api
 	 */
 	public function initializeAction() {
+		global $TYPO3_CONF_VARS;
+		/** !!! IMPORTANT TO MAKE JSON WORK !!! */
+		$TYPO3_CONF_VARS['FE']['debug'] = '0';
+		define(ECOM_CONFIGURATOR_TYPE, \TYPO3\CMS\Core\Utility\GeneralUtility::strtoupper(str_ireplace('configurator_', '', $this->request->getPluginName())));
 		if ($this->request->hasArgument('cObj')) {
 			$this->cObj = $this->contentRepository->findByUid($this->request->getArgument('cObj'));
 		} else {
 			$this->throwStatus(404, \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('404.no_cObj', $this->extensionName));
 		}
-		self::updateStorage($this);
-		parent::initializeAction();
+		self::setStoragePid($this);
+		$this->feSession->setStorageKey($this->request->getControllerExtensionName() . $this->request->getPluginName());
+		\S3b0\Ecompc\Utility\Div::setPriceHandling($this);
+		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
+		$this->configurationSessionStorageKey .= '-c' . $this->cObj->getPid();
+		// Get current configuration (Array: options=array(options)|packages=array(package => option(s)))
+		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey) ?: array(
+			'options' => array(),
+			'packages' => array()
+		);
+		// Initialize Options
+		#$this->initializeOptions();
+		// Set selectable configurations
+		#$this->setSelectableConfigurations($this->selectableConfigurations);
+		// Get configuration price
+		#$this->selectedConfigurationPrice = $this->showPriceLabels ? $this->getConfigurationPrice() : array();debug($this->currency);
 	}
 
 	/**
@@ -76,10 +94,15 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		 * selcps -> indicator for selected packages used at JS calculation of progress
 		 */
 		$this->view->setVariablesToRender(array(
-			'action', 'pid', 'L', 'cObj', 'showPriceLabels', 'currency', 'pricing', 'cfgp', 'cfgres', 'content', 'package', 'packagesLinksInnerHTML', 'selcps', 'proceed'
+			'pid', 'L', 'cObj', 'package', 'options', 'showPriceLabels', 'hint'
 		));
-		parent::initializeView();
-		$this->view->assign('L', (int) $GLOBALS['TSFE']->sys_language_content);
+		// parent::initializeView();
+		$this->view->assignMultiple(array(
+			'pid' => $this->cObj->getPid(),
+			'cObj' => $this->cObj->_getProperty('_localizedUid'),
+			'L' => (int) $GLOBALS['TSFE']->sys_language_content,
+			'showPriceLabels' => $this->showPriceLabels
+		));
 	}
 
 	/**
@@ -87,12 +110,13 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 */
 	public function updatePackagesAction() {
 		$packageLinks = array();
+		$packageInfo = array();
 		// Fetch packages
 		if ($packages = $this->cObj->getEcompcPackagesFE()) {
 			$isActive = FALSE;
 			$prev = NULL;
 			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-			foreach (array_reverse($packages->toArray()) as $package) {
+			foreach (array_reverse((array) $packages->toArray()) as $package) {
 				if (!$isActive && array_key_exists($package->getUid(), $this->selectedConfiguration['packages'])) {
 					$isActive = TRUE;
 					if ($prev instanceof \S3b0\Ecompc\Domain\Model\Package) {
@@ -112,10 +136,13 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 				);
 				/** @var \S3b0\Ecompc\Domain\Model\Package $prev */
 				$prev = $package;
+				$packageInfo[] = $package->getSummaryForJSONView();
 			}
+			$packageInfo = array_reverse($packageInfo);
 		}
 
 		$this->view->assignMultiple(array(
+			'packages' => $packageInfo,
 			'packagesLinksInnerHTML' => $packageLinks,
 			'selcps' => count((array) $this->selectedConfiguration['packages']),
 		));
@@ -152,9 +179,22 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		$package = $this->packageRepository->findByUid($configurationPackage);
 		$this->view->assignMultiple(array(
-			'content' => $this->renderTemplateView('', array('package' => $package, 'options' => $this->getPackageOptions($package), 'sys_language_uid' => $GLOBALS['TSFE']->sys_language_content)),
+			'package' => $package->getSummaryForJSONView(),
+			'options' => $this->getPackageOptions($package),
+			'sys_language_uid' => $GLOBALS['TSFE']->sys_language_content,
+			#'content' => $this->renderTemplateView('', array('package' => $package, 'options' => $this->getPackageOptions($package), 'sys_language_uid' => $GLOBALS['TSFE']->sys_language_content)),
 			'selcps' => count((array) $this->selectedConfiguration['packages'])
 		));
+	}
+
+	/**
+	 * action getOptionHint
+	 *
+	 * @param int $option
+	 * @return void
+	 */
+	public function getOptionHintAction($option = 0) {
+		$this->view->assign('hint', $this->optionRepository->findByUid($option)->getHintText());
 	}
 
 	/**
@@ -194,7 +234,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 * @return void
 	 */
 	public function resetPackageAction($package = 0) {
-		$this->selectedConfiguration['options'] = array_diff((array) $this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionsUids($this->packageRepository->findByUid($package)));
+		$this->selectedConfiguration['options'] = array_diff((array) $this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionUidList($this->packageRepository->findByUid($package)));
 		unset($this->selectedConfiguration['packages'][$package]);
 		$this->feSession->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
 
@@ -203,6 +243,23 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			'cfgp' => $this->getUpdatedConfigurationPrice(),
 			'selcps' => count((array) $this->selectedConfiguration['packages'])
 		));
+	}
+
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 *
+	 * @return array
+	 */
+	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
+		$return = array();
+		if ($options = parent::getPackageOptions($package)) {
+			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+			foreach ($options as $option) {
+				$return[] = $option->getSummaryForJSONView($this->showPriceLabels, $this->currency);
+			}
+		}
+
+		return $return;
 	}
 
 	/**
@@ -280,7 +337,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	/**
 	 * @param \S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController
 	 */
-	protected static function updateStorage(\S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
+	protected static function setStoragePid(\S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
 		$ajaxRequestController::setRepositoryStoragePidSettings($ajaxRequestController->packageRepository, $ajaxRequestController);
 		$ajaxRequestController::setRepositoryStoragePidSettings($ajaxRequestController->optionRepository, $ajaxRequestController);
 	}

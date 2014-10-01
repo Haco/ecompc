@@ -103,6 +103,11 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
 	 */
+	protected $options = NULL;
+
+	/**
+	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
+	 */
 	protected $selectedOptions = NULL;
 
 	/**
@@ -122,6 +127,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	protected function initStorageObjects() {
+		$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 	}
 
@@ -341,6 +347,46 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Option $option
+	 * @return void
+	 */
+	public function addOption(\S3b0\Ecompc\Domain\Model\Option $option) {
+		if ($this->options === NULL) {
+			$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+
+		/** Avoid duplicates */
+		if (!$this->options->contains($option)) $this->options->attach($option);
+	}
+
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Option $optionToRemove
+	 * @return void
+	 */
+	public function removeOption(\S3b0\Ecompc\Domain\Model\Option $optionToRemove) {
+		$this->options->detach($optionToRemove);
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $options
+	 */
+	public function getOptions() {
+		if ($this->options === NULL) {
+			$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+
+		return $this->options;
+	}
+
+	/**
+	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
+	 * @return void
+	 */
+	public function setOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $options = null) {
+		$this->options = $options;
+	}
+
+	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOption
 	 * @return void
 	 */
@@ -349,6 +395,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 			$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 
+		/** Avoid duplicates */
 		if (!$this->selectedOptions->contains($selectedOption)) $this->selectedOptions->attach($selectedOption);
 	}
 
@@ -398,6 +445,17 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setSelected($selected) {
 		$this->selected = $selected;
+	}
+
+	public function getSummaryForJSONView() {
+		return array(
+			'uid' => $this->getUid(),
+			'state' => (bool) $this->getSelectedOptions()->count(),
+			'multiple' => $this->isMultipleSelect(),
+			'title' => $this->getFrontendLabel(),
+			'image' => $this->getImage() ? $this->getImage()->getOriginalResource()->getUid() : 0,
+			'hint' => $this->getHintText()
+		);
 	}
 
 }

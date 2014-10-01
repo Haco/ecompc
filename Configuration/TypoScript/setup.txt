@@ -12,11 +12,10 @@ config.tx_extbase {
 					tableName = tt_content
 					columns {
 						bodytext.mapOnProperty = bodytext
-						tx_ecompc_type.mapOnProperty = ecompcType
-						tx_ecompc_pckg.mapOnProperty = ecompcPackages
-						tx_ecompc_conf.mapOnProperty = ecompcConfigurations
-						tx_ecompc_bpdc.mapOnProperty = ecompcBasePriceInDefaultCurrency
-						tx_ecompc_bpfc.mapOnProperty = ecompcBasePriceInForeignCurrencies
+						tx_ecompc_packages.mapOnProperty = ecompcPackages
+						tx_ecompc_configurations.mapOnProperty = ecompcConfigurations
+						tx_ecompc_base_price_default.mapOnProperty = ecompcBasePriceInDefaultCurrency
+						tx_ecompc_base_price_foreign.mapOnProperty = ecompcBasePriceInForeignCurrencies
 						pages.mapOnProperty = storage
 						recursive.mapOnProperty = recursive
 					}
@@ -73,6 +72,7 @@ plugin.tx_ecompc {
 	settings {
 		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion;Standard->request
 		showPriceLabels = {$plugin.tx_ecompc.constants.showPriceLabels}
+		distFeUserGroup = 0
 		currency {
 			def {
 				long = {$plugin.tx_ecompc.constants.currency.default.long}
@@ -130,13 +130,13 @@ plugin.tx_ecompc {
 ##############################
 [globalVar = TSFE:id = {$plugin.tx_ecompc.constants.piPages}]
 page.includeCSSLibs {
-	ecompc = EXT:ecompc/Resources/Public/CSS/app.css
+	ecompc = EXT:ecompc/Resources/Public/Stylesheets/app.css
 	ecompc.import = 1
 }
 
 page.includeJSFooterlibs {
-	ecompcAppJS = EXT:ecompc/Resources/Public/JS/m.ap.js
-	ecompcAjaxJS = EXT:ecompc/Resources/Public/JS/m.ax.js
+	ecompcAppJS = EXT:ecompc/Resources/Public/JavaScripts/app.js
+	ecompcAjaxJS = EXT:ecompc/Resources/Public/JavaScripts/ajax.js
 }
 [global]
 
@@ -174,8 +174,8 @@ plugin.tx_ecompc._CSS_DEFAULT_STYLE (
 
 )
 
-EcompcAjaxRequest = PAGE
-EcompcAjaxRequest {
+EcompcDynamicConfigurationAjaxRequest = PAGE
+EcompcDynamicConfigurationAjaxRequest {
 	typeNum = 1407764086
 
 	config {
@@ -193,7 +193,7 @@ EcompcAjaxRequest {
 		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
 		vendorName = S3b0
 		extensionName = Ecompc
-		pluginName = Configurator
+		pluginName = configurator_dynamic
 		controller = AjaxRequest
 		switchableControllerActions {
 			AjaxRequest {
@@ -208,4 +208,10 @@ EcompcAjaxRequest {
 	view < plugin.tx_ecompc.view
 	persistence < plugin.tx_ecompc.persistence
 	settings < plugin.tx_ecompc.settings
+}
+
+EcompcSkuConfigurationAjaxRequest < EcompcDynamicConfigurationAjaxRequest
+EcompcSkuConfigurationAjaxRequest {
+	typeNum = 1407764087
+	10.pluginName = configurator_sku
 }

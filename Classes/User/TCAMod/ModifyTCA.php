@@ -36,25 +36,8 @@ use TYPO3\CMS\Core\Utility as CoreUtility;
  */
 class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 
-	protected $contentUid = 0;
-
-	/**
-	 * userFuncTtContentTxEcompcType function.
-	 *
-	 * @param array                              $PA
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
-	 *
-	 * @return string
-	 */
-	public function userFuncTtContentTxEcompcType(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ecompc']);
-		if ($GLOBALS['BE_USER']->user['uid'] != $extConf['superUser'] && $PA['row']['tx_ecompc_type'] != -1)
-			$PA['fieldConf']['config']['readOnly'] = 1;
-
-		// Re-render field based on the "true field type", and not as a "user"
-		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
-		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
-	}
+	protected $dynamicConfigurationSignature = 'ecompc_configurator_dynamic';
+	protected $skuConfigurationSignature = 'ecompc_configurator_sku';
 
 	/**
 	 * userFuncTtContentTxEcompcPackages function.
@@ -65,10 +48,10 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function userFuncTtContentTxEcompcPackages(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		if (!$GLOBALS['BE_USER']->isAdmin() && $PA['itemFormElValue'])
-			$PA['fieldConf']['config']['readOnly'] = 1;
+		// Disable for non-admins
+		$PA['fieldConf']['config']['readOnly'] = $GLOBALS['BE_USER']->isAdmin();
 
-		if (CoreUtility\MathUtility::convertToPositiveInteger($PA['row']['tx_ecompc_type']) === 1) {
+		if ($PA['row']['CType'] === 'list' && $PA['row']['list_type'] === $this->dynamicConfigurationSignature) {
 			$PA['fieldConf']['config']['foreign_table_where'] = 'AND NOT tx_ecompc_domain_model_package.deleted AND NOT tx_ecompc_domain_model_package.multiple_select AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)';
 		}
 
@@ -86,7 +69,10 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function userFuncTtContentTxEcompcConfigurations(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		if (CoreUtility\MathUtility::convertToPositiveInteger($PA['row']['tx_ecompc_type']) === 1) {
+		// Disable for non-admins
+		$PA['fieldConf']['config']['readOnly'] = $GLOBALS['BE_USER']->isAdmin();
+
+		if ($PA['row']['CType'] === 'list' && $PA['row']['list_type'] === $this->dynamicConfigurationSignature) {
 			$PA['fieldConf']['config']['maxitems'] = 1;
 			$PA['fieldConf']['config']['appearance']['collapseAll'] = 0;
 		}
@@ -105,8 +91,8 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationSku(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		$contentElement = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'tx_ecompc_type');
-		$PA['fieldConf']['config']['readOnly'] = CoreUtility\MathUtility::convertToPositiveInteger($contentElement['tx_ecompc_type']) === 1 ?: $PA['fieldConf']['config']['readOnly'];
+		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
+		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->dynamicConfigurationSignature ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
 		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
 		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
@@ -121,8 +107,8 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationConfigurationCodeSuffix(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		$contentElement = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'tx_ecompc_type');
-		$PA['fieldConf']['config']['readOnly'] = CoreUtility\MathUtility::convertToPositiveInteger($contentElement['tx_ecompc_type']) === 0 ?: $PA['fieldConf']['config']['readOnly'];
+		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
+		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->skuConfigurationSignature ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
 		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
 		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
@@ -137,8 +123,8 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationConfigurationCodePrefix(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		$contentElement = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'tx_ecompc_type');
-		$PA['fieldConf']['config']['readOnly'] = CoreUtility\MathUtility::convertToPositiveInteger($contentElement['tx_ecompc_type']) === 0 ?: $PA['fieldConf']['config']['readOnly'];
+		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
+		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->skuConfigurationSignature ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
 		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
 		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
@@ -154,8 +140,8 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		$contentElement = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'tx_ecompc_type,tx_ecompc_pckg');
-		if (CoreUtility\MathUtility::convertToPositiveInteger($contentElement['tx_ecompc_type']) === 1)
+		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type,tx_ecompc_packages');
+		if ($ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->dynamicConfigurationSignature)
 			return '';
 
 		// Creating the label for the "No Matching Value" entry.
@@ -163,7 +149,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Prepare some values:
 		$config = $PA['fieldConf']['config'];
 
-		$configurationPackages = $contentElement['tx_ecompc_pckg'] ? BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_package', '1', '1', 'AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0) AND uid IN (' . $contentElement['tx_ecompc_pckg'] . ')') : null;
+		$configurationPackages = $ttContent['tx_ecompc_packages'] ? BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_package', '1', '1', 'AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0) AND uid IN (' . $ttContent['tx_ecompc_packages'] . ')') : null;
 
 		// Fill items Array manually
 		$selItems = $this->initItemArray($PA['fieldConf']);

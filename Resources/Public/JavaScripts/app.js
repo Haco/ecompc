@@ -85,11 +85,3 @@
 		}
 	});
 })(jQuery);
-
-window.onunload = function() {
-	$('.ecom-configurator-package-box').each(function() {
-		$(this).removeClass('active-package').addClass('inactive-package'); // Whole link
-		$(this).children('.ecom-configurator-package-state').removeClass('checked').addClass('unchecked'); // Checkbox
-	});
-	$('#ecom-configurator-result-canvas').html('').hide();
-};

@@ -43,19 +43,20 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial;
 class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @param string $currencySign (optional) The currency sign, eg $ or €.
-	 * @param string $decimalSeparator (optional) The separator for the decimal point.
-	 * @param string $thousandsSeparator (optional) The thousands separator.
-	 * @param boolean $prependCurrency (optional) Select if the curreny sign should be prepended
-	 * @param boolean $separateCurrency (optional) Separate the currency sign from the number by a single space, defaults to true due to backwards compatibility
-	 * @param integer $decimals (optional) Set decimals places.
-	 * @param boolean $signed (optional) Select if algebraic sign should be added
-	 * @param boolean $zeroLabel (optional) If set a text like 'incl.' will be added instead of zero values
+	 * @param mixed   $floatToFormat      (optional) The float, if any; If not set, renderChildren() will set the value
+	 * @param string  $currencySign       (optional) The currency sign, eg $ or €.
+	 * @param boolean $prependCurrency    (optional) Select if the curreny sign should be prepended
+	 * @param string  $decimalSeparator   (optional) The separator for the decimal point.
+	 * @param string  $thousandsSeparator (optional) The thousands separator.
+	 * @param boolean $separateCurrency   (optional) Separate the currency sign from the number by single space, defaults to true due to backwards compatibility
+	 * @param integer $decimals           (optional) Set decimals places.
+	 * @param boolean $signed             (optional) Select if algebraic sign should be added
+	 * @param boolean $zeroLabel          (optional) If set a text like 'incl.' will be added instead of zero values
 	 * @return string the formatted amount.
 	 * @api
 	 */
-	public function render($currencySign = '', $decimalSeparator = ',', $thousandsSeparator = '.', $prependCurrency = FALSE, $separateCurrency = TRUE, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE) {
-		$floatToFormat = $this->renderChildren();
+	public function render($floatToFormat = NULL, $currencySign = '', $prependCurrency = FALSE, $decimalSeparator = ',', $thousandsSeparator = '.', $separateCurrency = TRUE, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE) {
+		$floatToFormat = $floatToFormat !== NULL ? $floatToFormat : $this->renderChildren();
 		if (empty($floatToFormat)) {
 			$floatToFormat = 0.0;
 		} else {
@@ -63,12 +64,10 @@ class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 		}
 		$output = number_format($floatToFormat, $decimals, $decimalSeparator, $thousandsSeparator);
 		// Add algebraic sign if positive
-		if ($floatToFormat > 0 && $signed) {
+		if ($floatToFormat >= 0 && $signed) {
 			$output = '+' . $output;
 		} elseif (number_format($floatToFormat, 2) == 0.00 && $zeroLabel) {
 			return \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('price.inclusive', 'ecompc');
-		} elseif (number_format($floatToFormat, 2) == 0.00 && $signed) {
-			$output = '+' . $output;
 		}
 
 		if ($currencySign !== '') {

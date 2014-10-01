@@ -45,9 +45,15 @@
 		public function proc($wizardItems) {
 			$wizardItems['plugins_tx_' . self::KEY] = array(
 				'icon'			=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath(self::KEY) . 'ext_icon.gif',
-				'title'			=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi.title'),
-				'description'	=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi.wiz.description'),
+				'title'			=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi0.title'),
+				'description'	=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi0.wiz.description'),
 				'params'		=> '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=ecompc_configurator'
+			);
+			$wizardItems['plugins_tx_' . self::KEY . '_skuconfigurator'] = array(
+				'icon'			=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath(self::KEY) . 'ext_icon.gif',
+				'title'			=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi1.title'),
+				'description'	=> $GLOBALS['LANG']->sL('LLL:EXT:' . self::KEY . '/Resources/Private/Language/locallang_db.xml:pi1.wiz.description'),
+				'params'		=> '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=ecompc_skuconfigurator'
 			);
 			$wizardItems['plugins_tx_' . self::KEY . '_resolver'] = array(
 				'icon'			=> \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath(self::KEY) . 'ext_icon2.gif',

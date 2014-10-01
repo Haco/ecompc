@@ -11,15 +11,21 @@
 		<div class="tx-ecompc-config-header-price-table">
 			<table>
 				<thead>
-				<tr>
-					<f:if condition="{pricing.0}"><td><f:translate id="index.header.base_price" /></td></f:if>
-					<f:if condition="{pricing.1}"><td><f:translate id="index.header.config_price" /></td></f:if>
+				<tr class="align-center">
+					<td><f:translate id="index.header.base_price" /></td>
+					<td><f:translate id="index.header.config_price" /></td>
 				</tr>
 				</thead>
 				<tbody>
-				<tr>
-					<f:if condition="{pricing.0}"><td><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.0}</f:format.currency></td></f:if>
-					<f:if condition="{pricing.1}"><td><span id="tx-ecompc-config-header-cfgp"><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:if>
+				<tr class="align-center">
+					<f:if condition="{pricing.0}">
+						<f:then><td><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.0}</f:format.currency></td></f:then>
+						<f:else><td>-</td></f:else>
+					</f:if>
+					<f:if condition="{pricing.1}">
+						<f:then><td><span id="tx-ecompc-config-header-cfgp"><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:then>
+						<f:else><td><span id="tx-ecompc-config-header-cfgp">-</span></td></f:else>
+					</f:if>
 				</tr>
 				</tbody>
 			</table>

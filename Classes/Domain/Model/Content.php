@@ -49,11 +49,6 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $recursive = 0;
 
 	/**
-	 * @var int
-	 */
-	protected $ecompcType = 0;
-
-	/**
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package>
 	 */
 	protected $ecompcPackages = NULL;
@@ -155,21 +150,6 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return int $ecompcType
-	 */
-	public function getEcompcType() {
-		return $this->ecompcType;
-	}
-
-	/**
-	 * @param int $ecompcType
-	 * @return void
-	 */
-	public function setEcompcType($ecompcType) {
-		$this->ecompcType = $ecompcType;
-	}
-
-	/**
 	 * Adds a Package
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
@@ -211,7 +191,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		if ($this->ecompcPackages === NULL) {
 			$this->ecompcPackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
-		if (!$this->ecompcPackages->count()) {
+		if ($this->ecompcPackages->count() === 0) {
 			return NULL;
 		}
 
@@ -313,20 +293,6 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$price = strlen($currency) === 3 && array_key_exists($currency, $foreignCurrencies) ? floatval($foreignCurrencies[$currency]['vDEF']) : 0.00;
 
 		return $price > 0 ? $price : ($this->getEcompcBasePriceInDefaultCurrency() * $exchange);
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public function isDynamicEcomProductConfigurator() {
-		return $this->getEcompcType() === 1;
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public function isStaticEcomProductConfigurator() {
-		return $this->getEcompcType() !== 1;
 	}
 
 	/**

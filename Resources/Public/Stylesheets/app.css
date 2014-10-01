@@ -7,6 +7,12 @@ a:focus {
 table.vtop tr td {
 	vertical-align: top;
 }
+
+.align-center,
+.align-center * {
+	text-align: center;
+}
+
 .divider {
 	border-bottom: 1px solid #cccccc;
 	margin: 1em 0;
