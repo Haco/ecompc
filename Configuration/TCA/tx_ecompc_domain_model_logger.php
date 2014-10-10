@@ -15,6 +15,7 @@ return array(
 		'tstamp' => 'tstamp',
 		'dividers2tabs' => TRUE,
 		'rootLevel' => 1,
+		'readOnly' => TRUE,
 
 		//'hideTable' => 1,
 		'searchFields' => 'ses_id, tstamp, selected_configuration, configuration, currency, price, ip_address, fe_user',
@@ -70,7 +71,9 @@ return array(
 			'exclude' => 1,
 			'label' => 'Currency',
 			'config' => array(
-				'type' => 'input'
+				'type' => 'select',
+				'foreign_table' => 'tx_ecompc_domain_model_currency',
+				'foreign_table_where' => ' ORDER BY tx_ecompc_domain_model_currency.label',
 			)
 		),
 		'price' => array(

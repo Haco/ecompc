@@ -7,13 +7,13 @@ if (!defined('TYPO3_MODE')) {
 	'S3b0.' . $_EXTKEY,
 	'configurator_dynamic',
 	array(
-		'DynamicConfiguration' => 'index,reset,selectRegion,request',
-		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+		'DynamicConfigurator' => 'index,reset,selectRegion,request',
+		'DynamicConfiguratorAjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
 	),
 	// non-cacheable actions
 	array(
-		'DynamicConfiguration' => 'index,reset,selectRegion,request',
-		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+		'DynamicConfigurator' => 'index,reset,selectRegion,request',
+		'DynamicConfiguratorAjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
 	)
 );
 
@@ -21,13 +21,13 @@ if (!defined('TYPO3_MODE')) {
 	'S3b0.' . $_EXTKEY,
 	'configurator_sku',
 	array(
-		'SkuConfiguration' => 'index,reset,selectRegion,request',
-		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+		'SkuConfigurator' => 'index,reset,selectRegion,request',
+		'SkuConfiguratorAjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
 	),
 	// non-cacheable actions
 	array(
-		'SkuConfiguration' => 'index,reset,selectRegion,request',
-		'AjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+		'SkuConfigurator' => 'index,reset,selectRegion,request',
+		'SkuConfiguratorAjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
 	)
 );
 

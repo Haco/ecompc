@@ -1,4 +1,2 @@
 #cat=basic//10;type=string;label=Super User: The Master Chief!
 superUser = 0
-#cat=basic//20;type=string;label=Flexform-XML for foreign currencies
-priceInForeignCurrenciesXML = FILE:EXT:ecompc/Configuration/FlexForms/price_list.xml

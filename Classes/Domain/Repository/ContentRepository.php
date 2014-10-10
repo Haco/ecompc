@@ -73,13 +73,19 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	}
 
 	/**
-	 * @param  string $plugin
+	 * @param array $types Plugin-Types
+	 *
 	 * @return boolean
 	 */
-	public function hasDuplicateContentElementsWithPlugin($plugin = 'ecompc_configurator') {
+	public function hasDuplicateContentElementsOfConfiguratorTypes($types = array('ecompc_configurator_dynamic', 'ecompc_configurator_sku')) {
 		$query = $this->createQuery();
 
-		return $query->matching($query->logicalAnd($query->equals('pid', $GLOBALS['TSFE']->id), $query->equals('list_type', $plugin)))->execute()->count() > 1;
+		return $query->matching(
+			$query->logicalAnd(
+				$query->equals('pid', $GLOBALS['TSFE']->id),
+				$query->in('list_type', $types)
+			)
+		)->execute()->count() > 1;
 	}
 
 }

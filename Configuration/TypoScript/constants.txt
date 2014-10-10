@@ -14,20 +14,6 @@ plugin.tx_ecompc {
 	constants {
 		# cat=plugin.tx_ecompc//x10; type=boolean; label=Enable price labels:Show price labels if set (master switch!)
 		showPriceLabels = 1
-		currency.default {
-			# cat=plugin.tx_ecompc//b2; type=string; label=Default currency [ISO 4217 Currency Codes]
-			short = EUR
-			# cat=plugin.tx_ecompc//b1; type=string; label=Default currency
-			long = Euro
-			# cat=plugin.tx_ecompc//b4; type=string; label=Region
-			region = Europe
-			# cat=plugin.tx_ecompc//b3; type=string; label=Default currency symbol
-			symbol = €
-			# cat=plugin.tx_ecompc//b6; type=string; label=Region flag
-			flagIcon = EXT:ecompc/Resources/Public/Images/Flags/EUR.png
-			# cat=plugin.tx_ecompc//b5; type=string; label=Region LLRef
-			llRef = LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:currency.eur.region
-		}
 		requestForm {
 			# cat=plugin.tx_ecompc//a1; type=int; label=Form pid:Page uid for request form
 			pid = 0

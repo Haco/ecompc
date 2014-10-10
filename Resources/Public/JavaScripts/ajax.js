@@ -157,20 +157,6 @@ function onAjaxSuccessGeneric(result, indexView) {
 	}
 }
 
-/** Updating packages function */
-function updatePackage(pageUid, lang, cObj, option, unset) {
-	var request = {
-		actionName: 'setOption',
-		arguments: {
-			cObj: cObj,
-			opt: option,
-			uns: unset
-		}
-	};
-
-	ajaxCaller('', '#tx-ecompc-ajax-loader', pageUid, lang, request, null, 1);
-}
-
 function resetPackage(pageUid, lang, cObj, configurationPackage) {
 	var request = {
 		actionName: 'resetPackage',
@@ -191,6 +177,19 @@ function resetPackage(pageUid, lang, cObj, configurationPackage) {
 				cObj: result['cObj']
 			}
 		}, null, 1);
+	});
+}
+
+/** Updating packages function */
+function updatePackage(pageUid, lang, cObj, option, unset) {
+	addAjaxLoader('#tx-ecompc-ajax-loader');
+	genericAjaxRequest(pageUid, lang, 1407764086, 'setOption', {
+		option: option,
+		unset: unset,
+		cObj: cObj
+	}, function(result) {
+		removeAjaxLoader('#tx-ecompc-ajax-loader');
+		console.log(result);
 	});
 }
 

@@ -36,8 +36,8 @@ use TYPO3\CMS\Core\Utility as CoreUtility;
  */
 class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 
-	protected $dynamicConfigurationSignature = 'ecompc_configurator_dynamic';
-	protected $skuConfigurationSignature = 'ecompc_configurator_sku';
+	protected $dynamicConfiguratorSignature = 'ecompc_configurator_dynamic';
+	protected $skuConfiguratorSignature = 'ecompc_configurator_sku';
 
 	/**
 	 * userFuncTtContentTxEcompcPackages function.
@@ -49,9 +49,9 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 */
 	public function userFuncTtContentTxEcompcPackages(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		// Disable for non-admins
-		$PA['fieldConf']['config']['readOnly'] = $GLOBALS['BE_USER']->isAdmin();
+		$PA['fieldConf']['config']['readOnly'] = $pObj->getBackendUserAuthentication()->isAdmin();
 
-		if ($PA['row']['CType'] === 'list' && $PA['row']['list_type'] === $this->dynamicConfigurationSignature) {
+		if ($PA['row']['CType'] === 'list' && $PA['row']['list_type'] === $this->dynamicConfiguratorSignature) {
 			$PA['fieldConf']['config']['foreign_table_where'] = 'AND NOT tx_ecompc_domain_model_package.deleted AND NOT tx_ecompc_domain_model_package.multiple_select AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)';
 		}
 
@@ -70,9 +70,9 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 */
 	public function userFuncTtContentTxEcompcConfigurations(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		// Disable for non-admins
-		$PA['fieldConf']['config']['readOnly'] = $GLOBALS['BE_USER']->isAdmin();
+		$PA['fieldConf']['config']['readOnly'] = $pObj->getBackendUserAuthentication()->isAdmin();
 
-		if ($PA['row']['CType'] === 'list' && $PA['row']['list_type'] === $this->dynamicConfigurationSignature) {
+		if ($PA['row']['CType'] === 'list' && $PA['row']['list_type'] === $this->dynamicConfiguratorSignature) {
 			$PA['fieldConf']['config']['maxitems'] = 1;
 			$PA['fieldConf']['config']['appearance']['collapseAll'] = 0;
 		}
@@ -80,6 +80,52 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Re-render field based on the "true field type", and not as a "user"
 		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
 		return $pObj->inline->getSingleField_typeInline($PA['table'], $PA['field'], $PA['row'], $PA);
+	}
+
+	/**
+	 * userFuncTtContentTxEcompcPricing function.
+	 *
+	 * @param array                              $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+	 *
+	 * @return string
+	 */
+	public function userFuncTtContentTxEcompcPricing(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+		return $this->getPricingFlexForm($PA, $pObj);
+	}
+
+	/**
+	 * userFuncTxEcompcOptionPricing function.
+	 *
+	 * @param array                              $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+	 *
+	 * @return string
+	 */
+	public function userFuncTxEcompcOptionPricing(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+		return $this->getPricingFlexForm($PA, $pObj);
+	}
+
+	public function userFuncTxEcompcCurrencyDefaultCurrency(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+		if ($default = $pObj->getDatabaseConnection()->exec_SELECTgetSingleRow('*', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.default_currency=1 ' . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'))) {
+			$PA['fieldConf']['config']['readOnly'] = $PA['row']['uid'] != $default['uid'];
+
+			/**
+			 * Check if no duplicates exist! There might be only ONE default currency set!
+			 */
+			if ($pObj->getDatabaseConnection()->exec_SELECTcountRows('*', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.default_currency=1 ' . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency')) > 1) {
+				$pObj->getDatabaseConnection()->exec_UPDATEquery(
+					'tx_ecompc_domain_model_currency',
+					'tx_ecompc_domain_model_currency.default_currency=1 AND NOT tx_ecompc_domain_model_currency.uid=' . $default['uid'] . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'),
+					array(
+						'default_currency' => 0
+				));
+			}
+		}
+
+		// Re-render field based on the "true field type", and not as a "user"
+		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
+		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
 	}
 
 	/**
@@ -92,7 +138,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationSku(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
-		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->dynamicConfigurationSignature ?: $PA['fieldConf']['config']['readOnly'];
+		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->dynamicConfiguratorSignature ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
 		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
 		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
@@ -108,7 +154,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationConfigurationCodeSuffix(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
-		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->skuConfigurationSignature ?: $PA['fieldConf']['config']['readOnly'];
+		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->skuConfiguratorSignature ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
 		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
 		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
@@ -124,7 +170,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationConfigurationCodePrefix(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
-		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->skuConfigurationSignature ?: $PA['fieldConf']['config']['readOnly'];
+		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->skuConfiguratorSignature ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
 		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
 		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
@@ -141,7 +187,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type,tx_ecompc_packages');
-		if ($ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->dynamicConfigurationSignature)
+		if ($ttContent['CType'] === 'list' && $ttContent['list_type'] === $this->dynamicConfiguratorSignature)
 			return '';
 
 		// Creating the label for the "No Matching Value" entry.
@@ -282,6 +328,61 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 //			$item .= '<a href="#" onclick="' . implode('', $restoreCmd) . ' return false;' . '">' . BackendUtility\IconUtility::getSpriteIcon('actions-edit-undo', array('title' => htmlspecialchars($this->getLL('l_revertSelection')))) . '</a>';
 //		}
 		return $item;
+	}
+
+	/**
+	 * @param array                              $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+	 *
+	 * @return string
+	 */
+	public function userFuncTxEcompcDomainModelOptionPricePercental(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+		$package = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('tx_ecompc_domain_model_package', $PA['row']['configuration_package']);
+		$PA['fieldConf']['config']['readOnly'] = $package['multiple_select'];
+
+		// Re-render field based on the "true field type", and not as a "user"
+		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
+		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
+	}
+
+	/**
+	 * getPricingFlexForm function.
+	 *
+	 * @param array                              $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+	 *
+	 * @return string
+	 */
+	public function getPricingFlexForm(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+		if ($rows = $pObj->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_ecompc_domain_model_currency', '1=1 ' . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'))) {
+			$ds = array(
+				'meta' => array(
+					'langDisable' => 1
+				),
+				'ROOT' => array(
+					'type' => 'array',
+					'el' => array()
+				)
+			);
+			foreach ($rows as $row) {
+				$ds['ROOT']['el'][\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($row['iso_4217'])] = array(
+					'TCEforms' => array(
+						'label' => $row['label'] . ($row['default_currency'] ? ' [default]' : ''),
+						'config' => array(
+							'type' => 'input',
+							'size' => 22,
+							'eval' => 'double2',
+							'default' => '0.00'
+						)
+					)
+				);
+			}
+			$PA['fieldConf']['config']['ds']['default'] = \TYPO3\CMS\Core\Utility\GeneralUtility::array2xml($ds, '', 0, 'T3DataStructure');
+		}
+
+		// Re-render field based on the "true field type", and not as a "user"
+		$PA['fieldConf']['config']['form_type'] = $PA['fieldConf']['config']['type'];
+		return $pObj->getSingleField_SW($PA['table'], $PA['field'], $PA['row'], $PA);
 	}
 
 	/**

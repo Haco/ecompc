@@ -99,7 +99,7 @@ table.vtop tr td {
 	color: #0083cb;
 	margin-bottom: 1.5em;
 }
-.select-region-wrap a.selectregion-choose-flag {
+.select-region-wrap a.select-region-choose-flag {
 	color: black;
 	font-size: 1.2em;
 	text-align: center;
@@ -112,15 +112,15 @@ table.vtop tr td {
 	transition: color 0.2s ease-out;
 }
 
-.select-region-wrap a.selectregion-choose-flag:hover {
+.select-region-wrap a.select-region-choose-flag:hover {
 	color: #0083cb;
 }
-.select-region-wrap a.selectregion-choose-flag img {
+.select-region-wrap a.select-region-choose-flag img {
 	opacity: 0.5;
 	margin-bottom: 0.5em;
 	transition: all 0.2s ease-out;
 }
-.select-region-wrap a.selectregion-choose-flag:hover img {
+.select-region-wrap a.select-region-choose-flag:hover img {
 	opacity: 1;
 }
 .select-region-wrap aside {
@@ -502,7 +502,7 @@ table.vtop tr td {
 	#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
 		width: auto;
 	}
-	.select-region-wrap a.selectregion-choose-flag img {
+	.select-region-wrap a.select-region-choose-flag img {
 		width: 150px;
 		height: auto;
 	}
@@ -534,10 +534,10 @@ table.vtop tr td {
 	#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
 		font-size: 0.9em;
 	}
-	.select-region-wrap a.selectregion-choose-flag {
+	.select-region-wrap a.select-region-choose-flag {
 		display: block;
 	}
-	.select-region-wrap a.selectregion-choose-flag img {
+	.select-region-wrap a.select-region-choose-flag img {
 		width: 100px;
 		height: auto;
 	}

@@ -5,110 +5,129 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
-		<trans-unit id="404.dbl_config_found" approved="yes" xml:space="preserve">
-			<source>It seems like you got more than one configurator on current page. This error occurs because only one configurator per page is allowed!</source>
-			<target>Es scheint, Sie haben mehrere Konfiguratoren auf der aktuellen Seite platziert.&lt;br /&gt;Dieser Fehler erscheint, da nur ein Konfigurator je Seite erlaubt ist!</target>
-		</trans-unit>
-		<trans-unit id="404.no_config_found" approved="yes" xml:space="preserve">
-			<source>No configurations found!</source>
-			<target>Es wurde(n) keine Konfiguration(en) gefunden!</target>
-		</trans-unit>
-		<trans-unit id="404.no_unique_sku_found" approved="yes" xml:space="preserve">
-			<source>Something went wrong! Please contact your system administrator for assistance. [@mSKU]</source>
-			<target>Das ist etwas schief gelaufen!&lt;br /&gt;Bitte kontaktieren Sie Ihren System-Administrator zur Hilfestellung. [@mSKU] </target>
-		</trans-unit>
-		<trans-unit id="index.header.back_to_selection" approved="yes" xml:space="preserve">
-			<source>Back to Module Selection</source>
-			<target>Zurück zur Modul-Auswahl</target>
-		</trans-unit>
-		<trans-unit id="index.header.base_price" approved="yes" xml:space="preserve">
-			<source>Base price</source>
-			<target>Basispreis</target>
-		</trans-unit>
-		<trans-unit id="index.header.config_price" approved="yes" xml:space="preserve">
-			<source>Config price</source>
-			<target>Konfigurationspreis</target>
-		</trans-unit>
-		<trans-unit id="index.package.no_price_label" approved="yes" xml:space="preserve">
-			<source>+ additional costs</source>
-			<target>+ zusätzliche Kosten</target>
-		</trans-unit>
-		<trans-unit id="index.package.your_choice" approved="yes" xml:space="preserve">
-			<source>Your choice:</source>
-			<target>Ihre Auswahl:</target>
-		</trans-unit>
-		<trans-unit id="index.request_your_device" approved="yes" xml:space="preserve">
-			<source>Request your device</source>
-			<target>Jetzt Anfragen</target>
-		</trans-unit>
-		<trans-unit id="index.reset_configuration" approved="yes" xml:space="preserve">
-			<source>» Reset Configuration</source>
-			<target>» Konfiguration zurücksetzen</target>
-		</trans-unit>
-		<trans-unit id="index.summary_button" approved="yes" xml:space="preserve">
-			<source>Summary</source>
-			<target>Zusammenfassung</target>
-		</trans-unit>
-		<trans-unit id="index.summary_button_title" approved="yes" xml:space="preserve">
-			<source>Review your Configuration</source>
-			<target>Überprüfen Sie Ihre Konfiguration</target>
-		</trans-unit>
-		<trans-unit id="index.x_percent_done" approved="yes" xml:space="preserve">
-			<source>% done</source>
-			<target>% abgeschlossen</target>
-		</trans-unit>
-		<trans-unit id="index.your_configuration_code" approved="yes" xml:space="preserve">
-			<source>Your Configuration Code</source>
-			<target>Ihr Konfigurations-Code</target>
-		</trans-unit>
-		<trans-unit id="optionlist.confirm_selection" approved="yes" xml:space="preserve">
-			<source>Confirm Selection</source>
-			<target>Auswahl bestätigen</target>
-		</trans-unit>
-		<trans-unit id="optionlist.more_info" approved="yes" xml:space="preserve">
-			<source>More Info</source>
-			<target>Weitere Infos</target>
-		</trans-unit>
-		<trans-unit id="optionlist.reset_selection" approved="yes" xml:space="preserve">
-			<source>» Reset Selection</source>
-			<target>» Auswahl zurücksetzen</target>
-		</trans-unit>
-		<trans-unit id="optionlist.setlink.0.0" approved="yes" xml:space="preserve">
-			<source>Select option</source>
-			<target>Option auswählen</target>
-		</trans-unit>
-		<trans-unit id="optionlist.setlink.0.1" approved="yes" xml:space="preserve">
-			<source>Unselect option</source>
-			<target>Auswahl der Option aufheben</target>
-		</trans-unit>
-		<trans-unit id="optionlist.setlink.1.0" approved="yes" xml:space="preserve">
-			<source>Add this option</source>
-			<target>Diese Option hinzufügen</target>
-		</trans-unit>
-		<trans-unit id="optionlist.setlink.1.1" approved="yes" xml:space="preserve">
-			<source>Remove this option</source>
-			<target>Diese Option entfernen</target>
-		</trans-unit>
-		<trans-unit id="optionlist.unit_price" approved="yes" xml:space="preserve">
-			<source>Unit Price</source>
-			<target>Stückpreis</target>
-		</trans-unit>
-		<trans-unit id="optionlist.unit_price.abbr" approved="yes" xml:space="preserve">
-			<source>UP</source>
-			<target>SP</target>
-		</trans-unit>
-		<trans-unit id="price.inclusive" approved="yes" xml:space="preserve">
-			<source>incl.</source>
-			<target>inkl.</target>
-		</trans-unit>
-		<trans-unit id="selectregion.choose_text" approved="yes" xml:space="preserve">
-			<source>Please choose a region/currency</source>
-			<target>Bitte wählen Sie eine Region/Währung</target>
-		</trans-unit>
-		<trans-unit id="selectregion.warning_onetime_text" approved="yes" xml:space="preserve">
-			<source>This is a one time selection! You won´t be able to return and switch currency.</source>
-			<target>Dies ist eine Einmal-Auswahl! Sie werden keine weitere Möglichkeit haben, die Währung zu wechseln.</target>
-		</trans-unit>
+			<trans-unit id="404.dbl_config_found" approved="yes" xml:space="preserve">
+				<source>It seems like you got more than one configurator on current page. This error occurs because only one configurator per page is allowed!</source>
+				<target>Es scheint, Sie haben mehrere Konfiguratoren auf der aktuellen Seite platziert.&lt;br /&gt;Dieser Fehler erscheint, da nur ein Konfigurator je Seite erlaubt ist!</target>
+			</trans-unit>
+			<trans-unit id="404.no_config_found" approved="yes" xml:space="preserve">
+				<source>No configurations found!</source>
+				<target>Es wurde(n) keine Konfiguration(en) gefunden!</target>
+			</trans-unit>
+			<trans-unit id="404.no_unique_sku_found" approved="yes" xml:space="preserve">
+				<source>Something went wrong! Please contact your system administrator for assistance. [@mSKU]</source>
+				<target>Das ist etwas schief gelaufen!&lt;br /&gt;Bitte kontaktieren Sie Ihren System-Administrator zur Hilfestellung. [@mSKU] </target>
+			</trans-unit>
+			<trans-unit id="index.header.back_to_selection" approved="yes" xml:space="preserve">
+				<source>Back to Module Selection</source>
+				<target>Zurück zur Modul-Auswahl</target>
+			</trans-unit>
+			<trans-unit id="index.header.base_price" approved="yes" xml:space="preserve">
+				<source>Base price</source>
+				<target>Basispreis</target>
+			</trans-unit>
+			<trans-unit id="index.header.config_price" approved="yes" xml:space="preserve">
+				<source>Config price</source>
+				<target>Konfigurationspreis</target>
+			</trans-unit>
+			<trans-unit id="index.package.no_price_label" approved="yes" xml:space="preserve">
+				<source>+ additional costs</source>
+				<target>+ zusätzliche Kosten</target>
+			</trans-unit>
+			<trans-unit id="index.package.your_choice" approved="yes" xml:space="preserve">
+				<source>Your choice:</source>
+				<target>Ihre Auswahl:</target>
+			</trans-unit>
+			<trans-unit id="index.request_your_device" approved="yes" xml:space="preserve">
+				<source>Request your device</source>
+				<target>Jetzt Anfragen</target>
+			</trans-unit>
+			<trans-unit id="index.reset_configuration" approved="yes" xml:space="preserve">
+				<source>» Reset Configuration</source>
+				<target>» Konfiguration zurücksetzen</target>
+			</trans-unit>
+			<trans-unit id="index.summary_button" approved="yes" xml:space="preserve">
+				<source>Summary</source>
+				<target>Zusammenfassung</target>
+			</trans-unit>
+			<trans-unit id="index.summary_button_title" approved="yes" xml:space="preserve">
+				<source>Review your Configuration</source>
+				<target>Überprüfen Sie Ihre Konfiguration</target>
+			</trans-unit>
+			<trans-unit id="index.x_percent_done" approved="yes" xml:space="preserve">
+				<source>% done</source>
+				<target>% abgeschlossen</target>
+			</trans-unit>
+			<trans-unit id="index.your_configuration_code" approved="yes" xml:space="preserve">
+				<source>Your Configuration Code</source>
+				<target>Ihr Konfigurations-Code</target>
+			</trans-unit>
+			<trans-unit id="optionlist.confirm_selection" approved="yes" xml:space="preserve">
+				<source>Confirm Selection</source>
+				<target>Auswahl bestätigen</target>
+			</trans-unit>
+			<trans-unit id="optionlist.more_info" approved="yes" xml:space="preserve">
+				<source>More Info</source>
+				<target>Weitere Infos</target>
+			</trans-unit>
+			<trans-unit id="optionlist.reset_selection" approved="yes" xml:space="preserve">
+				<source>» Reset Selection</source>
+				<target>» Auswahl zurücksetzen</target>
+			</trans-unit>
+			<trans-unit id="optionlist.setlink.0.0" approved="yes" xml:space="preserve">
+				<source>Select option</source>
+				<target>Option auswählen</target>
+			</trans-unit>
+			<trans-unit id="optionlist.setlink.0.1" approved="yes" xml:space="preserve">
+				<source>Unselect option</source>
+				<target>Auswahl der Option aufheben</target>
+			</trans-unit>
+			<trans-unit id="optionlist.setlink.1.0" approved="yes" xml:space="preserve">
+				<source>Add this option</source>
+				<target>Diese Option hinzufügen</target>
+			</trans-unit>
+			<trans-unit id="optionlist.setlink.1.1" approved="yes" xml:space="preserve">
+				<source>Remove this option</source>
+				<target>Diese Option entfernen</target>
+			</trans-unit>
+			<trans-unit id="optionlist.unit_price" approved="yes" xml:space="preserve">
+				<source>Unit Price</source>
+				<target>Stückpreis</target>
+			</trans-unit>
+			<trans-unit id="optionlist.unit_price.abbr" approved="yes" xml:space="preserve">
+				<source>UP</source>
+				<target>SP</target>
+			</trans-unit>
+			<trans-unit id="price.inclusive" approved="yes" xml:space="preserve">
+				<source>incl.</source>
+				<target>inkl.</target>
+			</trans-unit>
+			<trans-unit id="selectregion.choose_text" approved="yes" xml:space="preserve">
+				<source>Please choose a region/currency</source>
+				<target>Bitte wählen Sie eine Region/Währung</target>
+			</trans-unit>
+			<trans-unit id="selectregion.warning_onetime_text" approved="yes" xml:space="preserve">
+				<source>This is a one time selection! You won´t be able to return and switch currency.</source>
+				<target>Dies ist eine Einmal-Auswahl! Sie werden keine weitere Möglichkeit haben, die Währung zu wechseln.</target>
+			</trans-unit>
+
+			<!-- DEFAULT CURRENCY REGIONS -->
+
+			<trans-unit id="currency.eur.region">
+				<source>Europe</source>
+				<target>Europa</target>
+			</trans-unit>
+			<trans-unit id="currency.chf.region">
+				<source>Switzerland</source>
+				<target>Schweiz</target>
+			</trans-unit>
+			<trans-unit id="currency.gbp.region">
+				<source>United Kingdom</source>
+				<target>Vereinigtes Königreich</target>
+			</trans-unit>
+			<trans-unit id="currency.usd.region">
+				<source>North, Middle and South America</source>
+				<target>Nord-, Mittel- und Südamerika</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

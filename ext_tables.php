@@ -3,8 +3,9 @@
 		die('Access denied.');
 	}
 
+	global $TYPO3_CONF_VARS;
+
 	$extKey = 'ecompc';
-	$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extKey]);
 
 	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
 		$extKey, 'configurator_dynamic', 'Configurator: Dynamic Configuration'
@@ -21,10 +22,9 @@
 	$extendTtContentFields = array(
 		// Packages selectable
 		'tx_' . $extKey . '_packages' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'defaultAsReadonly',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.available_packages',
+			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_dependency.packages',
 			'config' => array(
 				'type' => 'select',
 				'form_type' => 'user',
@@ -50,7 +50,7 @@
 		),
 		// Configuration(s) available
 		'tx_' . $extKey . '_configurations' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:ff_sTitle_config',
 			'config' => array(
@@ -75,28 +75,32 @@
 				),
 			),
 		),
-		// Base Price in Default Currency
+		/**
+		 * Base Price in Default Currency
+		 * @deprecated hold for compatibility
+		 */
 		'tx_' . $extKey . '_base_price_default' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'hideDiff',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.price',
+			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.price_old_basic',
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'double2'
+				'eval' => 'double2',
+				'readOnly' => 1
 			)
 		),
 		// Base Price in Foreign Currencies (XML)
-		'tx_' . $extKey . '_base_price_foreign' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'hideDiff',
+		'tx_' . $extKey . '_pricing' => array(
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => '',
+			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.pricing',
 			'config' => array(
 				'type' => 'flex',
+				'form_type' => 'user',
+				'userFunc' => 'S3b0\\Ecompc\\User\\TCAMod\\ModifyTCA->userFuncTtContentTxEcompcPricing',
 				'ds' => array(
-					'default' => $extConf['priceInForeignCurrenciesXML'] ?: 'FILE:EXT:' . $extKey . '/Configuration/FlexForms/price_list.xml'
+					'default' => 'FILE:EXT:' . $extKey . '/Configuration/FlexForms/price_list.xml'
 				)
 			)
 		)
@@ -109,12 +113,22 @@
 
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $extendTtContentFields, 1);
 
-	$pluginSignature = str_replace('_','',$extKey) . '_configurator_sku';
-	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'tx_' . $extKey . '_configurations,--div--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tabs.pricing,tx_' . $extKey . '_base_price_default;;tx_ecompc_palettes_pricing,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.extended,bodytext;LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang_db.xlf:bodytext_formlabel;;richtext:rte_transform[flag=rte_enabled|mode=ts_css],rte_enabled';
-	$pluginSignature = str_replace('_','',$extKey) . '_configurator_dynamic';
-	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'tx_' . $extKey . '_packages,tx_' . $extKey . '_configurations,--div--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tabs.pricing,tx_' . $extKey . '_base_price_default;;tx_ecompc_palettes_pricing,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.extended,bodytext;LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang_db.xlf:bodytext_formlabel;;richtext:rte_transform[flag=rte_enabled|mode=ts_css],rte_enabled';
+	$pluginSignatureDynamic = str_replace('_','',$extKey) . '_configurator_dynamic';
+	$pluginSignatureSku = str_replace('_','',$extKey) . '_configurator_sku';
+	$defaultTypeConfiguration = ('
+		--palette--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_configuration.available_packages;tx_ecompc_palettes_1,
+		tx_' . $extKey . '_configurations,
+		--div--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tabs.pricing,
+		tx_' . $extKey . '_pricing;;tx_ecompc_palettes_2,
+		--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.extended,
+		bodytext;LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang_db.xlf:bodytext_formlabel;;richtext:rte_transform[flag=rte_enabled|mode=ts_css],
+		rte_enabled
+	');
+	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignatureDynamic] = $defaultTypeConfiguration;
+	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignatureSku] = $defaultTypeConfiguration;
 
-	$GLOBALS['TCA']['tt_content']['palettes']['tx_ecompc_palettes_pricing'] = array('showitem' => 'tx_' . $extKey . '_base_price_foreign');
+	$GLOBALS['TCA']['tt_content']['palettes']['tx_ecompc_palettes_1'] = array('showitem' => 'tx_' . $extKey . '_packages');
+	$GLOBALS['TCA']['tt_content']['palettes']['tx_ecompc_palettes_2'] = array('showitem' => 'tx_' . $extKey . '_base_price_default');
 
 
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, 'Configuration/TypoScript', 'Product Configurator');

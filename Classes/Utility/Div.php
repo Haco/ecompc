@@ -11,6 +11,20 @@ namespace S3b0\Ecompc\Utility;
 
 class Div extends \S3b0\Ecompc\Controller\StandardController {
 
+	public static function setEnvironment($isDevelopment = FALSE) {
+		if ($isDevelopment) {
+			$GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = 1;
+			$GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = 1;
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] = '*';
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['displayErrors'] = '1';
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['enableDeprecationLog'] = 'file';
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['sqlDebug'] = '1';
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLogLevel'] = '0';
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['exceptionalErrors'] = '28674';
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['clearCacheSystem'] = '1';
+		}
+	}
+
 	/**
 	 * @param \S3b0\Ecompc\Controller\StandardController $controller
 	 */
@@ -22,7 +36,7 @@ class Div extends \S3b0\Ecompc\Controller\StandardController {
 		}
 		if ($controller->showPriceLabels) {
 			// Fetch currency configuration from TS
-			$controller->currency = $controller->settings['currency'][$controller->feSession->get('currency')];
+			$controller->currency = $controller->currencyRepository->findByUid($controller->feSession->get('currency'));
 		}
 	}
 

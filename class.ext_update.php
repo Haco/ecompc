@@ -87,23 +87,24 @@
 		protected function updateDatabaseFieldLabels() {
 			$title = 'Update tt_content extension field names: ';
 
-			$oldFieldNames = array(
+			$ttContentOldFieldNames = array(
 				'tx_ecompc_type', 'tx_ecompc_pckg', 'tx_ecompc_conf', 'tx_ecompc_bpdc', 'tx_ecompc_bpfc'
 			);
-			$newFieldNames = array(
-				NULL, 'tx_ecompc_packages', 'tx_ecompc_configurations', 'tx_ecompc_base_price_default', 'tx_ecompc_base_price_foreign'
+			$ttContentNewFieldNames = array(
+				NULL, 'tx_ecompc_packages', 'tx_ecompc_configurations', 'tx_ecompc_base_price_default', 'tx_ecompc_pricing'
 			);
 
 			$ttContentTableFields = $this->databaseConnection->admin_get_fields('tt_content');
-			foreach ($oldFieldNames as $arrayIndex => $fieldName) {
+			foreach ($ttContentOldFieldNames as $arrayIndex => $fieldName) {
 				if (array_key_exists($fieldName, $ttContentTableFields)) {
-					if (is_string($newFieldNames[$arrayIndex])) {
-						$this->renameDatabaseTableField('tt_content', $fieldName, $newFieldNames[$arrayIndex]);
+					if (is_string($ttContentNewFieldNames[$arrayIndex])) {
+						$this->renameDatabaseTableField('tt_content', $fieldName, $ttContentNewFieldNames[$arrayIndex]);
 					} else {
 						$this->removeDatabaseTableField('tt_content', $fieldName);
 					}
 				}
 			}
+			$this->renameDatabaseTableField('tx_ecompc_domain_model_option', 'price_list', 'pricing');
 		}
 
 		protected function removeDatabaseTableField($table, $fieldName) {

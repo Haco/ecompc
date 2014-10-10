@@ -1,7 +1,7 @@
 <table class="vtop">
 	<f:groupedFor each="{options}" as="packageOptions" groupBy="configurationPackage" groupKey="package">
 		<tr>
-			<td>{package.frontendLabel}:</td><td><ul>
+			<td>{package.frontendLabel}:</td><td><ul style="margin:0">
 			<f:for each="{packageOptions}" as="option" iteration="i">
 				<li>{option.frontendLabel}{f:if(condition:option.configurationCodeSegment,then:' [{option.configurationCodeSegment}]')}</li>
 			</f:for>
