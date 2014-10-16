@@ -117,8 +117,8 @@
 			<trans-unit id="tx_ecompc_domain_model_package.hint_text">
 				<source>Hint Text</source>
 			</trans-unit>
-			<trans-unit id="tx_ecompc_domain_model_package.image">
-				<source>Image</source>
+			<trans-unit id="tx_ecompc_domain_model_package.icon">
+				<source>Icon</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_package.visible_in_frontend">
 				<source>Visible In Frontend</source>
@@ -174,8 +174,20 @@
 			<trans-unit id="tx_ecompc_domain_model_currency.flag">
 				<source>Flag</source>
 			</trans-unit>
-			<trans-unit id="tx_ecompc_domain_model_currency.default_currency">
-				<source>Is default?</source>
+			<trans-unit id="tx_ecompc_domain_model_currency.settings">
+				<source>Settings</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.currency_default">
+				<source>Use as default (calculation on exchange base on this)</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.currency_prepend_symbol">
+				<source>Prepend currency symbol</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.currency_separate">
+				<source>Separate cureency and symbol (whitespace will be added)</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.currency_format_us">
+				<source>Use US-Format for separators (decimals/thousands)</source>
 			</trans-unit>
 			<trans-unit id="tabs.pricing">
 				<source>Pricing</source>

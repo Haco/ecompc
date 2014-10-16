@@ -206,7 +206,7 @@
 				->setVendorName($this->requestArguments['vendorName'] ?: 'S3b0')
 				->setExtensionName($this->requestArguments['extensionName'] ?: 'Ecompc')
 				->setPluginName($this->requestArguments['pluginName'] ?: 'configurator_dynamic')
-				->setControllerName($this->requestArguments['controllerName'] ?: 'AjaxRequest')
+				->setControllerName($this->requestArguments['controllerName'] ?: 'DynamicConfiguratorAjaxRequest')
 				->setActionName($this->requestArguments['actionName'] ?: 'index')
 				->setArguments($this->requestArguments['arguments']);
 

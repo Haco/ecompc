@@ -116,7 +116,7 @@ CREATE TABLE tx_ecompc_domain_model_package (
 	frontend_label varchar(255) DEFAULT '' NOT NULL,
 	prompt varchar(255) DEFAULT '' NOT NULL,
 	hint_text text NOT NULL,
-	image int(11) unsigned NOT NULL default '0',
+	icon int(11) unsigned NOT NULL default '0',
 	visible_in_frontend tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	multiple_select tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	default_option int(11) unsigned DEFAULT '0',
@@ -211,7 +211,7 @@ CREATE TABLE tx_ecompc_domain_model_currency (
 	local_lang varchar(255) DEFAULT '' NOT NULL,
 	flag int(11) unsigned NOT NULL default '0',
 	exchange double(11,2) DEFAULT '0.00' NOT NULL,
-	default_currency tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	settings tinyint(4) unsigned DEFAULT '4' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

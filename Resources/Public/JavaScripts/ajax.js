@@ -11,152 +11,8 @@ function removeAjaxLoader(element) {
 }
 
 /**
- * Go to index view
+ * @deprecated, might re-use for multiple select packages
  */
-function goBackToIndex() {
-	$('#tx-ecompc-ajax-header-instructions').show();
-	$('#tx-ecompc-ajax-header-backlink').hide();
-	$('#tx-ecompc-package-select-option-index').hide();
-	$('#tx-ecompc-package-select-index').fadeIn();
-}
-
-function ajaxCaller(targets, loader, pageUid, lang, request, onSuccessFunction, updateIndex) {
-	addAjaxLoader(loader);
-	var targetsAndArrayKeys = targets.replace(' ', '').split(',');
-	$.ajax({
-		async: 'true',
-		url: 'index.php',
-		type: 'POST',
-		//contentType: 'application/json; charset=utf-8',
-		dataType: 'json',
-		data: {
-			eID: 'EcomProductConfigurator',
-			id: pageUid,
-			L: lang,
-			type: 1407764086,
-			request: request
-		},
-		success: typeof onSuccessFunction == 'function' ? onSuccessFunction : function(result) {
-			//console.log(result);
-			removeAjaxLoader(loader);
-
-			/** Dynamically add contents to target. Pattern: DOMTarget1:resultArrayKey1,DOMTarget2:resultArrayKey2,DOMTarget3:resultArrayKey3 ... */
-			if (targetsAndArrayKeys.length) {
-				for (key in targetsAndArrayKeys) {
-					var tokens = targetsAndArrayKeys[key].split(':');
-					$(tokens[0]).html(result[tokens[1]]).fadeIn();
-				}
-			}
-
-			onAjaxSuccessGeneric(result, result['action'] == 'updatePackages');
-			onAjaxSuccessUpdateIndex(result);
-			onAjaxSuccessUpdatePackages(result);
-			if (updateIndex) {
-				ajaxCaller('', '#tx-ecompc-ajax-loader', result['pid'], result['L'], {
-					actionName: 'updatePackages',
-					arguments: {
-						cObj: result['cObj']
-					}
-				});
-			}
-			switch (result['proceed']) {
-				case 'index':
-					goBackToIndex();
-					break;
-				case 'selectPackageOptions':
-					ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', result['pid'], result['L'], {
-						actionName: 'selectPackageOptions',
-						arguments: {
-							configurationPackage: result['package'],
-							cObj: result['cObj']
-						}
-					});
-					break;
-				default :
-					break;
-			}
-			if (result['action'] == 'selectPackageOptions') {
-				initTriggerHint();
-			}
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			console.log('Request failed with ' + textStatus + ': ' + errorThrown +  '!');
-		}
-	});
-}
-
-function onAjaxSuccessUpdatePackages(result) {
-	//console.log({result: result, totalPackages: tcp});
-	/** Add result */
-	if (result['action'] == 'updatePackages' && result['cfgres']) {
-		$('#ecom-configurator-result-canvas').html(result['cfgres']).fadeIn();
-		(function($) {
-			var $summaryTable = $('#tx-ecompc-canvas .ecom-configurator-summary-table');
-			$('#tx-ecompc-canvas .ecom-configurator-result-review-config').on('click', function(e) {
-				// Prevent default anchor action
-				e.preventDefault();
-				$(this).stop().toggleClass('active');
-				$summaryTable.stop().slideToggle('slow').toggleClass('active');
-
-				// Scroll in position if the table is not currently hidden
-				if ($summaryTable.hasClass('active')) {
-					$('html, body').stop().animate({
-						scrollTop: $summaryTable.offset().top
-					}, 'slow');
-				}
-			});
-		})(jQuery);
-	}
-}
-
-/** Function to call on Ajax success updating index view contents */
-function onAjaxSuccessUpdateIndex(result) {
-	if (result['packagesLinksInnerHTML']) {
-		/** Update package links */
-		for (key in result['packagesLinksInnerHTML']) {
-			var packageLinkBox = $('#tx-ecompc-configure-package-' + key);
-			$('#tx-ecompc-configure-package-' + key + ' > .ecom-configurator-package-select').html(result['packagesLinksInnerHTML'][key][2]);
-			if (result['packagesLinksInnerHTML'][key][0]) {
-				packageLinkBox.removeClass('inactive-package').addClass('active-package'); // Whole link
-			} else {
-				packageLinkBox.removeClass('active-package').addClass('inactive-package'); // Whole link
-			}
-			if (result['packagesLinksInnerHTML'][key][1]) {
-				packageLinkBox.children('.ecom-configurator-package-state').removeClass('unchecked').addClass('checked'); // Checkbox
-			} else {
-				packageLinkBox.children('.ecom-configurator-package-state').removeClass('checked').addClass('unchecked'); // Checkbox
-			}
-		}
-	}
-	if (result['selcps'] < tcp) {
-		$('#ecom-configurator-result-canvas').html('').hide();
-	}
-}
-
-/** Generic function to call on Ajax success */
-function onAjaxSuccessGeneric(result, indexView) {
-	/** Update process information (process bar and count) */
-	$('#ecom-configurator-process-value').animate({value: result['selcps'] / tcp});
-	$('.ecom-configurator-process-value-print').each(function(index, element) {
-		$({countNum: $(element).text()}).animate({countNum: Math.floor(result['selcps'] / tcp * 100)}, {
-			duration: 800,
-			easing:'linear',
-			step: function() {
-				$(element).text(Math.floor(this.countNum));
-			},
-			complete: function() {
-				$(element).text(this.countNum);
-			}
-		});
-	});
-	if (result['cfgp']) { $('#tx-ecompc-config-header-cfgp').html(result['cfgp']); }
-	if (!indexView) {
-		/** Toggle Header Content */
-		$('#tx-ecompc-ajax-header-instructions').hide();
-		$('#tx-ecompc-ajax-header-backlink').css('display', 'inline-block');
-	}
-}
-
 function resetPackage(pageUid, lang, cObj, configurationPackage) {
 	var request = {
 		actionName: 'resetPackage',
@@ -166,11 +22,11 @@ function resetPackage(pageUid, lang, cObj, configurationPackage) {
 		}
 	};
 
-	ajaxCaller('', '#tx-ecompc-ajax-loader', pageUid, lang, request, function(result) {
-		removeAjaxLoader('#tx-ecompc-ajax-loader');
+	ajaxCaller('', '#ecom-configurator-ajax-loader', pageUid, lang, request, function(result) {
+		removeAjaxLoader('#ecom-configurator-ajax-loader');
 		onAjaxSuccessGeneric(result);
 		onAjaxSuccessUpdateIndex(result);
-		ajaxCaller('#tx-ecompc-package-select-option-index:content', '#tx-ecompc-ajax-loader', result['pid'], result['L'], {
+		ajaxCaller('#ecom-configurator-package-select-option-index:content', '#ecom-configurator-ajax-loader', result['pid'], result['L'], {
 			actionName: 'selectPackageOptions',
 			arguments: {
 				configurationPackage: result['package'],
@@ -180,69 +36,69 @@ function resetPackage(pageUid, lang, cObj, configurationPackage) {
 	});
 }
 
-/** Updating packages function */
-function updatePackage(pageUid, lang, cObj, option, unset) {
-	addAjaxLoader('#tx-ecompc-ajax-loader');
-	genericAjaxRequest(pageUid, lang, 1407764086, 'setOption', {
-		option: option,
-		unset: unset,
-		cObj: cObj
-	}, function(result) {
-		removeAjaxLoader('#tx-ecompc-ajax-loader');
-		console.log(result);
+/**************************************
+ *                                    *
+ * AJAX request functions (re-worked) *
+ *                                    *
+ *************************************/
+
+/**
+ * Set option function
+ */
+function txEcompcSetOption() {
+	$('.ecom-configurator-select-package-option-wrap').on('click', function (e) {
+		e.preventDefault();
+		addAjaxLoader('#ecom-configurator-ajax-loader');
+		genericAjaxRequest($(this).attr('data-t3pid'), $(this).attr('data-t3lang'), 1407764086, 'setOption', {
+			option: $(this).attr('data-option'),
+			unset: $(this).attr('data-option-state'),
+			cObj: $(this).attr('data-t3cobj')
+		}, function (result) {
+			removeAjaxLoader('#ecom-configurator-ajax-loader');
+			updateProcessIndicators(result.process);
+			$('#ecom-configurator-optionSelection-package-info').html(
+				'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
+				'<p>' + result.currentPackage.hintText + '</p>'
+			);
+			updatePackageNavigation(result.packages);
+			buildSelector(result);
+		});
 	});
 }
 
 /**
- * Add EventListeners
+ * Update index view only (switch between packages)
  */
-(function() {
-	$('.ecom-configurator-package-box').on('click', function(e) {
+function txEcompcIndex() {
+	$('.ecom-configurator-package-select').on('click', function (e) {
 		// Prevent default anchor action
 		e.preventDefault();
-		if ($(this).hasClass('inactive-package')) {
+		if ($(this).hasClass('ecom-configurator-package-state-0') || $(this).hasClass('current'))
 			return false;
-		}
-
-		$('#tx-ecompc-package-select-index').hide();
-		addAjaxLoader('#tx-ecompc-ajax-loader');
-		genericAjaxRequest($(this).attr('data-page'), $(this).attr('data-lang'), 1407764086, 'selectPackageOptions', {
-			configurationPackage: $(this).attr('data-package'),
-			cObj: $(this).attr('data-cObj')
-		}, function(result) {
-			//console.log(result);
-			removeAjaxLoader('#tx-ecompc-ajax-loader');
-			$('#tx-ecompc-package-select-option-index').html(result['content']).fadeIn();
-
-			buildOptionSelector(result);
+		addAjaxLoader('#ecom-configurator-ajax-loader');
+		genericAjaxRequest($(this).attr('data-t3pid'), $(this).attr('data-t3lang'), 1407764086, 'index', {
+			package: $(this).attr('data-package'),
+			cObj: $(this).attr('data-t3cobj')
+		}, function (result) {
+			removeAjaxLoader('#ecom-configurator-ajax-loader');
+			$('#ecom-configurator-optionSelection-package-info').html(
+				'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
+				'<p>' + result.currentPackage.hintText + '</p>'
+			);
+			updatePackageNavigation(result.packages);
+			buildSelector(result);
 		});
 	});
-
-	$('#tx-ecompc-ajax-header-backlink').on('click', function(e) {
-		// Prevent default anchor action
-		e.preventDefault();
-		goBackToIndex();
-	});
-
-})(jQuery);
-
-function buildOptionSelector(result) {
-	content = '';
-	for (var i = 0; i < result['options'].length; i++) {
-		content += '<a href="javascript:void(0)" onclick="updatePackage(' + result['pid'] + ',' + result['L'] + ',' + result['cObj'] + ',' + result['options'][i]['uid'] + ',' + result['options'][i]['state'] + ')" class="ecom-configurator-select-package-option-wrap" tabindex="' + i + '">';
-		// Add price labels, if enabled
-		if (result['showPriceLabels']) {
-			content += '<span class="ecom-configurator-select-package-option-price">' + result['options'][i]['price'] + '</span>';
-		}
-		// Add link to hint, if any
-		if (result['options'][i]['hint']) {
-			content += '<div class="ecom-configurator-select-package-option-info-wrapper"><span onclick="getOptionHint(' + result['options'][i]['uid'] + ',' + result['pid'] + ',' + result['L'] + ',' + result['cObj'] + ')" class="ecom-configurator-select-package-option-info">More Info</span></div>';
-		}
-		content += '<div class="ecom-configurator-checkbox "' + (result['options'][i]['active'] ? '' : 'un') + 'checked"><span class="ecom-configurator-option-checkbox-image"></span></div><span class="ecom-configurator-select-package-option option">' + result['options'][i]['title'] + '</span></a>';
-	}
-	$('#tx-ecompc-package-select-option-index').html(content).show();
 }
 
+/**
+ * get hints
+ * @param option
+ * @param pid
+ * @param lang
+ * @param cObj
+ * @returns {boolean}
+ */
 function getOptionHint(option, pid, lang, cObj) {
 	$('#dialog').remove();
 	genericAjaxRequest(pid, lang, 1407764086, 'getOptionHint', {
@@ -250,7 +106,7 @@ function getOptionHint(option, pid, lang, cObj) {
 			cObj: cObj
 		}, function(result) {
 			content = '<div id="dialog"><p>' + result['hint'] + '</p></div>';
-			$('#tx-ecompc-package-select-option-index').append(content);
+			$('#ecom-configurator-package-select-option-index').append(content);
 			$(function() {
 				$('#dialog').dialog({
 					width: '90%',
@@ -275,6 +131,7 @@ function genericAjaxRequest(pid, language, type, action, arguments, onSuccess) {
 			L: parseInt(language),
 			type: parseInt(type),
 			request: {
+				controllerName: 'DynamicConfiguratorAjaxRequest',
 				actionName: action,
 				arguments: arguments
 			}
@@ -285,3 +142,104 @@ function genericAjaxRequest(pid, language, type, action, arguments, onSuccess) {
 		}
 	});
 }
+
+/**********************************
+ * Various build helper functions *
+ *********************************/
+
+/**
+ * Update process indicators including process bar and 'percent done' display
+ * @param process
+ */
+function updateProcessIndicators(process) {
+	// Update/animate process bar
+	$('#ecom-configurator-process-value').animate({value: process});
+	// Update/animate number display(s)
+	$('.ecom-configurator-process-value-print').each(function(index, element) {
+		$({countNum: $(element).text()}).animate({countNum: Math.floor(process * 100)}, {
+			duration: 800,
+			easing:'linear',
+			step: function() {
+				$(element).text(Math.floor(this.countNum));
+			},
+			complete: function() {
+				$(element).text(this.countNum);
+			}
+		});
+	});
+}
+
+/**
+ * Update package navigation meaning icons and link states on top representing packages
+ * @param thePackages
+ */
+function updatePackageNavigation(thePackages) {
+	/**
+	 * Update package states/links
+	 */
+	for (var index in thePackages) {
+		if (thePackages.hasOwnProperty(index)) {
+			var newState = thePackages[index].active ? 1 : 0,
+				oldState = thePackages[index].active ? 0 : 1,
+				optionActiveState = thePackages[index].anyOptionActive,
+				faIcon = $('#ecom-configurator-package-' + thePackages[index]['uid'] + '-link i'),
+				link = $('#ecom-configurator-package-' + thePackages[index]['uid'] + '-link'),
+				icon = $('#ecom-configurator-package-' + thePackages[index]['uid'] + '-icon');
+			faIcon.addClass('icon-check' + (optionActiveState ? '' : '-empty')).removeClass('icon-check' + (optionActiveState ? '-empty' : ''));
+			link.addClass('ecom-configurator-package-state-' + newState).removeClass('ecom-configurator-package-state-' + oldState);
+			icon.addClass('icon-state-' + newState).removeClass('icon-state-' + oldState);
+			if (thePackages[index].current) {
+				link.addClass('current');
+				icon.addClass('current');
+			} else {
+				link.removeClass('current');
+				icon.removeClass('current');
+			}
+		}
+	}
+}
+
+/**
+ * build option selector HTML
+ * @param result
+ */
+function buildSelector(result) {
+	var options = result.options;
+	if (options.length) {
+		var html = [],
+			prop,
+			tabIndex = 1;
+		for (prop in options) {
+			if (options.hasOwnProperty(prop)) {
+				var content = "<a data-t3pid=\"" + result.pid + "\" data-t3lang=\"" + result.lang + "\" data-t3cobj=\"" + result.cObj + "\" data-option=\"" + options[prop].uid + "\" data-option-state=\"" + (options[prop].active ? 1 : 0) + "\" class=\"ecom-configurator-select-package-option-wrap\" tabindex=\"" + tabIndex + "\">";
+				if (result.showPriceLabels) {
+					content += "<span class=\"ecom-configurator-select-package-option-price\">" + options[prop].price + "</span>";
+				}
+				if (options[prop].hint) {
+					content += "<div class=\"ecom-configurator-select-package-option-info-wrapper\"><span class=\"ecom-configurator-select-package-option-info\">More Info</span></div>";
+				}
+				content += "<div class=\"ecom-configurator-checkbox " + (options[prop].active ? '' : 'un') + "checked\"><span class=\"ecom-configurator-option-checkbox-image\"></span></div>";
+				content += "<span class=\"ecom-configurator-select-package-option option\">" + options[prop].title + "</span></a>";
+				if (options[prop].hint) {
+					content += "<span class=\"ecom-configurator-select-package-option-info-hint-box\"><span class=\"close-popover-x\" title=\"Close Info Box\">×</span>###CONTENT###</span>";
+				}
+				content += "<div class=\"clearfix\"></div>";
+				html.push(content);
+				tabIndex++;
+			}
+		}
+		console.log(options);
+		$('#ecom-configurator-select-options-ajax-update').html(html.join(''));
+		txEcompcSetOption();
+	}
+}
+
+
+/**********************************************
+ * Initialize Event Listeners once DOM loaded *
+ *********************************************/
+(function() {
+	txEcompcSetOption();
+	txEcompcIndex();
+})(jQuery);
+

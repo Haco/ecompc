@@ -3,26 +3,28 @@ namespace S3b0\Ecompc\Domain\Model;
 
 
 /***************************************************************
- * Copyright notice
  *
- * (c) 2012 Klaus Heuer <klaus.heuer@t3-developer.com>
- * All rights reserved
+ *  Copyright notice
  *
- * This script is part of the TYPO3 project. The TYPO3 project is
- * free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ *  (c) 2014 Sebastian Iffland <sebastian.iffland@ecom-ex.com>, ecom instruments GmbH
  *
- * The GNU General Public License can be found at
- * http://www.gnu.org/copyleft/gpl.html.
+ *  All rights reserved
  *
- * This script is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This copyright notice MUST APPEAR in all copies of the script!
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 /**
@@ -235,7 +237,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration> $ecompcConfigurations
 	 */
-	public function setEcompcConfigurations($ecompcConfigurations) {
+	public function setEcompcConfigurations(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $ecompcConfigurations) {
 		$this->ecompcConfigurations = $ecompcConfigurations;
 	}
 
@@ -307,7 +309,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		 */
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
 		$db = $GLOBALS['TYPO3_DB'];
-		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.default_currency=1 ' . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
+		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
 		// Backwards compatibility
 		$defaultPrice = $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]['vDEF'] > 0 ? $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]['vDEF'] : $this->getEcompcBasePriceInDefaultCurrency();
 		if ($defaultPrice && $currency->getExchange()) {

@@ -53,6 +53,9 @@ config.tx_extbase {
 	}
 }
 
+# Enable <link>-tag in html-fields
+tx_ecompc_domain_model_package.bodytext.parseFunc.tags.link < lib.parseFunc.tags.link
+
 ###################
 # Frontend Plugin #
 ###################
@@ -72,6 +75,7 @@ plugin.tx_ecompc {
 	settings {
 		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion;Standard->request
 		showPriceLabels = {$plugin.tx_ecompc.constants.showPriceLabels}
+		viewHeader = {$plugin.tx_ecompc.constants.viewHeader}
 		distFeUserGroup = 0
 		requestForm {
 			pid = {$plugin.tx_ecompc.constants.requestForm.pid}
@@ -167,10 +171,8 @@ EcompcDynamicConfigurationAjaxRequest {
 		controller = DynamicConfiguratorAjaxRequest
 		switchableControllerActions {
 			DynamicConfiguratorAjaxRequest {
-				1 = selectPackageOptions
+				1 = index
 				2 = setOption
-				3 = updatePackages
-				4 = resetPackage
 			}
 		}
 	}
@@ -203,10 +205,8 @@ EcompcSkuConfigurationAjaxRequest {
 		controller = SkuConfiguratorAjaxRequest
 		switchableControllerActions {
 			SkuConfiguratorAjaxRequest {
-				1 = selectPackageOptions
+				1 = index
 				2 = setOption
-				3 = updatePackages
-				4 = resetPackage
 			}
 		}
 	}

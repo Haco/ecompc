@@ -58,7 +58,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
 	 */
-	protected $image = NULL;
+	protected $icon = NULL;
 
 	/**
 	 * @var boolean
@@ -83,12 +83,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var boolean
 	 */
-	protected $inactive = FALSE;
-
-	/**
-	 * @var boolean
-	 */
-	protected $selected = FALSE;
+	protected $current = FALSE;
 
 	/**
 	 * @var float
@@ -96,19 +91,24 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $priceOutput = 0.0;
 
 	/**
+	 * @var array
+	 */
+	protected $activeOptions = array();
+
+	/**
 	 * @var \S3b0\Ecompc\Domain\Model\Option
 	 */
 	protected $defaultOption = NULL;
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
+	 * @var boolean
 	 */
-	protected $options = NULL;
+	protected $anyOptionActive = FALSE;
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
 	 */
-	protected $selectedOptions = NULL;
+	protected $options = NULL;
 
 	/**
 	 * __construct
@@ -128,7 +128,6 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	protected function initStorageObjects() {
 		$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 	}
 
 	/**
@@ -192,25 +191,18 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $icon
 	 */
-	public function getImage() {
-		return $this->image;
+	public function getIcon() {
+		return $this->icon;
 	}
 
 	/**
-	 * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
+	 * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $icon
 	 * @return void
 	 */
-	public function setImage(\TYPO3\CMS\Extbase\Domain\Model\FileReference $image) {
-		$this->image = $image;
-	}
-
-	/**
-	 * @return boolean $visibleInFrontend
-	 */
-	public function getVisibleInFrontend() {
-		return $this->visibleInFrontend;
+	public function setIcon(\TYPO3\CMS\Extbase\Domain\Model\FileReference $icon) {
+		$this->icon = $icon;
 	}
 
 	/**
@@ -229,13 +221,6 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return boolean $percentPricing
-	 */
-	public function getPercentPricing() {
-		return $this->isMultipleSelect() ? FALSE : $this->percentPricing;
-	}
-
-	/**
 	 * @param boolean $percentPricing
 	 * @return void
 	 */
@@ -248,13 +233,6 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function isPercentPricing() {
 		return $this->isMultipleSelect() ? FALSE : $this->percentPricing;
-	}
-
-	/**
-	 * @return boolean $multipleSelect
-	 */
-	public function getMultipleSelect() {
-		return $this->multipleSelect;
 	}
 
 	/**
@@ -273,13 +251,6 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return boolean $active
-	 */
-	public function getActive() {
-		return $this->active;
-	}
-
-	/**
 	 * @param boolean $active
 	 * @return void
 	 */
@@ -295,17 +266,18 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return boolean $inactive
+	 * @param boolean $current
+	 * @return void
 	 */
-	public function getInactive() {
-		return !$this->active;
+	public function setCurrent($current) {
+		$this->current = $current;
 	}
 
 	/**
 	 * @return boolean
 	 */
-	public function isInactive() {
-		return !$this->active;
+	public function isCurrent() {
+		return $this->current;
 	}
 
 	/**
@@ -316,19 +288,20 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @param float $priceOutput
+	 * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $options
+	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
 	 * @return void
 	 */
-	public function setPriceOutput($priceOutput) {
-		$this->priceOutput = $priceOutput;
-	}
+	public function setPriceOutput(\TYPO3\CMS\Extbase\Persistence\QueryResultInterface $options = NULL, \S3b0\Ecompc\Domain\Model\Currency $currency) {
+		$priceOutput = 0.0;
+		if ($options instanceof \TYPO3\CMS\Extbase\Persistence\QueryResultInterface && $options->count()) {
+			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+			foreach ($options as $option) {
+				$priceOutput += $option->getPricing($currency);
+			}
+		}
 
-	/**
-	 * @param integer|float $add
-	 * @return void
-	 */
-	public function sumPriceOutput($add) {
-		$this->priceOutput += floatval($add);
+		$this->priceOutput = $priceOutput;
 	}
 
 	/**
@@ -382,78 +355,68 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
 	 * @return void
 	 */
-	public function setOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $options = null) {
+	public function setOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $options = NULL) {
 		$this->options = $options;
 	}
 
 	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOption
+	 * @return array $activeOptions
+	 */
+	public function getActiveOptions() {
+		return $this->activeOptions;
+	}
+
+	/**
+	 * @param array $activeOptions
 	 * @return void
 	 */
-	public function addSelectedOption(\S3b0\Ecompc\Domain\Model\Option $selectedOption) {
-		if ($this->selectedOptions === NULL) {
-			$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+	public function setActiveOptions(array $activeOptions) {
+		$this->activeOptions = $activeOptions;
+
+		if (count($activeOptions)) {
+			$this->setAnyOptionActive(TRUE);
 		}
-
-		/** Avoid duplicates */
-		if (!$this->selectedOptions->contains($selectedOption)) $this->selectedOptions->attach($selectedOption);
 	}
 
-	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Option $selectedOptionToRemove
-	 * @return void
-	 */
-	public function removeSelectedOption(\S3b0\Ecompc\Domain\Model\Option $selectedOptionToRemove) {
-		$this->selectedOptions->detach($selectedOptionToRemove);
+	public function addActiveOption(\S3b0\Ecompc\Domain\Model\Option $option) {
+		$this->activeOptions = array_merge($this->getActiveOptions(), array($option->getUid()));
 	}
 
-	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions
-	 */
-	public function getSelectedOptions() {
-		if ($this->selectedOptions === NULL) {
-			$this->selectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		}
-
-		return $this->selectedOptions;
-	}
-
-	/**
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $selectedOptions
-	 * @return void
-	 */
-	public function setSelectedOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $selectedOptions = null) {
-		$this->selectedOptions = $selectedOptions;
+	public function removeActiveOption(\S3b0\Ecompc\Domain\Model\Option $option) {
+		$this->activeOptions = array_diff($this->getActiveOptions(), array($option->getUid()));
 	}
 
 	/**
 	 * @return boolean
 	 */
-	public function isSelected() {
-		return $this->selected;
+	public function hasActiveOptions() {
+		return (bool) count($this->activeOptions);
 	}
 
 	/**
 	 * @return boolean
 	 */
-	public function getSelected() {
-		return $this->selected;
+	public function isAnyOptionActive() {
+		return $this->anyOptionActive;
 	}
 
 	/**
-	 * @param boolean $selected
+	 * @param boolean $anyOptionActive
 	 */
-	public function setSelected($selected) {
-		$this->selected = $selected;
+	public function setAnyOptionActive($anyOptionActive) {
+		$this->anyOptionActive = $anyOptionActive;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getSummaryForJSONView() {
 		return array(
 			'uid' => $this->getUid(),
-			'state' => (bool) $this->getSelectedOptions()->count(),
+			'state' => (bool) $this->hasActiveOptions(),
 			'multiple' => $this->isMultipleSelect(),
 			'title' => $this->getFrontendLabel(),
-			'image' => $this->getImage() ? $this->getImage()->getOriginalResource()->getUid() : 0,
+			'icon' => $this->getIcon() ? $this->getIcon()->getOriginalResource()->getUid() : 0,
 			'hint' => $this->getHintText()
 		);
 	}

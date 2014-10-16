@@ -317,7 +317,7 @@
                             "propertyDescription": "",
                             "propertyIsExcludeField": true,
                             "propertyIsRequired": false,
-                            "propertyName": "image",
+                            "propertyName": "icon",
                             "propertyType": "File",
                             "uid": "37007348683"
                         },

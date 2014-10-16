@@ -45,12 +45,13 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	);
 
 	/**
-	 * @param array   $uidList
-	 * @param boolean $getFirst
+	 * @param array                             $uidList
+	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 * @param boolean                           $getFirst
 	 *
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface|\S3b0\Ecompc\Domain\Model\Option
 	 */
-	public function findOptionsByUidList(array $uidList, $getFirst = FALSE) {
+	public function findOptionsByUidList(array $uidList, \S3b0\Ecompc\Domain\Model\Package $package = NULL, $getFirst = FALSE) {
 		if (!count($uidList))
 			return NULL;
 
@@ -59,9 +60,13 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$query = $this->createQuery();
 		$query->getQuerySettings()->setRespectStoragePage(FALSE);
 		$query->getQuerySettings()->setRespectSysLanguage(FALSE);
-		$result = $query->matching($query->in('uid', $db->cleanIntArray($uidList)))->execute();
+		$constraint = $package instanceof \S3b0\Ecompc\Domain\Model\Package ? $query->logicalAnd(
+			$query->in('uid', $db->cleanIntArray($uidList)),
+			$query->equals('configuration_package', $package)
+		) : $query->in('uid', $db->cleanIntArray($uidList));
+		$result = $query->matching($constraint)->execute();
 
-		return $getFirst ? $result->getFirst() : $result;
+		return $result->count() ? ($getFirst ? $result->getFirst() : $result) : NULL;
 	}
 
 	/**

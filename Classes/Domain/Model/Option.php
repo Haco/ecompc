@@ -28,10 +28,9 @@ namespace S3b0\Ecompc\Domain\Model;
  ***************************************************************/
 
 /**
- * Option
+ * Class Option
  *
- * @package S3b0
- * @subpackage Ecompc
+ * @package S3b0\Ecompc\Domain\Model
  */
 class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
@@ -81,9 +80,9 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $pricePercental = 0.0;
 
 	/**
-	 * @var string
+	 * @var float
 	 */
-	protected $priceList = '';
+	protected $pricing = 0.0;
 
 	/**
 	 * @var float
@@ -103,12 +102,17 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var boolean
 	 */
-	protected $selected = FALSE;
+	protected $active = FALSE;
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
 	 */
 	protected $conflictsWithSelectedOptions = NULL;
+
+	/**
+	 * @var boolean
+	 */
+	protected $disabled = FALSE;
 
 	/**
 	 * __construct
@@ -190,6 +194,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function hasConfigurationCodeSegment() {
+		return (bool) strlen($this->getConfigurationCodeSegment());
+	}
+
+	/**
 	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
 	 */
 	public function getImage() {
@@ -265,19 +276,62 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return string $priceList
+	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
+	 * @param float                              $configurationPrice
+	 *
+	 * @return float $pricing
 	 */
-	public function getPriceList() {
-		$convArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->priceList);
-		return $convArray['data']['sDEF']['lDEF'];
+	public function getPricing(\S3b0\Ecompc\Domain\Model\Currency $currency = NULL, $configurationPrice = 0.0) {
+		if (!$currency instanceof \S3b0\Ecompc\Domain\Model\Currency)
+			return 0.0;
+
+		/**
+		 * Return percental pricing if set.
+		 * In this case currency does not mind since configuration price is crucial.
+		 */
+		if ($this->getConfigurationPackage()->isPercentPricing()) {
+			return $configurationPrice * $this->getPricePercental();
+		}
+
+		$convArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->pricing);
+		$flexFormArray = $convArray['data']['sDEF']['lDEF'];
+		$price = $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($currency->getIso4217())]['vDEF'];
+
+		/**
+		 * Return default currency value
+		 */
+		if ($currency->isDefaultCurrency()) {
+			return floatval($price);
+		}
+
+		/**
+		 * Return other currency value, if set
+		 */
+		if ($price > 0) {
+			return floatval($price);
+		}
+
+		/**
+		 * calculate on exchange base!
+		 */
+		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+		$db = $GLOBALS['TYPO3_DB'];
+		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
+		$defaultPrice = $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]['vDEF'];
+		if ($defaultPrice && $currency->getExchange()) {
+			return floatval($defaultPrice * $currency->getExchange());
+		}
+
+		return 0.0;
+
 	}
 
 	/**
-	 * @param string $priceList
+	 * @param float $pricing
 	 * @return void
 	 */
-	public function setPriceList($priceList) {
-		$this->priceList = $priceList;
+	public function setPricing($pricing) {
+		$this->pricing = $pricing;
 	}
 
 	/**
@@ -326,25 +380,32 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return boolean $selected
+	 * @return boolean
 	 */
-	public function getSelected() {
-		return $this->selected;
+	public function isActive() {
+		return $this->active;
 	}
 
 	/**
-	 * @param boolean $selected
+	 * @param boolean $active
 	 * @return void
 	 */
-	public function setSelected($selected) {
-		$this->selected = $selected;
+	public function setActive($active) {
+		$this->active = $active;
 	}
 
 	/**
 	 * @return boolean
 	 */
-	public function isSelected() {
-		return $this->selected;
+	public function isDisabled() {
+		return $this->disabled;
+	}
+
+	/**
+	 * @param boolean $disabled
+	 */
+	public function setDisabled($disabled) {
+		$this->disabled = $disabled;
 	}
 
 	/**
@@ -387,40 +448,33 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @param string $currency
-	 * @param float  $exchange
-	 * @return float
-	 */
-	public function getPriceInCurrency($currency = 'EUR', $exchange = 1.0) {
-		if ($currency === 'EUR')
-			return $this->getPrice();
-
-		$priceList = $this->getPriceList();
-		$price = strlen($currency) === 3 && array_key_exists($currency, $priceList) ? floatval($priceList[$currency]['vDEF']) : 0.00;
-
-		return $price > 0 ? $price : ($this->getPrice() * $exchange);
-	}
-
-	/**
-	 * @param boolean $includePricing
-	 * @param array   $currency
+	 * @param array                              $selectedOptions
+	 * @param boolean                            $includePricing
+	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
 	 *
 	 * @return array
 	 */
-	public function getSummaryForJSONView($includePricing = FALSE, $currency = array()) {
+	public function getSummaryForJSONView(array $selectedOptions = array(), $includePricing = FALSE, \S3b0\Ecompc\Domain\Model\Currency $currency = NULL) {
 		$returnArray = array(
 			'uid' => $this->getUid(),
-			'state' => $this->getConfigurationPackage()->getSelectedOptions()->contains($this),
-			#'package' => $this->getConfigurationPackage()->getUid(),
-			#'disabled' => $this->getDisabled(),
-			'title' => $this->getFrontendLabel(),
+			'active' => in_array($this->getUid(), $selectedOptions),
+			'state' => $this->getConfigurationPackage()->isActive(),
+			'package' => $this->getConfigurationPackage()->getUid(),
+			'disabled' => $this->isDisabled(),
+			'title' => $this->getFrontendLabel() . ($this->hasConfigurationCodeSegment() ? ' [' . $this->getConfigurationCodeSegment() . ']' : ''),
 			'hint' => (bool) strlen($this->getHintText())
 		);
 
 		if ($includePricing) {
 			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
 			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
-			$returnArray['price'] = $currencyVH->render($this->getPriceInCurrency($currency['short'], $currency['exchange']), $currency['symbol'], $currency['prependCurrency']);
+			$returnArray['price'] = $currencyVH->render(
+				$this->getPricing($currency),
+				$currency->getSymbol(),
+				$currency->isSymbolPrepended(),
+				$currency->isNumberSeparatorsInUSFormat(),
+				$currency->isWhitespaceBetweenCurrencyAndValue()
+			);
 		}
 
 		return $returnArray;

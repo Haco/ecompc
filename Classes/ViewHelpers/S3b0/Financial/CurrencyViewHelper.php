@@ -46,8 +46,7 @@ class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	 * @param mixed   $floatToFormat      (optional) The float, if any; If not set, renderChildren() will set the value
 	 * @param string  $currencySign       (optional) The currency sign, eg $ or €.
 	 * @param boolean $prependCurrency    (optional) Select if the curreny sign should be prepended
-	 * @param string  $decimalSeparator   (optional) The separator for the decimal point.
-	 * @param string  $thousandsSeparator (optional) The thousands separator.
+	 * @param boolean $formatUS           (optional) Indicating format for separators (thousands/decimal)
 	 * @param boolean $separateCurrency   (optional) Separate the currency sign from the number by single space, defaults to true due to backwards compatibility
 	 * @param integer $decimals           (optional) Set decimals places.
 	 * @param boolean $signed             (optional) Select if algebraic sign should be added
@@ -55,7 +54,9 @@ class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	 * @return string the formatted amount.
 	 * @api
 	 */
-	public function render($floatToFormat = NULL, $currencySign = '', $prependCurrency = FALSE, $decimalSeparator = ',', $thousandsSeparator = '.', $separateCurrency = TRUE, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE) {
+	public function render($floatToFormat = NULL, $currencySign = '', $prependCurrency = FALSE, $formatUS = FALSE, $separateCurrency = TRUE, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE) {
+		$decimalSeparator = $formatUS ? '.' : ',';
+		$thousandsSeparator = $formatUS ? ',' : '.';
 		$floatToFormat = $floatToFormat !== NULL ? $floatToFormat : $this->renderChildren();
 		if (empty($floatToFormat)) {
 			$floatToFormat = 0.0;

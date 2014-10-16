@@ -8,12 +8,14 @@ if (!defined('TYPO3_MODE')) {
 	'configurator_dynamic',
 	array(
 		'DynamicConfigurator' => 'index,reset,selectRegion,request',
-		'DynamicConfiguratorAjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+		'DynamicConfiguratorAjaxRequest' => 'index,setOption',
+		'Standard' => 'request'
 	),
 	// non-cacheable actions
 	array(
 		'DynamicConfigurator' => 'index,reset,selectRegion,request',
-		'DynamicConfiguratorAjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+		'DynamicConfiguratorAjaxRequest' => 'index,setOption',
+		'Standard' => 'request'
 	)
 );
 
@@ -22,12 +24,14 @@ if (!defined('TYPO3_MODE')) {
 	'configurator_sku',
 	array(
 		'SkuConfigurator' => 'index,reset,selectRegion,request',
-		'SkuConfiguratorAjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+		'SkuConfiguratorAjaxRequest' => 'index,setOption',
+		'Standard' => 'request'
 	),
 	// non-cacheable actions
 	array(
 		'SkuConfigurator' => 'index,reset,selectRegion,request',
-		'SkuConfiguratorAjaxRequest' => 'updatePackages,selectPackageOptions,setOption,resetPackage'
+		'SkuConfiguratorAjaxRequest' => 'index,setOption',
+		'Standard' => 'request'
 	)
 );
 

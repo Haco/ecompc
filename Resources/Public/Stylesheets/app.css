@@ -1,11 +1,24 @@
 body {
 	font-family: "Roboto Condensed", sans-serif;
 }
+a {
+	cursor: pointer;
+}
+a.ecom-configurator-package-select.ecom-configurator-package-state-0,
+a.ecom-configurator-package-select.current {
+	cursor: not-allowed;
+}
 a:focus {
 	outline: 1px dotted black;
 }
 table.vtop tr td {
 	vertical-align: top;
+}
+
+img.ecom-configurator-package-icon.icon-state-0 {
+	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+	filter: gray; /* IE6-9 */
+	-webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 }
 
 .align-center,
@@ -17,7 +30,7 @@ table.vtop tr td {
 	border-bottom: 1px solid #cccccc;
 	margin: 1em 0;
 }
-#tx-ecompc-ajax-loader.ajaxloader {
+#ecom-configurator-ajax-loader.ajaxloader {
 	background: rgba(255, 255, 255, .8) url("../../../../../../typo3/sysext/t3skin/images/spinner/big-f0f0f0.gif") center center no-repeat scroll;
 	height: 100%;
 	left: 0;
@@ -26,7 +39,7 @@ table.vtop tr td {
 	width: 100%;
 	z-index: 1000;
 }
-#tx-ecompc-canvas .action-button-default {
+#ecom-configurator-canvas .action-button-default {
 	display: inline-block;
 	background-color: #b0b4b7; /* Old browsers */
 	background-color: -moz-linear-gradient(top,  #b0b4b7 0%, #9ea2a6 100%); /* FF3.6+ */
@@ -47,11 +60,8 @@ table.vtop tr td {
 	*display: inline;
 	zoom: 1
 }
-#tx-ecompc-canvas .action-button-default#tx-ecompc-ajax-header-backlink {
-	display: none;
-}
-#tx-ecompc-canvas .action-button-default:hover,
-#tx-ecompc-canvas .action-button-default:focus {
+#ecom-configurator-canvas .action-button-default:hover,
+#ecom-configurator-canvas .action-button-default:focus {
 	background-color: #0083cb; /* Old browsers */
 	background-color: -moz-linear-gradient(top,  #0083cb 0%, #0075c2 100%); /* FF3.6+ */
 	background-color: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0083cb), color-stop(100%,#0075c2)); /* Chrome,Safari4+ */
@@ -63,24 +73,30 @@ table.vtop tr td {
 	color: #ffffff;
 }
 
-#tx-ecompc-canvas .action-button-default.left-arrow {
+#ecom-configurator-canvas .action-button-default.left-arrow {
 	background-image: url('../Images/white_arrow_left.png');
 	background-position: 10px center;
 	padding-left: 30px;
 	padding-right: 10px;
 }
 
-#tx-ecompc-canvas .arrow-right {
+#ecom-configurator-canvas .action-button-default.no-arrow {
+	background-image: none;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#ecom-configurator-canvas .arrow-right {
 	background: url('../Images/blue_arrow_right.png') center center;
 	vertical-align: middle;
 	width: 9px;
 	height: 11px;
 	display: inline-block;
 }
-#tx-ecompc-canvas .action-button-default.dropdown {
+#ecom-configurator-canvas .action-button-default.dropdown {
 	background-image: url('../Images/white_arrow_down.png');
 }
-#tx-ecompc-canvas .action-button-default.dropdown.active {
+#ecom-configurator-canvas .action-button-default.dropdown.active {
 	background-image: url('../Images/white_arrow_up.png');
 }
 /**
@@ -132,234 +148,205 @@ table.vtop tr td {
 /**
  * INDEX
  */
-#tx-ecompc-canvas div.clearfix {
+#ecom-configurator-canvas div.clearfix {
 	clear: both;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head {
+#ecom-configurator-canvas .ecom-configurator-configurator-head {
 	border-top: 1px solid #dddddd;
 	border-bottom: 1px solid #dddddd;
 	padding: 20px 10px;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-instructions {
+#ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-instructions {
 	float: left;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-instructions p {
+#ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-instructions p {
 	margin: 0;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table {
+#ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-price-table {
 	float: right;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table thead {
+#ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-price-table thead {
 	color: #808080;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
+#ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-price-table table td {
 	padding-left: 40px;
 }
-#tx-ecompc-canvas .tx-ecompc-configurator-head #tx-ecompc-config-header-cfgp {
+#ecom-configurator-canvas .ecom-configurator-configurator-head #ecom-configurator-config-header-cfgp {
 	color: #0083cb;
 	font-weight: bold;
 }
-#tx-ecompc-canvas a {
+#ecom-configurator-canvas a {
+	cursor: pointer;
 	text-decoration: none;
 }
-#tx-ecompc-canvas .ecompc-syntax-help {
+#ecom-configurator-canvas a:focus {
+	outline: 1px dotted black;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-state-0,
+#ecom-configurator-canvas a.ecom-configurator-package-select.current {
+	cursor: not-allowed;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select > div {
+	float: left;
+	height: 37px;
+	margin-right: 10px;
+	position: relative;
+	width: 42px;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select:last-child > div {
+	margin-right: 0;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select > div span.ecompc-package-number {
+	border: 2px solid #000;
+	border-radius: 28px;
+	display: block;
+	height: 28px;
+	line-height: 28px;
+	width: 28px;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-state-0 > div span.ecompc-package-number {
+	border-color: #808080;
+	color: #808080;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select.current > div span.ecompc-package-number {
+	border: 3px solid #0083cb;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select > div > i {
+	background-color: #fff;
+	bottom: 0;
+	padding: 1px;
+	position: absolute;
+	right: 0;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-state-1 > div > i.icon-check {
+	color: #060;
+}
+#ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-state-1 > div > i.icon-check-empty {
+	color: #f00;
+}
+#ecom-configurator-canvas table.vtop tr td {
+	vertical-align: top;
+}
+#ecom-configurator-canvas img.ecom-configurator-package-icon.icon-state-0 {
+	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+	filter: gray; /* IE6-9 */
+	-webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+}
+#ecom-configurator-canvas .ecompc-syntax-help {
 	padding: 0 2px;
 }
-#tx-ecompc-canvas .ecompc-syntax-help[title]:hover,
-#tx-ecompc-canvas .ecompc-syntax-help[title]:focus {
+#ecom-configurator-canvas .ecompc-syntax-help[title]:hover,
+#ecom-configurator-canvas .ecompc-syntax-help[title]:focus {
 	background-color: #ffff66;
 	cursor: help;
 }
-#tx-ecompc-canvas .ecom-configurator-reset-button {
+#ecom-configurator-canvas .ecom-configurator-reset-button {
 	display: block;
 	color: #808080;
 	margin-top: 0.5em;
 }
-#tx-ecompc-canvas .ecom-configurator-result {
+#ecom-configurator-canvas .ecom-configurator-result {
 	margin: 2em 0;
 	text-align: center;
 }
-#tx-ecompc-canvas .ecom-configurator-result h2 {
+#ecom-configurator-canvas .ecom-configurator-result h2 {
 	color: #0083cb;
 	line-height: 2em;
 }
-#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+#ecom-configurator-canvas .ecom-configurator-result h2 > small {
 	font-size: 1.5em;
 	color: #808080;
 }
-#tx-ecompc-canvas .ecom-configurator-summary-table {
+#ecom-configurator-canvas .ecom-configurator-summary-table {
 	display: none;
 	padding-top: 1.5em;
 }
-#tx-ecompc-canvas .ecom-configurator-summary-table > table {
+#ecom-configurator-canvas .ecom-configurator-summary-table > table {
 	width: auto;
 	margin: 0 auto;
 }
-#tx-ecompc-canvas .ecom-configurator-summary-table > table tr {
+#ecom-configurator-canvas .ecom-configurator-summary-table > table tr {
 	background: #efefef;
 	transition: background 0.2s, color 0.2s;
 }
-#tx-ecompc-canvas .ecom-configurator-summary-table > table tr:nth-child(2n) {
+#ecom-configurator-canvas .ecom-configurator-summary-table > table tr:nth-child(2n) {
 	background: #fafafa;
 }
-#tx-ecompc-canvas .ecom-configurator-summary-table > table td {
+#ecom-configurator-canvas .ecom-configurator-summary-table > table td {
 	padding: 5px 30px;
 }
-#tx-ecompc-canvas .ecom-configurator-summary-table > table tr:hover {
+#ecom-configurator-canvas .ecom-configurator-summary-table > table tr:hover {
 	background: #0083cb;
 	color: white;
 }
-#tx-ecompc-canvas .ecom-configurator-result-review-config {
+#ecom-configurator-canvas .action-button-default {
 	margin-right: 1em;
+}
+
+#ecom-configurator-canvas .action-button-default:last-child {
+	margin-right: 0;
 }
 
 /**
  * Package Boxes => index action
  */
-#tx-ecompc-canvas .ecom-configurator-process-number {
+#ecom-configurator-canvas #ecom-configurator-process-number {
 	color: #0083cb;
 	font-size: 1.2em;
 	text-align: center;
 }
-#tx-ecompc-canvas .ecom-configurator-package-box {
-	display: block;
-	border-bottom: 2px solid #ffffff;
-	position: relative;
-}
-#tx-ecompc-canvas .ecom-configurator-package-select,
-#tx-ecompc-canvas .ecom-configurator-package-state {
-	background: #edefee; /* Old browsers */
-	background: -moz-linear-gradient(top,  #edefee 0%, #dce3e3 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#edefee), color-stop(100%,#dce3e3)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #edefee 0%,#dce3e3 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  #edefee 0%,#dce3e3 100%); /* W3C */
-	min-height: 50px;
-	position: relative;
-}
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package span.tx-ecompc-configure-package-label {
-	color: #0083cb;
-}
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-state {
-	background: #0083cb; /* Old browsers */
-	background: -moz-linear-gradient(top,  #0083cb 0%, #0075c2 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0083cb), color-stop(100%,#0075c2)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  #0083cb 0%,#0075c2 100%); /* W3C */
-}
-#tx-ecompc-canvas .ecom-configurator-package-checkbox-image {
-	background-image: url("../Images/check_def_64.png");
-	background-repeat: no-repeat;
-	background-position: 50% center;
-	display: block;
-	width: 100%;
-	height: 100%;
-}
-#tx-ecompc-canvas .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
-	background-image: url("../Images/check_active_64.png");
-}
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-state.checked .ecom-configurator-package-checkbox-image {
-	background-image: url("../Images/check_active_hover_64.png");
-}
-#tx-ecompc-canvas .ecom-configurator-package-select {
-	margin-left: 80px;
-	border-left: 2px solid #ffffff;
-	padding: 10px 15px;
-}
-#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
-	font-size: 1.3em;
-	color: #000000;
-	font-weight: bold;
-}
-#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
-	color: #808080;
-	display: block;
-}
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > span.ecom-configurator-package-addon,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-package-select > .ecom-configurator-select-package-price,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.tx-ecompc-configure-package-label,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > span.ecom-configurator-package-addon,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-package-select > .ecom-configurator-select-package-price {
-	color: #ffffff;
-}
-#tx-ecompc-canvas .ecom-configurator-arrow-right {
-	background: url('../Images/blue_arrow_right.png') no-repeat;
-	height: 11px;
-	width: 9px;
-	position: absolute;
-	right: 20px;
-	top: 42%;
-	z-index: 5;
-}
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:hover .ecom-configurator-arrow-right,
-#tx-ecompc-canvas .ecom-configurator-package-box.active-package:focus .ecom-configurator-arrow-right {
-	background: url('../Images/white_arrow_right.png') no-repeat;
-}
-#tx-ecompc-canvas .ecom-configurator-package-state {
-	height: 50px;
-	width: 80px;
-	float: left;
-}
 /**
  * @action selectPackageOptions
  */
-#tx-ecompc-canvas .tx-ecompc-optionSelection-package-info {
+#ecom-configurator-canvas #ecom-configurator-optionSelection-package-info {
 	margin-bottom: 2em;
 }
-#tx-ecompc-canvas .tx-ecompc-optionSelection-package-info h2 {
+#ecom-configurator-canvas #ecom-configurator-optionSelection-package-info h2 {
 	color: #0083cb;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap {
 	color: #000000;
 	background: #eeeeee;
 	display: block;
 	border-bottom: 2px solid #ffffff;
 	padding: 8px;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:hover,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:focus {
 	background: #0083cb;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option.option {
+#ecom-configurator-canvas .ecom-configurator-select-package-option.option {
 	display: block;
 	margin-left: 45px;
 	padding: 9px 15px;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-price,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-price {
+#ecom-configurator-canvas .ecom-configurator-select-package-price,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-price {
 	color: #0083cb;
 	float: right;
 	line-height: 38px;
 	padding: 0 15px;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-price {
+#ecom-configurator-canvas .ecom-configurator-select-package-price {
 	line-height: 50px;
 	padding: 0 25px 0 0;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-price.ecom-configurator-price-info {
+#ecom-configurator-canvas .ecom-configurator-select-package-price.ecom-configurator-price-info {
 	color: #808080;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-info {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-info {
 	color: #808080;
 	line-height: 38px;
 	cursor: help;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-info:hover {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-info:hover {
 	text-decoration: underline;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-info-wrapper {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-info-wrapper {
 	float: right;
 	padding: 0 15px;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box {
 	display: none;
 	opacity: 0;
 	background: #ffffff;
@@ -380,10 +367,10 @@ table.vtop tr td {
 	padding: 30px;
 	z-index: 100;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box h3 {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box h3 {
 	margin-top: 0;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x {
 	position: absolute;
 	right: 10px;
 	top: 2px;
@@ -391,20 +378,20 @@ table.vtop tr td {
 	cursor: pointer;
 	font-weight: bold;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x:hover {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x:hover {
 	color: #0083cb;
 }
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-checkbox,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option.option,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-price,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-info,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-checkbox,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option.option,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-price,
-#tx-ecompc-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-info {
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-checkbox,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option.option,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-price,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-select-package-option-info,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-checkbox,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option.option,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-price,
+#ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-info {
 	color: #ffffff;
 }
-#tx-ecompc-canvas .ecom-configurator-checkbox {
+#ecom-configurator-canvas .ecom-configurator-checkbox {
 	border: 4px solid #cccccc;
 	background: #ffffff;
 	box-shadow: 0 0 2px #cccccc inset;
@@ -415,13 +402,13 @@ table.vtop tr td {
 	width: 32px;
 	position: relative;
 }
-#tx-ecompc-canvas .ecom-configurator-checkbox.checked {
+#ecom-configurator-canvas .ecom-configurator-checkbox.checked {
 	border-color: #0083cb;
 }
 .ecom-configurator-checkbox.checked+span {
 	color: #0083cb;
 }
-#tx-ecompc-canvas .ecom-configurator-checkbox.checked .ecom-configurator-option-checkbox-image {
+#ecom-configurator-canvas .ecom-configurator-checkbox.checked .ecom-configurator-option-checkbox-image {
 	background-image: url("../Images/check_option_32.png");
 	background-repeat: no-repeat;
 	background-position: 50% center;
@@ -431,14 +418,14 @@ table.vtop tr td {
 }
 
 /* Styling an indeterminate progress bar */
-#tx-ecompc-canvas progress:not(value) {
+#ecom-configurator-canvas progress:not(value) {
 	/* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
 }
 
 /**
  * PROGRESS styles
  */
-#tx-ecompc-canvas progress[value] {
+#ecom-configurator-canvas progress[value] {
 	appearance: none;
 	background-color: #f3f3f3;
 	border: none;
@@ -452,87 +439,75 @@ table.vtop tr td {
 	z-index: 1;
 }
 /* Fallback technique styles */
-#tx-ecompc-canvas .progress-bar {
+#ecom-configurator-canvas .progress-bar {
 	background-color: transparent;
 	height: 5px;
 	overflow: hidden;
 	position: fixed;
 	width: 500px;
 }
-#tx-ecompc-canvas .progress-bar span {
+#ecom-configurator-canvas .progress-bar span {
 	background-color: #0083cb;
 	display: block;
 	text-indent: -9999px;
 }
 
 @media (max-width: 1024px) {
-	#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
+	#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box {
 		width: 90%;
 	}
 }
 
 @media (max-width: 768px) {
-	#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-instructions {
+	#ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-instructions {
 		display: block;
 		float: none;
 	}
-	#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table {
+	#ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-price-table {
 		display: block;
 		float: none;
 		margin-top: 1em;
 	}
-	#tx-ecompc-canvas .tx-ecompc-configurator-head .tx-ecompc-config-header-price-table table td {
+	#ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-price-table table td {
 		padding-left: 0;
 		padding-right: 40px;
 	}
-	#tx-ecompc-canvas .ecom-configurator-result h2 {
+	#ecom-configurator-canvas .ecom-configurator-result h2 {
 		font-size: 1.7em;
 		font-weight: normal;
 	}
-	#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+	#ecom-configurator-canvas .ecom-configurator-result h2 > small {
 		font-size: 1em;
 		font-weight: normal;
 	}
-	#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
-		font-size: 1.2em;
-	}
-	#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
-		font-size: 1em;
-	}
-	#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box {
+	#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box {
 		width: auto;
 	}
 	.select-region-wrap a.select-region-choose-flag img {
 		width: 150px;
 		height: auto;
 	}
-	#tx-ecompc-canvas .ecom-configurator-summary-table > table td {
+	#ecom-configurator-canvas .ecom-configurator-summary-table > table td {
 		padding: 5px 10px;
 	}
 }
 
 @media (max-width: 468px) {
-	#tx-ecompc-canvas .ecom-configurator-select-package-price,
-	#tx-ecompc-canvas .ecom-configurator-select-package-option-price,
-	#tx-ecompc-canvas .ecom-configurator-select-package-option-info {
+	#ecom-configurator-canvas .ecom-configurator-select-package-price,
+	#ecom-configurator-canvas .ecom-configurator-select-package-option-price,
+	#ecom-configurator-canvas .ecom-configurator-select-package-option-info {
 		padding: 0 5px;
 	}
-	#tx-ecompc-canvas .ecom-configurator-result h2 {
+	#ecom-configurator-canvas .ecom-configurator-result h2 {
 		font-size: 1.4em;
 		font-weight: normal;
 	}
-	#tx-ecompc-canvas .ecom-configurator-result h2 > small {
+	#ecom-configurator-canvas .ecom-configurator-result h2 > small {
 		font-size: 0.8em;
 		font-weight: normal;
 	}
-	#tx-ecompc-canvas .ecom-configurator-arrow-right {
+	#ecom-configurator-canvas .ecom-configurator-arrow-right {
 		display: none;
-	}
-	#tx-ecompc-canvas .ecom-configurator-package-select > span.tx-ecompc-configure-package-label {
-		font-size: 1em;
-	}
-	#tx-ecompc-canvas .ecom-configurator-package-select > span.ecom-configurator-package-addon {
-		font-size: 0.9em;
 	}
 	.select-region-wrap a.select-region-choose-flag {
 		display: block;

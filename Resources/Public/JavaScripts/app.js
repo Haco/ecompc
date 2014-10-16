@@ -5,7 +5,7 @@
 // Equalize height of checkbox and package selection on resize.
 (function($) {
 	function equalizeHeight() {
-		$('#tx-ecompc-canvas .ecom-configurator-package-select').each(function() {
+		$('#ecom-configurator-canvas .ecom-configurator-package-select').each(function() {
 			$(this).siblings('.ecom-configurator-package-state').height($(this).outerHeight());
 		});
 	}equalizeHeight();
@@ -16,8 +16,8 @@
 
 // Package-OptionList => Popover for hint text
 (function($) {
-	var triggerHint = '#tx-ecompc-canvas .ecom-configurator-select-package-option-info',
-		hintBoxSelector = '#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box',
+	var triggerHint = '#ecom-configurator-canvas .ecom-configurator-select-package-option-info',
+		hintBoxSelector = '#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box',
 		windowHeight,
 		popupHeight,
 		scrollPosition,
@@ -36,13 +36,13 @@
 
 		// Setting new vars
 		windowHeight = $(document).height();
-		currentHintBox = $(this).parents('.ecom-configurator-select-package-option-wrap').next('.ecom-configurator-select-package-option-info-hint-box');
+		currentHintBox = $(this).parent('.ecom-configurator-select-package-option-wrap').next('.ecom-configurator-select-package-option-info-hint-box');
 
 		// Calculate position of the hint-box
 		popupHeight = $(currentHintBox).outerHeight();
 		// Check if popup high exceeds window height
 		if (windowHeight <= popupHeight) {
-			// Then set position top 10px
+			// Then set position top 15px
 			scrollPosition = 15;
 		} else {
 			// Else arrange it in center position
@@ -55,7 +55,7 @@
 		return false;
 	});
 	// Hide hint-box on click and ESC key
-	$('#tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box .close-popover-x, #tx-ecompc-canvas .ecom-configurator-select-package-option-info-hint-box, body').on('click keyup', function(e) {
+	$('#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box .close-popover-x, #ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box, body').on('click keyup', function(e) {
 		// If the keyup event is triggered
 		if (e.type == 'keyup') {
 			if (e.keyCode == 27) {
@@ -70,8 +70,8 @@
 
 // Review/Summary Configuration Button
 (function($) {
-	var $summaryTable = $('#tx-ecompc-canvas .ecom-configurator-summary-table');
-	$('#tx-ecompc-canvas .ecom-configurator-result-review-config').on('click', function(e) {
+	var $summaryTable = $('#ecom-configurator-canvas .ecom-configurator-summary-table');
+	$('#ecom-configurator-canvas .ecom-configurator-result-review-config').on('click', function(e) {
 		// Prevent default anchor action
 		e.preventDefault();
 		$(this).stop().toggleClass('active');
@@ -84,4 +84,8 @@
 			}, 'slow');
 		}
 	});
+})(jQuery);
+
+(function($) {
+	$('#ecom-configurator-canvas').tooltip();
 })(jQuery);

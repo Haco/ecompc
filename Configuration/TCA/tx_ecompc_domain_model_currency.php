@@ -25,16 +25,16 @@ return array(
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('static_info_tables') . 'Resources/Public/Images/Icons/icon_static_currencies.gif'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'hidden, label, iso_4217, symbol, region, local_lang, exchange, flag',
+		'showRecordFieldList' => 'hidden, label, iso_4217, symbol, settings, region, local_lang, exchange, flag',
 	),
 	'types' => array(
 		'1' => array('showitem' => 'hidden;;1, label;;4, --palette--;' . $extTranslationPath . 'tx_ecompc_domain_model_currency.palettes.basic;2, --palette--;' . $extTranslationPath . 'tx_ecompc_domain_model_currency.palettes.region;3, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
-		'2' => array('showitem' => 'iso_4217, symbol, exchange', 'canNotCollapse' => 1),
+		'2' => array('showitem' => 'iso_4217, exchange, symbol', 'canNotCollapse' => 1),
 		'3' => array('showitem' => 'region, local_lang, --linebreak--, flag', 'canNotCollapse' => 1),
-		'4' => array('showitem' => 'default_currency')
+		'4' => array('showitem' => 'settings')
 	),
 	'columns' => array(
 
@@ -193,13 +193,20 @@ return array(
 					$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
 				),
 		),
-		'default_currency' => array(
+		'settings' => array(
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_currency.default_currency',
+			'label' => $extTranslationPath . 'tx_ecompc_domain_model_currency.settings',
 			'config' => array(
 				'type' => 'check',
 				'form_type' => 'user',
-				'userFunc' => 'S3b0\\Ecompc\\User\\TCAMod\\ModifyTCA->userFuncTxEcompcCurrencyDefaultCurrency',
+				'userFunc' => 'S3b0\\Ecompc\\User\\TCAMod\\ModifyTCA->userFuncTxEcompcCurrencySettings',
+				'items' => array(
+					array($extTranslationPath . 'tx_ecompc_domain_model_currency.currency_default'),
+					array($extTranslationPath . 'tx_ecompc_domain_model_currency.currency_prepend_symbol'),
+					array($extTranslationPath . 'tx_ecompc_domain_model_currency.currency_separate'),
+					array($extTranslationPath . 'tx_ecompc_domain_model_currency.currency_format_us')
+				),
+				'default' => 4
 			),
 		)
 

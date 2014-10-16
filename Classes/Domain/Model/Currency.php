@@ -3,26 +3,28 @@ namespace S3b0\Ecompc\Domain\Model;
 
 
 /***************************************************************
- * Copyright notice
  *
- * (c) 2012 Klaus Heuer <klaus.heuer@t3-developer.com>
- * All rights reserved
+ *  Copyright notice
  *
- * This script is part of the TYPO3 project. The TYPO3 project is
- * free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ *  (c) 2014 Sebastian Iffland <sebastian.iffland@ecom-ex.com>, ecom instruments GmbH
  *
- * The GNU General Public License can be found at
- * http://www.gnu.org/copyleft/gpl.html.
+ *  All rights reserved
  *
- * This script is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This copyright notice MUST APPEAR in all copies of the script!
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
 /**
@@ -69,9 +71,29 @@ class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $flag = NULL;
 
 	/**
+	 * @var integer
+	 */
+	protected $settings = 0;
+
+	/**
 	 * @var boolean
 	 */
 	protected $defaultCurrency = FALSE;
+
+	/**
+	 * @var boolean
+	 */
+	protected $symbolPrepended = FALSE;
+
+	/**
+	 * @var boolean
+	 */
+	protected $whitespaceBetweenCurrencyAndValue = FALSE;
+
+	/**
+	 * @var boolean
+	 */
+	protected $numberSeparatorsInUSFormat = FALSE;
 
 	/**
 	 * @return string
@@ -172,10 +194,24 @@ class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getSettings() {
+		return (int) $this->settings;
+	}
+
+	/**
+	 * @param int $settings
+	 */
+	public function setSettings($settings) {
+		$this->settings = $settings;
+	}
+
+	/**
 	 * @return boolean
 	 */
 	public function isDefaultCurrency() {
-		return $this->defaultCurrency;
+		return ($this->getSettings() & \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT) == \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT;
 	}
 
 	/**
@@ -183,6 +219,48 @@ class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setDefaultCurrency($defaultCurrency) {
 		$this->defaultCurrency = $defaultCurrency;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isSymbolPrepended() {
+		return ($this->getSettings() & \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_PREPEND_SYMBOL) == \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_PREPEND_SYMBOL;
+	}
+
+	/**
+	 * @param boolean $prependSymbol
+	 */
+	public function setSymbolPrepended($prependSymbol) {
+		$this->symbolPrepended = $prependSymbol;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isWhitespaceBetweenCurrencyAndValue() {
+		return ($this->getSettings() & \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_ADD_WHITEPACE_BETWEEN_CURRENCY_AND_VALUE) == \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_ADD_WHITEPACE_BETWEEN_CURRENCY_AND_VALUE;
+	}
+
+	/**
+	 * @param boolean $whitespaceBetweenCurrencyAndValue
+	 */
+	public function setWhitespaceBetweenCurrencyAndValue($whitespaceBetweenCurrencyAndValue) {
+		$this->whitespaceBetweenCurrencyAndValue = $whitespaceBetweenCurrencyAndValue;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isNumberSeparatorsInUSFormat() {
+		return ($this->getSettings() & \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_NUMBER_SEPARATORS_IN_US_FORMAT) == \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_NUMBER_SEPARATORS_IN_US_FORMAT;
+	}
+
+	/**
+	 * @param boolean $numberSeparatorsInUSFormat
+	 */
+	public function setNumberSeparatorsInUSFormat($numberSeparatorsInUSFormat) {
+		$this->numberSeparatorsInUSFormat = $numberSeparatorsInUSFormat;
 	}
 
 }

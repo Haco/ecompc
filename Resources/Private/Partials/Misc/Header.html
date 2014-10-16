@@ -1,35 +1,30 @@
-<div class="tx-ecompc-configurator-head">
-	<div class="tx-ecompc-config-header-instructions" id="tx-ecompc-ajax-header-instructions">{instructions -> f:format.html()}</div>
-	<a href="" data-cObj="{cObj}" data-page="{pid}" class="tx-ecompc-config-header-backlink action-button-default left-arrow" id="tx-ecompc-ajax-header-backlink"><f:translate id="index.header.back_to_selection" /></a>
-	<!--
-	<f:if condition="{0:action} == {0:'index'}">
-		<f:then><div class="tx-ecompc-config-header-instructions">{instructions -> f:format.html()}</div></f:then>
-		<f:else><f:link.action action="index" class="tx-ecompc-config-header-backlink action-button-default left-arrow"><f:translate id="index.header.back_to_selection" /></f:link.action></f:else>
-	</f:if>
-	-->
-	<f:if condition="{showPriceLabels}">
-		<div class="tx-ecompc-config-header-price-table">
-			<table>
-				<thead>
-				<tr class="align-center">
-					<td><f:translate id="index.header.base_price" /></td>
-					<td><f:translate id="index.header.config_price" /></td>
-				</tr>
-				</thead>
-				<tbody>
-				<tr class="align-center">
-					<f:if condition="{pricing.0}">
-						<f:then><td><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.0}</f:format.currency></td></f:then>
-						<f:else><td>-</td></f:else>
-					</f:if>
-					<f:if condition="{pricing.1}">
-						<f:then><td><span id="tx-ecompc-config-header-cfgp"><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:then>
-						<f:else><td><span id="tx-ecompc-config-header-cfgp">-</span></td></f:else>
-					</f:if>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-	</f:if>
-	<div class="clearfix" style="clear: both;"></div>
-</div>
+<f:if condition="{settings.viewHeader}">
+	<div class="ecom-configurator-configurator-head">
+		<div class="ecom-configurator-config-header-instructions" id="ecom-configurator-ajax-header-instructions">{instructions -> f:format.html()}</div>
+		<f:if condition="{showPriceLabels}">
+			<div class="ecom-configurator-config-header-price-table">
+				<table>
+					<thead>
+					<tr class="align-center">
+						<td><f:translate id="index.header.base_price" /></td>
+						<td><f:translate id="index.header.config_price" /></td>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="align-center">
+						<f:if condition="{pricing.0}">
+							<f:then><td><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.0}</f:format.currency></td></f:then>
+							<f:else><td>-</td></f:else>
+						</f:if>
+						<f:if condition="{pricing.1}">
+							<f:then><td><span id="ecom-configurator-config-header-cfgp"><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:then>
+							<f:else><td><span id="ecom-configurator-config-header-cfgp">-</span></td></f:else>
+						</f:if>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</f:if>
+		<div class="clearfix" style="clear: both;"></div>
+	</div>
+</f:if>
