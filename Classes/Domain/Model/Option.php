@@ -80,9 +80,9 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $pricePercental = 0.0;
 
 	/**
-	 * @var float
+	 * @var string
 	 */
-	protected $pricing = 0.0;
+	protected $pricing = '';
 
 	/**
 	 * @var float
@@ -279,35 +279,36 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
 	 * @param float                              $configurationPrice
 	 *
-	 * @return float $pricing
+	 * @return float
 	 */
 	public function getPricing(\S3b0\Ecompc\Domain\Model\Currency $currency = NULL, $configurationPrice = 0.0) {
-		if (!$currency instanceof \S3b0\Ecompc\Domain\Model\Currency)
+		if ( !$currency instanceof \S3b0\Ecompc\Domain\Model\Currency )
 			return 0.0;
 
 		/**
 		 * Return percental pricing if set.
 		 * In this case currency does not mind since configuration price is crucial.
 		 */
-		if ($this->getConfigurationPackage()->isPercentPricing()) {
+		if ( $this->getConfigurationPackage()->isPercentPricing() ) {
 			return $configurationPrice * $this->getPricePercental();
 		}
 
-		$convArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->pricing);
-		$flexFormArray = $convArray['data']['sDEF']['lDEF'];
-		$price = $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($currency->getIso4217())]['vDEF'];
+		/** @var \TYPO3\CMS\Extbase\Service\FlexFormService $flexFormService */
+		$flexFormService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\FlexFormService');
+		$convertedArray = $flexFormService->convertFlexFormContentToArray($this->pricing);
+		$price = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($currency->getIso4217())];
 
 		/**
 		 * Return default currency value
 		 */
-		if ($currency->isDefaultCurrency()) {
-			return floatval($price);
+		if ( $currency->isDefaultCurrency() ) {
+			return floatval($price) > 0 ? $price : $this->getPrice();
 		}
 
 		/**
 		 * Return other currency value, if set
 		 */
-		if ($price > 0) {
+		if ( $price > 0 ) {
 			return floatval($price);
 		}
 
@@ -317,8 +318,8 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
 		$db = $GLOBALS['TYPO3_DB'];
 		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
-		$defaultPrice = $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]['vDEF'];
-		if ($defaultPrice && $currency->getExchange()) {
+		$defaultPrice = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])];
+		if ( $defaultPrice && $currency->getExchange() ) {
 			return floatval($defaultPrice * $currency->getExchange());
 		}
 
@@ -327,7 +328,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @param float $pricing
+	 * @param string $pricing
 	 * @return void
 	 */
 	public function setPricing($pricing) {
@@ -413,7 +414,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function addConflictsWithSelectedOption(\S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOption) {
-		if ($this->conflictsWithSelectedOptions === NULL) {
+		if ( $this->conflictsWithSelectedOptions === NULL ) {
 			$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 
@@ -432,7 +433,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $conflictsWithSelectedOptions
 	 */
 	public function getConflictsWithSelectedOptions() {
-		if ($this->conflictsWithSelectedOptions === NULL) {
+		if ( $this->conflictsWithSelectedOptions === NULL ) {
 			$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 
@@ -449,12 +450,26 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param array                              $selectedOptions
+	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
+	 * @param float                              $configurationPrice
+	 *
+	 * @return string
+	 */
+	private function getPriceDifference(array $selectedOptions = array(), \S3b0\Ecompc\Domain\Model\Currency $currency = NULL, $configurationPrice = 0.0) {
+		$unitPrice = $this->getPricing($currency, $configurationPrice);
+
+		return '';
+	}
+
+	/**
+	 * @param array                              $selectedOptions
 	 * @param boolean                            $includePricing
 	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
+	 * @param float                              $configurationPrice
 	 *
 	 * @return array
 	 */
-	public function getSummaryForJSONView(array $selectedOptions = array(), $includePricing = FALSE, \S3b0\Ecompc\Domain\Model\Currency $currency = NULL) {
+	public function getSummaryForJSONView(array $selectedOptions = array(), $includePricing = FALSE, \S3b0\Ecompc\Domain\Model\Currency $currency = NULL, $configurationPrice = 0.0) {
 		$returnArray = array(
 			'uid' => $this->getUid(),
 			'active' => in_array($this->getUid(), $selectedOptions),
@@ -465,15 +480,12 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 			'hint' => (bool) strlen($this->getHintText())
 		);
 
-		if ($includePricing) {
+		if ( $includePricing ) {
 			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
 			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
 			$returnArray['price'] = $currencyVH->render(
-				$this->getPricing($currency),
-				$currency->getSymbol(),
-				$currency->isSymbolPrepended(),
-				$currency->isNumberSeparatorsInUSFormat(),
-				$currency->isWhitespaceBetweenCurrencyAndValue()
+				$currency,
+				$this->getPricing($currency, $configurationPrice)
 			);
 		}
 

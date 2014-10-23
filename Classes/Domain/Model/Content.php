@@ -190,17 +190,17 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $ecompcPackages
 	 */
 	public function getEcompcPackagesFE() {
-		if ($this->ecompcPackages === NULL) {
+		if ( $this->ecompcPackages === NULL ) {
 			$this->ecompcPackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
-		if ($this->ecompcPackages->count() === 0) {
+		if ( $this->ecompcPackages->count() === 0 ) {
 			return NULL;
 		}
 
 		$return = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-		foreach ($this->ecompcPackages as $package) {
-			if ($package->isVisibleInFrontend())
+		foreach ( $this->ecompcPackages as $package ) {
+			if ( $package->isVisibleInFrontend() )
 				$return->attach($package);
 		}
 
@@ -266,8 +266,9 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return string $ecompcPricing
 	 */
 	public function getEcompcPricing() {
-		$converted2Array = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->ecompcPricing);
-		return $converted2Array['data']['sDEF']['lDEF'];
+		/** @var \TYPO3\CMS\Extbase\Service\FlexFormService $flexFormService */
+		$flexFormService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\FlexFormService');
+		return $flexFormService->convertFlexFormContentToArray($this->ecompcPricing);
 	}
 
 	/**
@@ -286,21 +287,24 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @return float
 	 */
-	public function getPrice(\S3b0\Ecompc\Domain\Model\Currency $currency) {
-		$flexFormArray = $this->getEcompcPricing();
-		$price = $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($currency->getIso4217())]['vDEF'];
+	public function getPrice(\S3b0\Ecompc\Domain\Model\Currency $currency = NULL) {
+		if ( !$currency instanceof \S3b0\Ecompc\Domain\Model\Currency )
+			return 0.0;
+
+		$convertedArray = $this->getEcompcPricing();
+		$price = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($currency->getIso4217())];
 
 		/**
 		 * Return default currency value
 		 */
-		if ($currency->isDefaultCurrency()) {
+		if ( $currency->isDefaultCurrency() ) {
 			return $price > 0 ? floatval($price) : $this->getEcompcBasePriceInDefaultCurrency();
 		}
 
 		/**
 		 * Return other currency value, if set
 		 */
-		if ($price > 0) {
+		if ( $price > 0 ) {
 			return floatval($price);
 		}
 
@@ -311,8 +315,8 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$db = $GLOBALS['TYPO3_DB'];
 		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
 		// Backwards compatibility
-		$defaultPrice = $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]['vDEF'] > 0 ? $flexFormArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]['vDEF'] : $this->getEcompcBasePriceInDefaultCurrency();
-		if ($defaultPrice && $currency->getExchange()) {
+		$defaultPrice = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])] > 0 ? $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])] : $this->getEcompcBasePriceInDefaultCurrency();
+		if ( $defaultPrice && $currency->getExchange() ) {
 			return floatval($defaultPrice * $currency->getExchange());
 		}
 
@@ -325,14 +329,14 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function getStoragePidArray() {
 		$pidArray = array();
 
-		if ($this->getStorage() instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->getStorage()->count()) {
+		if ( $this->getStorage() instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->getStorage()->count() ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Page $storage */
-			foreach ($this->getStorage() as $storage) {
+			foreach ( $this->getStorage() as $storage ) {
 				/** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
 				$pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-				if ($rootLine = $pageRepository->getRootLine($storage->getUid())) {
+				if ( $rootLine = $pageRepository->getRootLine($storage->getUid()) ) {
 					$limit = $this->getRecursive() < count($rootLine) ? $this->getRecursive() + 1 : count($rootLine);
-					for ($i = 0; $i < $limit; $i++) {
+					for ( $i = 0; $i < $limit; $i++ ) {
 						$current = current($rootLine);
 						$pidArray[] = $current['uid'];
 						next($rootLine);
