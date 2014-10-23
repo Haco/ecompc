@@ -95,9 +95,9 @@
 			);
 
 			$ttContentTableFields = $this->databaseConnection->admin_get_fields('tt_content');
-			foreach ($ttContentOldFieldNames as $arrayIndex => $fieldName) {
-				if (array_key_exists($fieldName, $ttContentTableFields)) {
-					if (is_string($ttContentNewFieldNames[$arrayIndex])) {
+			foreach ( $ttContentOldFieldNames as $arrayIndex => $fieldName ) {
+				if ( array_key_exists($fieldName, $ttContentTableFields) ) {
+					if ( is_string($ttContentNewFieldNames[$arrayIndex]) ) {
 						$this->renameDatabaseTableField('tt_content', $fieldName, $ttContentNewFieldNames[$arrayIndex]);
 					} else {
 						$this->removeDatabaseTableField('tt_content', $fieldName);
@@ -112,10 +112,10 @@
 
 			$currentTableFields = $this->databaseConnection->admin_get_fields($table);
 
-			if ($currentTableFields[$fieldName]) {
+			if ( $currentTableFields[$fieldName] ) {
 				$sql = 'ALTER TABLE ' . $table . ' DROP COLUMN ' . $fieldName;
 
-				if ($this->databaseConnection->admin_query($sql) === FALSE) {
+				if ( $this->databaseConnection->admin_query($sql) === FALSE ) {
 					$message = ' SQL ERROR: ' . $this->databaseConnection->sql_error();
 					$status = FlashMessage::ERROR;
 				} else {
@@ -144,18 +144,18 @@
 
 			$currentTableFields = $this->databaseConnection->admin_get_fields($table);
 
-			if ($currentTableFields[$newFieldName]) {
+			if ( $currentTableFields[$newFieldName] ) {
 				$message = 'Field ' . $table . ':' . $newFieldName . ' already existing.';
 				$status = FlashMessage::OK;
 			} else {
-				if (!$currentTableFields[$oldFieldName]) {
+				if ( !$currentTableFields[$oldFieldName] ) {
 					$message = 'Field ' . $table . ':' . $oldFieldName . ' not existing';
 					$status = FlashMessage::ERROR;
 				} else {
 					$sql = 'ALTER TABLE ' . $table . ' CHANGE COLUMN ' . $oldFieldName . ' ' . $newFieldName . ' ' .
 						$currentTableFields[$oldFieldName]['Type'];
 
-					if ($this->databaseConnection->admin_query($sql) === FALSE) {
+					if ( $this->databaseConnection->admin_query($sql) === FALSE ) {
 						$message = ' SQL ERROR: ' . $this->databaseConnection->sql_error();
 						$status = FlashMessage::ERROR;
 					} else {
@@ -181,16 +181,16 @@
 			$title = 'Renaming "' . $oldTableName . '" to "' . $newTableName . '" ';
 
 			$tables = $this->databaseConnection->admin_get_tables();
-			if (isset($tables[$newTableName])) {
+			if ( isset($tables[$newTableName]) ) {
 				$message = 'Table ' . $newTableName . ' already exists';
 				$status = FlashMessage::OK;
-			} elseif (!isset($tables[$oldTableName])) {
+			} elseif ( !isset($tables[$oldTableName]) ) {
 				$message = 'Table ' . $oldTableName . ' does not exist';
 				$status = FlashMessage::ERROR;
 			} else {
 				$sql = 'RENAME TABLE ' . $oldTableName . ' TO ' . $newTableName . ';';
 
-				if ($this->databaseConnection->admin_query($sql) === FALSE) {
+				if ( $this->databaseConnection->admin_query($sql) === FALSE ) {
 					$message = ' SQL ERROR: ' . $this->databaseConnection->sql_error();
 					$status = FlashMessage::ERROR;
 				} else {
@@ -223,24 +223,24 @@
 			/** @var \TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools $flexformTools */
 			$flexformTools = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Configuration\\FlexForm\\FlexFormTools');
 
-			while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
+			while ( $row = $this->databaseConnection->sql_fetch_assoc($res) ) {
 
 				$xmlArray = GeneralUtility::xml2array($row['pi_flexform']);
 
-				if (!is_array($xmlArray) || !isset($xmlArray['data'])) {
+				if ( !is_array($xmlArray) || !isset($xmlArray['data']) ) {
 					$status = FlashMessage::ERROR;
 					// @todo: This will happen when trying to update news2 > news but pluginName is already set to news
 					// proposal for future: check for news2 somehow?
 					$message = 'Flexform data of plugin "' . $pluginName . '" not found.';
-				} elseif (!$xmlArray['data'][$oldFieldPointer[0]]) {
+				} elseif ( !$xmlArray['data'][$oldFieldPointer[0]] ) {
 					$status = FlashMessage::WARNING;
 					$message = 'Flexform data of record tt_content:' . $row['uid'] . ' did not contain ' .
 						'sheet: ' . $oldFieldPointer[0];
 				} else {
 					$updated = FALSE;
 
-					foreach ($xmlArray['data'][$oldFieldPointer[0]] as $language => $fields) {
-						if ($fields[$oldFieldPointer[1]]) {
+					foreach ( $xmlArray['data'][$oldFieldPointer[0]] as $language => $fields ) {
+						if ( $fields[$oldFieldPointer[1]] ) {
 
 							$xmlArray['data'][$newFieldPointer[0]][$language][$newFieldPointer[1]] = $fields[$oldFieldPointer[1]];
 							unset($xmlArray['data'][$oldFieldPointer[0]][$language][$oldFieldPointer[1]]);
@@ -249,7 +249,7 @@
 						}
 					}
 
-					if ($updated === TRUE) {
+					if ( $updated === TRUE ) {
 						$this->databaseConnection->exec_UPDATEquery('tt_content', 'uid=' . $row['uid'], array(
 							'pi_flexform' => $flexformTools->flexArray2Xml($xmlArray)
 						));
@@ -274,7 +274,7 @@
 		 */
 		protected function generateOutput() {
 			$output = '';
-			foreach ($this->messageArray as $messageItem) {
+			foreach ( $this->messageArray as $messageItem ) {
 				/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
 				$flashMessage = GeneralUtility::makeInstance(
 					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',

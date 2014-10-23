@@ -51,7 +51,7 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
 	public function findByUidList(array $uidList) {
-		if (!count($uidList))
+		if ( !count($uidList) )
 			return NULL;
 
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
@@ -62,7 +62,7 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 	}
 
 	public function findByTtContentUid($uid) {
-		if (!(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)))
+		if ( !(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)) )
 			return NULL;
 
 		$query = $this->createQuery();
@@ -79,7 +79,7 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
 	public function findByTtContentUidApplyingSelectedOptions($uid = 0, array $selectedOptions) {
-		if (!(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)))
+		if ( !(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)) )
 			return NULL;
 
 		$query = $this->createQuery();

@@ -48,7 +48,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Disable for non-admins
 		$PA['fieldConf']['config']['readOnly'] = !$pObj->getBackendUserAuthentication()->isAdmin();
 
-		if ($PA['row']['CType'] === 'list' && $PA['row']['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE) {
+		if ( $PA['row']['CType'] === 'list' && $PA['row']['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE ) {
 			$PA['fieldConf']['config']['foreign_table_where'] = 'AND NOT tx_ecompc_domain_model_package.deleted AND NOT tx_ecompc_domain_model_package.multiple_select AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)';
 		}
 
@@ -69,7 +69,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Disable for non-admins
 		$PA['fieldConf']['config']['readOnly'] = !$pObj->getBackendUserAuthentication()->isAdmin();
 
-		if ($PA['row']['CType'] === 'list' && $PA['row']['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE) {
+		if ( $PA['row']['CType'] === 'list' && $PA['row']['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE ) {
 			$PA['fieldConf']['config']['maxitems'] = 1;
 			$PA['fieldConf']['config']['appearance']['collapseAll'] = 0;
 		}
@@ -105,16 +105,16 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 
 	public function userFuncTxEcompcCurrencySettings(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		$addWhere = \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($PA['row']['uid']) ? ' AND NOT tx_ecompc_domain_model_currency.uid=' . $PA['row']['uid'] : '';
-		if ($rows = $pObj->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . $addWhere . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'))) {
+		if ( $rows = $pObj->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . $addWhere . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency')) ) {
 			/** @var \S3b0\Ecompc\Utility\BitHandler $bitwiseFlag */
 			$bitwiseFlag = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('S3b0\\Ecompc\\Utility\\BitHandler');
 			$bitwiseFlag->setBits($PA['row']['settings']);
 			$isCurrentMarkedAsDefault = $bitwiseFlag->isBitSet(\S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT);
 
-			if ($isCurrentMarkedAsDefault) {
-				foreach ($rows as $row) {
+			if ( $isCurrentMarkedAsDefault ) {
+				foreach ( $rows as $row ) {
 					$bitwiseFlag->reset()->setBits($row['settings']);
-					if (!$bitwiseFlag->isBitSet(\S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT))
+					if ( !$bitwiseFlag->isBitSet(\S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT) )
 						continue;
 					$bitwiseFlag->unsetSingleBit(\S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT);
 					$pObj->getDatabaseConnection()->exec_UPDATEquery(
@@ -124,14 +124,14 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 							'settings' => $bitwiseFlag->getBits()
 					));
 				}
-			} elseif (count($rows) > 1) {
+			} elseif ( count($rows) > 1 ) {
 				$defaultFlagSet = FALSE;
-				foreach ($rows as $row) {
+				foreach ( $rows as $row ) {
 					$bitwiseFlag->reset();
 					$bitwiseFlag->setBits($row['settings']);
-					if (!$bitwiseFlag->isBitSet(\S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT))
+					if ( !$bitwiseFlag->isBitSet(\S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT) )
 						continue;
-					if (!$defaultFlagSet && $bitwiseFlag->isBitSet(\S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT)) {
+					if ( !$defaultFlagSet && $bitwiseFlag->isBitSet(\S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT) ) {
 						$defaultFlagSet = TRUE;
 						continue;
 					}
@@ -213,7 +213,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 */
 	public function userFuncTxEcompcDomainModelConfigurationOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type,tx_ecompc_packages');
-		if ($ttContent['CType'] === 'list' && $ttContent['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE)
+		if ( $ttContent['CType'] === 'list' && $ttContent['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE )
 			return '';
 
 		// Creating the label for the "No Matching Value" entry.
@@ -227,13 +227,13 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		$selItems = $this->initItemArray($PA['fieldConf']);
 		$rowIndex = count($selItems);
 
-		if ($configurationPackages instanceof \ArrayAccess || is_array($configurationPackages)) {
-			foreach ($configurationPackages as $configurationPackage) {
+		if ( $configurationPackages instanceof \ArrayAccess || is_array($configurationPackages) ) {
+			foreach ( $configurationPackages as $configurationPackage ) {
 				$selItems[] = array($configurationPackage['backend_label'] ?: $configurationPackage['frontend_label'], '--div--');
-				if ($configurationOptions = BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_option', 'configuration_package', $configurationPackage['uid'], 'AND NOT deleted AND sys_language_uid IN (-1,0) ORDER BY tx_ecompc_domain_model_option.sorting')) {
-					foreach ($configurationOptions as $configurationOption) {
+				if ( $configurationOptions = BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_option', 'configuration_package', $configurationPackage['uid'], 'AND NOT deleted AND sys_language_uid IN (-1,0) ORDER BY tx_ecompc_domain_model_option.sorting') ) {
+					foreach ( $configurationOptions as $configurationOption ) {
 						$addItem = array($this->getLabelforTableOption($configurationOption), $configurationOption['uid'], 'clear.gif', '', '', $rowIndex, 'radio');
-						if ($configurationPackage['multiple_select']) {
+						if ( $configurationPackage['multiple_select'] ) {
 							$addItem[6] = 'checkbox';
 							$rowIndex++;
 						}
@@ -243,29 +243,29 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 				}
 			}
 		}
-		if (empty($selItems)) {
+		if ( empty($selItems) ) {
 			return '';
 		}
 		// Get values in an array (and make unique, which is fine because there can be no duplicates anyway):
 		$itemArray = array_flip($this->extractValuesOnlyFromValueLabelList($PA['itemFormElValue']));
 		$item = '';
 		$disabled = '';
-		if ($this->renderReadonly || $config['readOnly']) {
+		if ( $this->renderReadonly || $config['readOnly'] ) {
 			$disabled = ' disabled="disabled"';
 		}
 		// Traverse the Array of selector box items:
 		$tRows = array();
 		$c = 0;
-		if (!$disabled) {
+		if ( !$disabled ) {
 			$sOnChange = implode('', $PA['fieldChangeFunc']);
 			// Used to accumulate the JS needed to restore the original selection.
 			$setAll = array();
 			$unSetAll = array();
-			foreach ($selItems as $p) {
+			foreach ( $selItems as $p ) {
 				// Non-selectable element:
-				if ($p[1] === '--div--') {
+				if ( $p[1] === '--div--' ) {
 					$selIcon = '';
-					if (isset($p[2]) && $p[2] != 'empty-emtpy') {
+					if ( isset($p[2]) && $p[2] != 'empty-emtpy' ) {
 						$selIcon = $this->getIconHtml($p[2]);
 					}
 					$tRows[] = '
@@ -275,12 +275,12 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 				} else {
 					// Selected or not by default:
 					$sM = '';
-					if (isset($itemArray[$p[1]])) {
+					if ( isset($itemArray[$p[1]]) ) {
 						$sM = ' checked="checked"';
 						unset($itemArray[$p[1]]);
 					}
 					// Icon:
-					if ($p[2]) {
+					if ( $p[2] ) {
 						$selIcon = $p[2];
 					} else {
 						$selIcon = BackendUtility\IconUtility::getSpriteIcon('empty-empty');
@@ -303,16 +303,16 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 					$hasHelp = FALSE;
 					$help = '';
 					$helpArray = array();
-					if (is_array($p[3]) && count($p[3]) > 0 || !empty($p[3])) {
+					if ( is_array($p[3]) && count($p[3]) > 0 || !empty($p[3]) ) {
 						$hasHelp = TRUE;
-						if (is_array($p[3])) {
+						if ( is_array($p[3]) ) {
 							$helpArray = $p[3];
 						} else {
 							$helpArray['description'] = $p[3];
 						}
 					}
 					$label = htmlspecialchars($p[0], ENT_COMPAT, 'UTF-8', false);
-					if ($hasHelp) {
+					if ( $hasHelp ) {
 						$help = BackendUtility\BackendUtility::wrapInHelp('', '', '', $helpArray);
 					}
 					$tRows[] = '
@@ -326,8 +326,8 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 			}
 		}
 		// Remaining values (invalid):
-		if (count($itemArray) && !$PA['fieldTSConfig']['disableNoMatchingValueElement'] && !$config['disableNoMatchingValueElement']) {
-			foreach ($itemArray as $theNoMatchValue => $temp) {
+		if ( count($itemArray) && !$PA['fieldTSConfig']['disableNoMatchingValueElement'] && !$config['disableNoMatchingValueElement'] ) {
+			foreach ( $itemArray as $theNoMatchValue => $temp ) {
 				// Compile <checkboxes> tag:
 				array_unshift($tRows, '
 					<tr class="c-invalidItem">
@@ -350,7 +350,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		</table>
 		';
 //		// Add revert icon
-//		if (is_array($restoreCmd)) {
+//		if ( is_array($restoreCmd) ) {
 //			$item .= '<a href="#" onclick="' . implode('', $restoreCmd) . ' return false;' . '">' . BackendUtility\IconUtility::getSpriteIcon('actions-edit-undo', array('title' => htmlspecialchars($this->getLL('l_revertSelection')))) . '</a>';
 //		}
 		return $item;
@@ -380,7 +380,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @return string
 	 */
 	public function getPricingFlexForm(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		if ($rows = $pObj->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_ecompc_domain_model_currency', '1=1 ' . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'))) {
+		if ( $rows = $pObj->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_ecompc_domain_model_currency', '1=1 ' . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency')) ) {
 			$ds = array(
 				'meta' => array(
 					'langDisable' => 1
@@ -390,7 +390,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 					'el' => array()
 				)
 			);
-			foreach ($rows as $row) {
+			foreach ( $rows as $row ) {
 				$ds['ROOT']['el'][\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($row['iso_4217'])] = array(
 					'TCEforms' => array(
 						'label' => $row['label'] . ($row['default_currency'] ? ' [default]' : ''),
@@ -423,20 +423,20 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		// Adding an item!
 		//$PA['items'][] = array($pObj->sL('Added label by PHP function|Tilfjet Dansk tekst med PHP funktion'), 999);
 
-		if (sizeof($PA['items']) && $PA['row']['packages']) {
+		if ( sizeof($PA['items']) && $PA['row']['packages'] ) {
 			$configurationPackages = array();
 			$referringOption = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_option', $PA['row']['ref_option'], 'pid,configuration_package');
 
 			$packages = array_map('intval', CoreUtility\GeneralUtility::trimExplode(',', $PA['row']['packages']));
 
-			foreach ($PA['items'] as $item) {
+			foreach ( $PA['items'] as $item ) {
 				$data = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_option', $item[1], '*');
-				if (!sizeof($data) || $data['pid'] !== $referringOption['pid'] || !CoreUtility\GeneralUtility::inList(implode(',', $packages), $data['configuration_package'])) continue;
+				if ( !sizeof($data) || $data['pid'] !== $referringOption['pid'] || !CoreUtility\GeneralUtility::inList(implode(',', $packages), $data['configuration_package']) ) continue;
 
 				$item[2] = 'clear.gif';
 				$configurationPackages[0]['label'] = '-- not assigned --';
-				if (CoreUtility\MathUtility::canBeInterpretedAsInteger($data['configuration_package'])) {
-					if (!array_key_exists($data['configuration_package'], $configurationPackages)) {
+				if ( CoreUtility\MathUtility::canBeInterpretedAsInteger($data['configuration_package']) ) {
+					if ( !array_key_exists($data['configuration_package'], $configurationPackages) ) {
 						$configurationPackageLabels = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_package', $data['configuration_package'], 'frontend_label, backend_label');
 						$configurationPackages[$data['configuration_package']]['label'] = $configurationPackageLabels['backend_label'] ? $configurationPackageLabels['backend_label'] : $configurationPackageLabels['frontend_label'];
 					}
@@ -450,12 +450,12 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 			ksort($configurationPackages); // Order by uid @package
 
 			$PA['items'] = array();
-			foreach ($configurationPackages as $configurationPackage) {
-				if (!is_array($configurationPackage['items'])) continue;
+			foreach ( $configurationPackages as $configurationPackage ) {
+				if ( !is_array($configurationPackage['items']) ) continue;
 				$PA['items'][] = array($configurationPackage['label'], '--div--');
 				$PA['items'] = array_merge($PA['items'], $configurationPackage['items']);
 			}
-		} elseif (!$PA['row']['packages']) {
+		} elseif ( !$PA['row']['packages'] ) {
 			$PA['items'] = array();
 		}
 

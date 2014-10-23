@@ -62,7 +62,7 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @return null|object
 	 */
 	public function findByUid($uid = NULL, $respectSysLanguage = FALSE, $respectStoragePage = FALSE) {
-		if (!(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)))
+		if ( !(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)) )
 			return NULL;
 
 		$query = $this->createQuery();

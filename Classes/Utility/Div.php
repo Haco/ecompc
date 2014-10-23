@@ -19,7 +19,7 @@ class Div extends \S3b0\Ecompc\Controller\StandardController {
 	const CONFIGURATOR_SKU_SIGNATURE = 'ecompc_configurator_sku';
 
 	public static function setEnvironment($isDevelopment = FALSE) {
-		if ($isDevelopment) {
+		if ( $isDevelopment ) {
 			$GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = 1;
 			$GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = 1;
 			$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] = '*';
@@ -37,11 +37,11 @@ class Div extends \S3b0\Ecompc\Controller\StandardController {
 	 */
 	public static function setPriceHandling(\S3b0\Ecompc\Controller\StandardController $controller) {
 		// Get distributors frontend user groups (set @Extension Manager)
-		if ($GLOBALS['TSFE']->loginUser) {
+		if ( $GLOBALS['TSFE']->loginUser ) {
 			// Set price flag (displays pricing if TRUE)
 			$controller->showPriceLabels = $controller->settings['viewHeader'] && $controller->settings['showPriceLabels'] ? \TYPO3\CMS\Core\Utility\GeneralUtility::inList($GLOBALS['TSFE']->fe_user->user['usergroup'], $controller->settings['distFeUserGroup']) : FALSE;
 		}
-		if ($controller->showPriceLabels) {
+		if ( $controller->showPriceLabels ) {
 			// Fetch currency configuration from TS
 			$controller->currency = $controller->currencyRepository->findByUid($controller->feSession->get('currency'));
 		}

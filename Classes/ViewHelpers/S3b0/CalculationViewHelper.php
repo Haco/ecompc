@@ -159,7 +159,7 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 			}
 
 		}
-		if ($i >= 99) {
+		if ( $i >= 99 ) {
 			// TODO: exception
 		}
 

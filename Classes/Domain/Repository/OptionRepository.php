@@ -52,7 +52,7 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface|\S3b0\Ecompc\Domain\Model\Option
 	 */
 	public function findOptionsByUidList(array $uidList, \S3b0\Ecompc\Domain\Model\Package $package = NULL, $getFirst = FALSE) {
-		if (!count($uidList))
+		if ( !count($uidList) )
 			return NULL;
 
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
@@ -91,9 +91,9 @@ class OptionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 		$return = array();
 		/** @var array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface $result */
-		if ($result = $query->matching($query->equals('configuration_package', $package))->execute()) {
+		if ( $result = $query->matching($query->equals('configuration_package', $package))->execute() ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Option $row */
-			foreach ($result as $row)
+			foreach ( $result as $row )
 				$return[$row->getSorting()] = $row->getUid();
 		}
 		ksort($return);

@@ -45,11 +45,11 @@ class SessionHandler {
 	 * @throws \Exception
 	 */
 	public function __construct($mode = NULL) {
-		if ($mode) {
+		if ( $mode ) {
 			$this->mode = $mode;
 		}
 
-		if ($this->mode === NULL || ($this->mode != "BE" && $this->mode != "FE")) {
+		if ( $this->mode === NULL || ($this->mode != "BE" && $this->mode != "FE") ) {
 			throw new \Exception( "TYPO3-Mode is not defined!", 1388660107 );
 		}
 		$this->sessionObject = ($this->mode == "BE") ? $GLOBALS['BE_USER'] : $GLOBALS['TSFE']->fe_user;

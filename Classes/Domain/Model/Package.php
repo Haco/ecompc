@@ -294,9 +294,9 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setPriceOutput(\TYPO3\CMS\Extbase\Persistence\QueryResultInterface $options = NULL, \S3b0\Ecompc\Domain\Model\Currency $currency) {
 		$priceOutput = 0.0;
-		if ($options instanceof \TYPO3\CMS\Extbase\Persistence\QueryResultInterface && $options->count()) {
+		if ( $options instanceof \TYPO3\CMS\Extbase\Persistence\QueryResultInterface && $options->count() ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
-			foreach ($options as $option) {
+			foreach ( $options as $option ) {
 				$priceOutput += $option->getPricing($currency);
 			}
 		}
@@ -324,12 +324,12 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function addOption(\S3b0\Ecompc\Domain\Model\Option $option) {
-		if ($this->options === NULL) {
+		if ( $this->options === NULL ) {
 			$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 
 		/** Avoid duplicates */
-		if (!$this->options->contains($option)) $this->options->attach($option);
+		if ( !$this->options->contains($option) ) $this->options->attach($option);
 	}
 
 	/**
@@ -344,7 +344,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $options
 	 */
 	public function getOptions() {
-		if ($this->options === NULL) {
+		if ( $this->options === NULL ) {
 			$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 
@@ -373,13 +373,14 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function setActiveOptions(array $activeOptions) {
 		$this->activeOptions = $activeOptions;
 
-		if (count($activeOptions)) {
+		if ( count($activeOptions) ) {
 			$this->setAnyOptionActive(TRUE);
 		}
 	}
 
 	public function addActiveOption(\S3b0\Ecompc\Domain\Model\Option $option) {
 		$this->activeOptions = array_merge($this->getActiveOptions(), array($option->getUid()));
+		$this->setAnyOptionActive(TRUE);
 	}
 
 	public function removeActiveOption(\S3b0\Ecompc\Domain\Model\Option $option) {

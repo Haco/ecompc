@@ -46,7 +46,7 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	 */
 	public function indexAction(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		parent::indexAction($package);
-		if ($this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package) {
+		if ( $this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 			$this->currentPackage->setCurrent(TRUE);
 			$this->view->assign('options', self::getPackageOptions($this->currentPackage, $this));
 		}
@@ -62,11 +62,11 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 		$packageOptions = array();
 		// Fetch selectable options for current package
 		self::getSelectableOptions($package, $packageOptions, $controller);
-		if (count($packageOptions) === 0)
+		if ( count($packageOptions) === 0 )
 			return NULL;
 
 		// Include pricing for enabled users!
-		if ($controller->showPriceLabels) {
+		if ( $controller->showPriceLabels ) {
 			$controller->initializeOptions($package);
 		}
 
@@ -83,12 +83,12 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	public static function getSelectableOptions(\S3b0\Ecompc\Domain\Model\Package $package, array &$selectableOptions, \S3b0\Ecompc\Controller\StandardController $controller) {
 		// Parse configurations
 		$options = array();
-		if ($controller->selectableConfigurations) {
-			foreach ($controller->selectableConfigurations as $configuration) {
-				if ($configurationOptions = $configuration->getOptions()) {
+		if ( $controller->selectableConfigurations ) {
+			foreach ( $controller->selectableConfigurations as $configuration ) {
+				if ( $configurationOptions = $configuration->getOptions() ) {
 					/** @var \S3b0\Ecompc\Domain\Model\Option $configurationOption */
-					foreach ($configurationOptions as $configurationOption) {
-						if ($configurationOption->getConfigurationPackage() === $package)
+					foreach ( $configurationOptions as $configurationOption ) {
+						if ( $configurationOption->getConfigurationPackage() === $package )
 							$options[$configurationOption->getSorting()] = $configurationOption;
 					}
 				}
@@ -100,13 +100,17 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 		// Run dependency check
 		$selectableOptions = array();
 		/** @var \S3b0\Ecompc\Domain\Model\Option $option */
-		foreach ($options as $option) {
-			if ($controller->checkOptionDependencies($option, $controller->selectedConfiguration)) {
-				if (in_array($option->getUid(), $controller->selectedConfiguration['options']))
+		foreach ( $options as $option ) {
+			if ( $controller->checkOptionDependencies($option, $controller->selectedConfiguration) ) {
+				if ( in_array($option->getUid(), $controller->selectedConfiguration['options']) )
 					$option->setActive(TRUE);
 				$selectableOptions[] = $option;
 			}
 		}
+	}
+
+	public static function getConfigurationCode(\S3b0\Ecompc\Controller\StandardController $controller, \S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
+
 	}
 
 	/**
@@ -126,14 +130,14 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	 * @return void
 	 */
 	protected function autoSetOptions(array &$configuration) {
-		if ($packages = $this->cObj->getEcompcPackagesFE()) {
+		if ( $packages = $this->cObj->getEcompcPackagesFE() ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-			foreach ($packages as $package) {
-				if (in_array($package->getUid(), $configuration['packages']))
+			foreach ( $packages as $package ) {
+				if ( in_array($package->getUid(), $configuration['packages']) )
 					continue;
 
-				if ($packageOptions = self::getPackageOptions($package, $this)) {
-					if (count($packageOptions) === 1) {
+				if ( $packageOptions = self::getPackageOptions($package, $this) ) {
+					if ( count($packageOptions) === 1 ) {
 						// Add option to NEW package
 						$configuration['options'][$packageOptions->getFirst()->getSorting()] = $packageOptions->getFirst()->getUid();
 						$configuration['packages'][$package->getUid()] = $package->getUid();

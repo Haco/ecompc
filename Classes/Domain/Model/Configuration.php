@@ -148,6 +148,13 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function hasConfigurationCodeSuffix() {
+		return (bool) strlen($this->getConfigurationCodeSuffix());
+	}
+
+	/**
 	 * Returns the configurationCodePrefix
 	 *
 	 * @return string $configurationCodePrefix
@@ -164,6 +171,13 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setConfigurationCodePrefix($configurationCodePrefix) {
 		$this->configurationCodePrefix = $configurationCodePrefix;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function hasConfigurationCodePrefix() {
+		return (bool) strlen($this->getConfigurationCodePrefix());
 	}
 
 	/**
