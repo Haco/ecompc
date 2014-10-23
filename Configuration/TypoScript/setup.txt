@@ -77,6 +77,7 @@ plugin.tx_ecompc {
 		showPriceLabels = {$plugin.tx_ecompc.constants.showPriceLabels}
 		viewHeader = {$plugin.tx_ecompc.constants.viewHeader}
 		distFeUserGroup = 0
+		resolverUserGroup = {$plugin.tx_ecompc.constants.resolverUserGroup}
 		requestForm {
 			pid = {$plugin.tx_ecompc.constants.requestForm.pid}
 			additionalParams = {$plugin.tx_ecompc.constants.requestForm.additionalParams}

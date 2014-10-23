@@ -1,0 +1,39 @@
+<f:layout name="Blank" />
+
+This Template is responsible for creating a table of domain objects.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        List.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+
+	<f:flashMessages renderMode="div" />
+
+	<f:security.ifHasRole role="{settings.resolverUserGroup}">
+		<table class="vtop">
+			<thead>
+				<tr>
+					<td>Product</td>
+					<td>Currency</td>
+					<td>Configuration Price</td>
+					<td>User</td>
+					<td>Date (when request has been initialized)</td>
+					<td>IP-Address (masked for privacy)</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<f:for each="{logs}" as="log">
+					<f:render partial="Logger/Properties" arguments="{log : log, options : options, action : 'list', dateFormat : dateFormat}" />
+				</f:for>
+			</tbody>
+		</table>
+	</f:security.ifHasRole>
+
+</f:section>

@@ -16,6 +16,8 @@ plugin.tx_ecompc {
 		showPriceLabels = 1
 		# cat=plugin.tx_ecompc//x10; type=boolean; label=Show Header:Show header including instructions and pricing
 		viewHeader = 1
+		# cat=plugin.tx_ecompc//x11; type=int; label=Resolver User Group:Uid of user group showing all details to
+		resolverUserGroup = 0
 		requestForm {
 			# cat=plugin.tx_ecompc//a1; type=int; label=Form pid:Page uid for request form
 			pid = 0

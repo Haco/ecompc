@@ -1,5 +1,5 @@
 <?php
-	if (!defined('TYPO3_MODE')) {
+	if ( !defined('TYPO3_MODE') ) {
 		die('Access denied.');
 	}
 
@@ -16,7 +16,7 @@
 	);
 
 	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-		$extKey, 'Resolver', 'Configuration Resolver'
+		$extKey, 'resolver', 'Configuration Resolver'
 	);
 
 	$extendTtContentFields = array(
@@ -106,7 +106,7 @@
 		)
 	);
 
-	if (TYPO3_MODE === 'BE') {
+	if ( TYPO3_MODE === 'BE' ) {
 		// Add plugin to new element wizard
 		$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['S3b0\\Ecompc\\Wizicon'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey) . 'Resources/Private/PHP/Wizicon.php';
 	}

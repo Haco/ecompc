@@ -1,5 +1,5 @@
 <?php
-if (!defined('TYPO3_MODE')) {
+if ( !defined('TYPO3_MODE') ) {
 	die('Access denied.');
 }
 
@@ -39,11 +39,11 @@ if (!defined('TYPO3_MODE')) {
 	'S3b0.' . $_EXTKEY,
 	'Resolver',
 	array(
-		'Resolver' => 'index'
+		'Resolver' => 'list,show,showUserInformation'
 	),
 	// non-cacheable actions
 	array(
-		'Resolver' => 'index'
+		'Resolver' => 'list,show,showUserInformation'
 	)
 );
 

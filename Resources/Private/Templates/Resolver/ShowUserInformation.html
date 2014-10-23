@@ -1,0 +1,86 @@
+<f:layout name="Blank" />
+
+This Template is responsible for creating a table of domain objects.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        Show.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+
+	<f:flashMessages renderMode="div" />
+
+	<f:security.ifHasRole role="{settings.resolverUserGroup}">
+
+		<f:if condition="{feUser.image}">
+			<f:for each="{f:s3b0.explode(subject : feUser.image)}" as="image">
+				<f:image src="fileadmin/user_upload/{image}" maxHeight="150" maxWidth="200" /><br />
+			</f:for>
+		</f:if>
+		<table class="vtop">
+				<tr>
+					<td>username : </td>
+					<td>{feUser.username}</td>
+				</tr>
+				<tr>
+					<td>Name : </td>
+					<td>
+						<f:if condition="{feUser.name}">
+							<f:then>{feUser.name}</f:then>
+							<f:else>{feUser.firstName} {feUser.middleName} {feUser.lastName}</f:else>
+						</f:if>
+					</td>
+				</tr>
+				<tr>
+					<td>Company : </td>
+					<td>{feUser.company}</td>
+				</tr>
+				<tr>
+					<td>Groups</td>
+					<td><ul style="list-style: none; padding: 0;"><f:for each="{feUser.usergroup}" as="userGroup"><li>{userGroup.title}</li></f:for></ul></td>
+				</tr>
+				<tr>
+					<td>Street address : </td>
+					<td>{feUser.address -> f:format.nl2br()}</td>
+				</tr>
+				<tr>
+					<td>Postal code : </td>
+					<td>{feUser.zip}</td>
+				</tr>
+				<tr>
+					<td>City : </td>
+					<td>{feUser.city}</td>
+				</tr>
+				<tr>
+					<td>Country : </td>
+					<td>{feUser.country}</td>
+				</tr>
+				<tr>
+					<td>Phone : </td>
+					<td>{feUser.telephone}</td>
+				</tr>
+				<tr>
+					<td>Fax : </td>
+					<td>{feUser.fax}</td>
+				</tr>
+				<tr>
+					<td>E-M@il : </td>
+					<td><f:format.html parseFuncTSPath="lib.parseFunc"><link {feUser.email}></link></f:format.html></td>
+				</tr>
+				<tr>
+					<td>Web : </td>
+					<td><f:format.html parseFuncTSPath="lib.parseFunc"><link {feUser.www}></link></f:format.html></td>
+				</tr>
+				<tr>
+					<td>Last Login : </td>
+					<td>{feUser.lastlogin -> f:format.date(format : dateFormat)}</td>
+				</tr>
+		</table>
+	</f:security.ifHasRole>
+
+</f:section>
