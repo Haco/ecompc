@@ -16,46 +16,14 @@
 
 // Package-OptionList => Popover for hint text
 (function($) {
-	var triggerHint = '#ecom-configurator-canvas .ecom-configurator-select-package-option-info',
-		hintBoxSelector = '#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box',
-		windowHeight,
-		popupHeight,
-		scrollPosition,
-		currentHintBox;
+	var hintBoxSelector = '#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box';
 
 	// Hide the Box Function
 	function hideHintBox(hintBox) {
-		$(hintBox).fadeOut('fast', function() {
-			$(this).css({'display': 'none', 'opacity': 0, 'top': 0});
-		});
+		$(hintBox).slideUp();
 	}
-	// Popup on click
-	$(triggerHint).on('click', function() {
-		// First hide every active hint box
-		hideHintBox(hintBoxSelector);
-
-		// Setting new vars
-		windowHeight = $(document).height();
-		currentHintBox = $(this).parent('.ecom-configurator-select-package-option-wrap').next('.ecom-configurator-select-package-option-info-hint-box');
-
-		// Calculate position of the hint-box
-		popupHeight = $(currentHintBox).outerHeight();
-		// Check if popup high exceeds window height
-		if (windowHeight <= popupHeight) {
-			// Then set position top 15px
-			scrollPosition = 15;
-		} else {
-			// Else arrange it in center position
-			scrollPosition = (windowHeight - popupHeight) / 2;
-		}
-		// Show Popup
-		currentHintBox.css('display', 'block').animate({'top': scrollPosition, 'opacity': 1}, 'fast');
-
-		// Prevent Option-a-tag from executing
-		return false;
-	});
 	// Hide hint-box on click and ESC key
-	$('#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box .close-popover-x, #ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box, body').on('click keyup', function(e) {
+	$('#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box .close-popover-x, #ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box, body').on('click keyup', function(e) {
 		// If the keyup event is triggered
 		if (e.type == 'keyup') {
 			if (e.keyCode == 27) {
@@ -70,7 +38,7 @@
 
 // Review/Summary Configuration Button
 (function($) {
-	var $summaryTable = $('#ecom-configurator-canvas .ecom-configurator-summary-table');
+	var $summaryTable = $('#ecom-configurator-canvas #ecom-configurator-summary-table');
 	$('#ecom-configurator-canvas .ecom-configurator-result-review-config').on('click', function(e) {
 		// Prevent default anchor action
 		e.preventDefault();
@@ -87,5 +55,21 @@
 })(jQuery);
 
 (function($) {
-	$('#ecom-configurator-canvas').tooltip();
+	$('#ecom-configurator-package-select-index').tooltip({
+		tooltipClass: "ecompc-custom-tooltip-styling",
+		track: true
+	});
+	$('.ecompc-syntax-help').tooltip({
+		tooltipClass: "ecompc-custom-tooltip-styling",
+		track: true
+	});
+	if (showResult === null) {
+		$('#ecom-configurator-result-canvas').hide();
+		$('#ecom-configurator-select-options-ajax-update').show();
+		$('#ecom-configurator-reset-configuration-button').show();
+	} else {
+		$('#ecom-configurator-result-canvas').show();
+		$('#ecom-configurator-select-options-ajax-update').hide();
+		$('#ecom-configurator-reset-configuration-button').hide();
+	}
 })(jQuery);

@@ -3,37 +3,11 @@
  */
 
 function addAjaxLoader(element) {
-	$(element).addClass('ajaxloader');
+	$('#' + element).addClass('ajaxloader');
 }
 
 function removeAjaxLoader(element) {
-	$(element).removeClass('ajaxloader');
-}
-
-/**
- * @deprecated, might re-use for multiple select packages
- */
-function resetPackage(pageUid, lang, cObj, configurationPackage) {
-	var request = {
-		actionName: 'resetPackage',
-		arguments: {
-			cObj: cObj,
-			package: configurationPackage
-		}
-	};
-
-	ajaxCaller('', '#ecom-configurator-ajax-loader', pageUid, lang, request, function(result) {
-		removeAjaxLoader('#ecom-configurator-ajax-loader');
-		onAjaxSuccessGeneric(result);
-		onAjaxSuccessUpdateIndex(result);
-		ajaxCaller('#ecom-configurator-package-select-option-index:content', '#ecom-configurator-ajax-loader', result['pid'], result['L'], {
-			actionName: 'selectPackageOptions',
-			arguments: {
-				configurationPackage: result['package'],
-				cObj: result['cObj']
-			}
-		}, null, 1);
-	});
+	$('#' + element).removeClass('ajaxloader');
 }
 
 /**************************************
@@ -48,18 +22,35 @@ function resetPackage(pageUid, lang, cObj, configurationPackage) {
 function txEcompcSetOption() {
 	$('.ecom-configurator-select-package-option-wrap').on('click', function (e) {
 		e.preventDefault();
-		addAjaxLoader('#ecom-configurator-ajax-loader');
+		addAjaxLoader('ecom-configurator-ajax-loader');
 		genericAjaxRequest($(this).attr('data-t3pid'), $(this).attr('data-t3lang'), 1407764086, 'setOption', {
 			option: $(this).attr('data-option'),
 			unset: $(this).attr('data-option-state'),
 			cObj: $(this).attr('data-t3cobj')
 		}, function (result) {
-			removeAjaxLoader('#ecom-configurator-ajax-loader');
+			var pkgInfoDiv = $('#ecom-configurator-optionSelection-package-info'),
+				resultDiv = $('#ecom-configurator-result-canvas');
+			removeAjaxLoader('ecom-configurator-ajax-loader');
 			updateProcessIndicators(result.process);
-			$('#ecom-configurator-optionSelection-package-info').html(
-				'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
-				'<p>' + result.currentPackage.hintText + '</p>'
-			);
+			if (result.currentPackage instanceof Object) {
+				pkgInfoDiv.html(
+					'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
+					'<p>' + result.currentPackage.hintText + '</p>'
+				).show();
+			}
+			if (result.showResult) {
+				pkgInfoDiv.hide();
+				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').first().html(result.configurationResult[0]);
+				$('#ecom-configurator-summary-table').html(result.configurationResult[1]);
+				$('.ecompc-syntax-help').tooltip({
+					tooltipClass: "ecompc-custom-tooltip-styling",
+					track: true
+				});
+				resultDiv.show();
+			} else {
+				pkgInfoDiv.show();
+				resultDiv.hide();
+			}
 			updatePackageNavigation(result.packages);
 			buildSelector(result);
 		});
@@ -75,20 +66,71 @@ function txEcompcIndex() {
 		e.preventDefault();
 		if ($(this).hasClass('ecom-configurator-package-state-0') || $(this).hasClass('current'))
 			return false;
-		addAjaxLoader('#ecom-configurator-ajax-loader');
+		addAjaxLoader('ecom-configurator-ajax-loader');
 		genericAjaxRequest($(this).attr('data-t3pid'), $(this).attr('data-t3lang'), 1407764086, 'index', {
 			package: $(this).attr('data-package'),
 			cObj: $(this).attr('data-t3cobj')
 		}, function (result) {
-			removeAjaxLoader('#ecom-configurator-ajax-loader');
-			$('#ecom-configurator-optionSelection-package-info').html(
-				'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
-				'<p>' + result.currentPackage.hintText + '</p>'
-			);
+			var pkgInfoDiv = $('#ecom-configurator-optionSelection-package-info'),
+				resultDiv = $('#ecom-configurator-result-canvas');
+			removeAjaxLoader('ecom-configurator-ajax-loader');
+			if (result.currentPackage instanceof Object) {
+				pkgInfoDiv.html(
+					'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
+					'<p>' + result.currentPackage.hintText + '</p>'
+				).show();
+			}
+			if (result.showResult) {
+				pkgInfoDiv.hide();
+				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').html(result.configurationResult);
+				resultDiv.show();
+			} else {
+				pkgInfoDiv.show();
+				resultDiv.hide();
+			}
 			updatePackageNavigation(result.packages);
 			buildSelector(result);
 		});
 	});
+}
+
+// Popup on click
+function addInfoTrigger() {
+	var triggerHint = '#ecom-configurator-canvas .ecom-configurator-select-package-option-info',
+		hintBoxSelector = '#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box',
+		windowHeight,
+		popupHeight,
+		scrollPosition,
+		currentHintBox;
+
+	$(triggerHint).on('click', function(e) {
+		/**
+		 * First hide every active hint box @deprecated since one box is used switching content via AJAX
+		 */
+		//hideHintBox(hintBoxSelector);
+
+		// Prevent default anchor action
+		e.preventDefault();
+
+		// AJAX request
+		getOptionHint($(this).parents('a').first().attr('data-option'), $(this).parents('a').first().attr('data-t3pid'), $(this).parents('a').first().attr('data-t3lang'), $(this).parents('a').first().attr('data-t3cobj'));
+
+		// Setting new vars
+		windowHeight = $(document).height();
+		currentHintBox = $(hintBoxSelector);
+
+		// Calculate position of the hint-box
+		popupHeight = $(currentHintBox).outerHeight();
+		// Check if popup high exceeds window height
+		// Then set position top 15px
+		scrollPosition = -5;
+		// Show Popup
+		//currentHintBox.css('display', 'block').animate({'top': scrollPosition, 'opacity': 1}, 'fast');
+		currentHintBox.slideDown();
+
+		// Prevent Option-a-tag from executing
+		return false;
+	})
 }
 
 /**
@@ -100,19 +142,16 @@ function txEcompcIndex() {
  * @returns {boolean}
  */
 function getOptionHint(option, pid, lang, cObj) {
-	$('#dialog').remove();
+	var hintBox = $('#ecom-configurator-select-package-option-info-hint-box'),
+		hintBoxContent = $('#ecom-configurator-select-package-option-info-hint-box > div');
+	hintBox.addClass('ajaxloader');
+	hintBoxContent.html('');
 	genericAjaxRequest(pid, lang, 1407764086, 'getOptionHint', {
 			option: option,
 			cObj: cObj
 		}, function(result) {
-			content = '<div id="dialog"><p>' + result['hint'] + '</p></div>';
-			$('#ecom-configurator-package-select-option-index').append(content);
-			$(function() {
-				$('#dialog').dialog({
-					width: '90%',
-					position: { my: 'center top-25%', of: 'body' }
-				});
-			});
+			hintBoxContent.html(result.hint);
+			hintBox.removeClass('ajaxloader');
 		}
 	);
 	return false;
@@ -179,12 +218,14 @@ function updatePackageNavigation(thePackages) {
 	 */
 	for (var index in thePackages) {
 		if (thePackages.hasOwnProperty(index)) {
+			if (!thePackages[index].visibleInFrontend)
+				continue;
 			var newState = thePackages[index].active ? 1 : 0,
 				oldState = thePackages[index].active ? 0 : 1,
 				optionActiveState = thePackages[index].anyOptionActive,
-				faIcon = $('#ecom-configurator-package-' + thePackages[index]['uid'] + '-link i'),
-				link = $('#ecom-configurator-package-' + thePackages[index]['uid'] + '-link'),
-				icon = $('#ecom-configurator-package-' + thePackages[index]['uid'] + '-icon');
+				faIcon = $('#ecom-configurator-package-' + thePackages[index].uid + '-link i'),
+				link = $('#ecom-configurator-package-' + thePackages[index].uid + '-link'),
+				icon = $('#ecom-configurator-package-' + thePackages[index].uid + '-icon');
 			faIcon.addClass('icon-check' + (optionActiveState ? '' : '-empty')).removeClass('icon-check' + (optionActiveState ? '-empty' : ''));
 			link.addClass('ecom-configurator-package-state-' + newState).removeClass('ecom-configurator-package-state-' + oldState);
 			icon.addClass('icon-state-' + newState).removeClass('icon-state-' + oldState);
@@ -205,10 +246,10 @@ function updatePackageNavigation(thePackages) {
  */
 function buildSelector(result) {
 	var options = result.options;
-	if (options.length) {
-		var html = [],
-			prop,
-			tabIndex = 1;
+	var html = [],
+		prop,
+		tabIndex = 1;
+	if (options !== null && options.length) {
 		for (prop in options) {
 			if (options.hasOwnProperty(prop)) {
 				var content = "<a data-t3pid=\"" + result.pid + "\" data-t3lang=\"" + result.lang + "\" data-t3cobj=\"" + result.cObj + "\" data-option=\"" + options[prop].uid + "\" data-option-state=\"" + (options[prop].active ? 1 : 0) + "\" class=\"ecom-configurator-select-package-option-wrap\" tabindex=\"" + tabIndex + "\">";
@@ -220,17 +261,21 @@ function buildSelector(result) {
 				}
 				content += "<div class=\"ecom-configurator-checkbox " + (options[prop].active ? '' : 'un') + "checked\"><span class=\"ecom-configurator-option-checkbox-image\"></span></div>";
 				content += "<span class=\"ecom-configurator-select-package-option option\">" + options[prop].title + "</span></a>";
-				if (options[prop].hint) {
+				/*if (options[prop].hint) {
 					content += "<span class=\"ecom-configurator-select-package-option-info-hint-box\"><span class=\"close-popover-x\" title=\"Close Info Box\">×</span>###CONTENT###</span>";
-				}
+				}*/
 				content += "<div class=\"clearfix\"></div>";
 				html.push(content);
 				tabIndex++;
 			}
 		}
-		console.log(options);
-		$('#ecom-configurator-select-options-ajax-update').html(html.join(''));
-		txEcompcSetOption();
+		$('#ecom-configurator-select-options-ajax-update').html(html.join('')).show();
+		$('#ecom-configurator-reset-configuration-button').show();
+		txEcompcSetOption(); // Re-assign Click-function()
+		addInfoTrigger();
+	} else if (result.showResult) {
+		$('#ecom-configurator-select-options-ajax-update').html('').hide();
+		$('#ecom-configurator-reset-configuration-button').hide();
 	}
 }
 
@@ -241,5 +286,6 @@ function buildSelector(result) {
 (function() {
 	txEcompcSetOption();
 	txEcompcIndex();
+	addInfoTrigger();
 })(jQuery);
 

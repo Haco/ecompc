@@ -27,7 +27,7 @@ img.ecom-configurator-package-icon.icon-state-0 {
 }
 
 .divider {
-	border-bottom: 1px solid #cccccc;
+	border-bottom: 1px solid #ccc;
 	margin: 1em 0;
 }
 #ecom-configurator-ajax-loader.ajaxloader {
@@ -70,7 +70,7 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	background-color: -ms-linear-gradient(top,  #0083cb 0%,#0075c2 100%); /* IE10+ */
 	background-color: linear-gradient(to bottom,  #0083cb 0%,#0075c2 100%); /* W3C */
 	background-image: url('../Images/white_arrow_right.png');
-	color: #ffffff;
+	color: #fff;
 }
 
 #ecom-configurator-canvas .action-button-default.left-arrow {
@@ -152,8 +152,8 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	clear: both;
 }
 #ecom-configurator-canvas .ecom-configurator-configurator-head {
-	border-top: 1px solid #dddddd;
-	border-bottom: 1px solid #dddddd;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
 	padding: 20px 10px;
 }
 #ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-instructions {
@@ -171,7 +171,7 @@ img.ecom-configurator-package-icon.icon-state-0 {
 #ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-price-table table td {
 	padding-left: 40px;
 }
-#ecom-configurator-canvas .ecom-configurator-configurator-head #ecom-configurator-config-header-cfgp {
+#ecom-configurator-canvas .ecom-configurator-configurator-head #ecom-configurator-config-header-config-price {
 	color: #0083cb;
 	font-weight: bold;
 }
@@ -208,6 +208,11 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	border-color: #808080;
 	color: #808080;
 }
+#ecom-configurator-canvas a.ecom-configurator-package-select.invisible > div span.ecompc-package-number,
+#ecom-configurator-canvas a.ecom-configurator-package-select.invisible > div i {
+	border-color: #ccc;
+	color: #ccc;
+}
 #ecom-configurator-canvas a.ecom-configurator-package-select.current > div span.ecompc-package-number {
 	border: 3px solid #0083cb;
 }
@@ -237,10 +242,10 @@ img.ecom-configurator-package-icon.icon-state-0 {
 }
 #ecom-configurator-canvas .ecompc-syntax-help[title]:hover,
 #ecom-configurator-canvas .ecompc-syntax-help[title]:focus {
-	background-color: #ffff66;
+	background-color: #ff6;
 	cursor: help;
 }
-#ecom-configurator-canvas .ecom-configurator-reset-button {
+#ecom-configurator-canvas .ecom-configurator-reset-configuration-button {
 	display: block;
 	color: #808080;
 	margin-top: 0.5em;
@@ -257,25 +262,25 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	font-size: 1.5em;
 	color: #808080;
 }
-#ecom-configurator-canvas .ecom-configurator-summary-table {
+#ecom-configurator-canvas #ecom-configurator-summary-table {
 	display: none;
 	padding-top: 1.5em;
 }
-#ecom-configurator-canvas .ecom-configurator-summary-table > table {
+#ecom-configurator-canvas #ecom-configurator-summary-table > table {
 	width: auto;
 	margin: 0 auto;
 }
-#ecom-configurator-canvas .ecom-configurator-summary-table > table tr {
+#ecom-configurator-canvas #ecom-configurator-summary-table > table tr {
 	background: #efefef;
 	transition: background 0.2s, color 0.2s;
 }
-#ecom-configurator-canvas .ecom-configurator-summary-table > table tr:nth-child(2n) {
+#ecom-configurator-canvas #ecom-configurator-summary-table > table tr:nth-child(2n) {
 	background: #fafafa;
 }
-#ecom-configurator-canvas .ecom-configurator-summary-table > table td {
+#ecom-configurator-canvas #ecom-configurator-summary-table > table td {
 	padding: 5px 30px;
 }
-#ecom-configurator-canvas .ecom-configurator-summary-table > table tr:hover {
+#ecom-configurator-canvas #ecom-configurator-summary-table > table tr:hover {
 	background: #0083cb;
 	color: white;
 }
@@ -305,10 +310,10 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	color: #0083cb;
 }
 #ecom-configurator-canvas .ecom-configurator-select-package-option-wrap {
-	color: #000000;
-	background: #eeeeee;
+	color: #000;
+	background: #eee;
 	display: block;
-	border-bottom: 2px solid #ffffff;
+	border-bottom: 2px solid #fff;
 	padding: 8px;
 }
 #ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:hover,
@@ -346,14 +351,14 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	float: right;
 	padding: 0 15px;
 }
-#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box {
+#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box {
+	background-color: #fff;
 	display: none;
-	opacity: 0;
-	background: #ffffff;
-	border: 1px solid #CCC;
-	-webkit-box-shadow: 0 2px 8px #cccccc;
-	-moz-box-shadow: 0 2px 8px #cccccc;
-	box-shadow: 0 2px 8px #cccccc;
+	/*opacity: 1;*/
+	border: 1px solid #ccc;
+	-webkit-box-shadow: 0 2px 8px #ccc;
+	-moz-box-shadow: 0 2px 8px #ccc;
+	box-shadow: 0 2px 8px #ccc;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -362,15 +367,18 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	position: absolute;
 	right: 0;
 	left: 0;
-	top: 0;
+	top: -5px;
 	margin: 0 auto;
 	padding: 30px;
 	z-index: 100;
 }
-#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box h3 {
+#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box.ajaxloader {
+	background: #fff url("../Images/ajax-loader.gif") center center no-repeat scroll;
+}
+#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box h3 {
 	margin-top: 0;
 }
-#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x {
+#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box span.close-popover-x {
 	position: absolute;
 	right: 10px;
 	top: 2px;
@@ -378,7 +386,7 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	cursor: pointer;
 	font-weight: bold;
 }
-#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box span.close-popover-x:hover {
+#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box span.close-popover-x:hover {
 	color: #0083cb;
 }
 #ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:hover .ecom-configurator-checkbox,
@@ -389,12 +397,12 @@ img.ecom-configurator-package-icon.icon-state-0 {
 #ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option.option,
 #ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-price,
 #ecom-configurator-canvas .ecom-configurator-select-package-option-wrap:focus .ecom-configurator-select-package-option-info {
-	color: #ffffff;
+	color: #fff;
 }
 #ecom-configurator-canvas .ecom-configurator-checkbox {
-	border: 4px solid #cccccc;
-	background: #ffffff;
-	box-shadow: 0 0 2px #cccccc inset;
+	border: 4px solid #ccc;
+	background: #fff;
+	box-shadow: 0 0 2px #ccc inset;
 	display: block;
 	float: left;
 	height: 32px;
@@ -453,7 +461,7 @@ img.ecom-configurator-package-icon.icon-state-0 {
 }
 
 @media (max-width: 1024px) {
-	#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box {
+	#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box {
 		width: 90%;
 	}
 }
@@ -480,14 +488,14 @@ img.ecom-configurator-package-icon.icon-state-0 {
 		font-size: 1em;
 		font-weight: normal;
 	}
-	#ecom-configurator-canvas .ecom-configurator-select-package-option-info-hint-box {
+	#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box {
 		width: auto;
 	}
 	.select-region-wrap a.select-region-choose-flag img {
 		width: 150px;
 		height: auto;
 	}
-	#ecom-configurator-canvas .ecom-configurator-summary-table > table td {
+	#ecom-configurator-canvas #ecom-configurator-summary-table > table td {
 		padding: 5px 10px;
 	}
 }
