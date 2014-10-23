@@ -39,7 +39,7 @@
 				<source>Request your device</source>
 			</trans-unit>
 			<trans-unit id="index.reset_configuration" xml:space="preserve">
-				<source>» Reset Configuration</source>
+				<source>Reset Configuration</source>
 			</trans-unit>
 			<trans-unit id="index.summary_button" xml:space="preserve">
 				<source>Summary</source>

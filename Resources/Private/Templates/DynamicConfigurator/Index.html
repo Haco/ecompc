@@ -29,57 +29,59 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		<p id="ecom-configurator-process-number"><span class="ecom-configurator-process-value-print"><f:format.number decimals="0">{f:s3b0.calculation(expressionString:'{process}*100')}</f:format.number></span><f:translate id="index.x_percent_done" /></p>
 
 		<!-- package navigation -->
-		<div id="ecom-configurator-package-select-index" class="align-center">
+		<div id="ecom-configurator-package-select-index">
 			<f:for each="{packages}" as="package" iteration="packageIterator">
-				<a data-t3pid="{pid}" data-t3lang="{sys_language_uid -> f:format.number(decimals:0)}" data-t3cobj="{cObj}" data-package="{package.uid}" id="ecom-configurator-package-{package.uid}-link" class="ecom-configurator-package-select ecom-configurator-package-state-{package.active -> f:format.number(decimals:0)}{f:if(condition:package.current,then:' current')}" title="{package.frontendLabel}">
-				<f:if condition="{package.icon}">
-					<f:then><div><f:image src="{package.icon.uid}" id="ecom-configurator-package-{package.uid}-icon" class="ecom-configurator-package-icon icon-state-{package.active -> f:format.number(decimals:0)}{f:if(condition:package.current,then:' current')}" width="32" height="32" treatIdAsReference="1" /><i class="icon-check{f:if(condition:package.activeOptions,then:'',else:'-empty')}"></i></div></f:then>
-					<f:else><div><span class="ecompc-package-number">{packageIterator.cycle}</span><i class="icon-check{f:if(condition:package.activeOptions,then:'',else:'-empty')}"></i></div></f:else>
-				</f:if>
+				<a data-t3pid="{pid}" data-t3lang="{sys_language_uid -> f:format.number(decimals : 0)}" data-t3cobj="{cObj}" data-package="{package.uid}" id="ecom-configurator-package-{package.uid}-link" class="ecom-configurator-package-select ecom-configurator-package-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}{f:if(condition : package.visibleInFrontend, then : '', else : ' invisible')}" title="{package.frontendLabel}">
+					<div>
+						<f:if condition="{package.icon}">
+							<f:then><f:image src="{package.icon.uid}" id="ecom-configurator-package-{package.uid}-icon" class="ecom-configurator-package-icon icon-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}" width="32" height="32" treatIdAsReference="1" /></f:then>
+							<f:else><span class="ecompc-package-number align-center">{packageIterator.cycle}</span></f:else>
+						</f:if>
+						<f:if condition="{package.visibleInFrontend}">
+							<f:then><i class="icon-check{f:if(condition : package.activeOptions, then : '', else : '-empty')}"></i></f:then>
+							<f:else><i class="icon-lock"></i></f:else>
+						</f:if>
+					</div>
 				</a>
 			</f:for>
 			<div class="clearfix"></div>
 		</div>
 		<div id="ecom-configurator-package-select-option-index">
-			<f:if condition="{currentPackage}">
-				<div class="ecom-configurator" id="ecom-configurator-canvas-main">
-					<!-- render package information -->
-					<f:render partial="Package/Info" arguments="{package : currentPackage}" />
-					<div class="clearfix"></div>
-					<!-- parse options; return selectors -->
-					<f:render partial="Package/OptionList" arguments="{_all}" />
-					<span class="ecom-configurator-select-package-option-info-hint-box">
-						<span class="close-popover-x" title="Close Info Box">&times;</span>
-						<div></div>
-					</span>
-				</div>
-			</f:if>
+			<div class="ecom-configurator" id="ecom-configurator-canvas-main">
+				<!-- render package information -->
+				<f:render partial="Package/Info" arguments="{package : currentPackage}" />
+				<div class="clearfix"></div>
+				<!-- parse options; return selectors -->
+				<f:render partial="Package/OptionList" arguments="{_all}" />
+				<span id="ecom-configurator-select-package-option-info-hint-box">
+					<span class="close-popover-x" title="Close Info Box">&times;</span>
+					<div></div>
+				</span>
+			</div>
 		</div>
-		<f:if condition="{currentPackage}"><f:link.action action="reset" noCacheHash="1" class="ecom-configurator-reset-button"><f:translate id="index.reset_configuration" /></f:link.action></f:if>
+		<f:link.action action="reset" noCacheHash="1" id="ecom-configurator-reset-configuration-button"><i class="icon-undo"></i> <f:translate id="index.reset_configuration" /></f:link.action>
 	</div>
 
 	<div class="divider"></div>
 
 	<!-- render configuration result -->
 	<div id="ecom-configurator-result-canvas">
-		<f:if condition="{configurationResult}">
-			<div class="ecom-configurator-result">
-				<f:if condition="{configurationResultLabel}">{configurationResultLabel}<br /></f:if>
-				<h2>
-					<f:translate id="index.your_configuration_code" /><br />
-					<small>{configurationResult -> f:format.raw()}</small>
-				</h2>
-				<f:link.action action="reset" noCacheHash="1" class="action-button-default left-arrow">Reconfigure <i class="icon-undo"></i></f:link.action>
-				<a href="#" class="action-button-default ecom-configurator-result-review-config dropdown" title="{f:translate(id:'index.summary_button_title')}"><i class="icon-list"></i> <f:translate id="index.summary_button" /></a>
-				<f:link.action action="request" controller="Standard" noCacheHash="1" additionalParams="{L:'{sys_language_uid}'}" class="action-button-default" target="{settings.requestForm.target}"><i class="icon-envelope-alt"></i> <f:translate id="index.request_your_device" /></f:link.action>
-			</div>
-			<div class="ecom-configurator-summary-table">
-				{configurationSummary -> f:format.html()}
-			</div>
-		</f:if>
+		<div class="ecom-configurator-result">
+			<f:if condition="{configurationResultLabel}">{configurationResultLabel}<br /></f:if>
+			<h2>
+				<f:translate id="index.your_configuration_code" /><br />
+				<small class="ecom-configurator-result-code">{configurationResult -> f:format.raw()}</small>
+			</h2>
+			<f:link.action action="reset" noCacheHash="1" class="action-button-default no-arrow">Reconfigure &nbsp; <i class="icon-undo"></i></f:link.action>
+			<a href="#" class="action-button-default ecom-configurator-result-review-config dropdown" title="{f:translate(id : 'index.summary_button_title')}"><i class="icon-list"></i> <f:translate id="index.summary_button" /></a>
+			<f:link.action action="request" noCacheHash="1" additionalParams="{L : sys_language_uid}" class="action-button-default" target="{settings.requestForm.target}"><i class="icon-envelope-alt"></i> <f:translate id="index.request_your_device" /></f:link.action>
+		</div>
+		<div id="ecom-configurator-summary-table">
+			{configurationSummary -> f:format.html()}
+		</div>
 	</div>
 
 
-	<script language="JavaScript" type="text/javascript">var tcp = {packages -> f:count()};</script>
+	<script language="JavaScript" type="text/javascript">var showResult = {f:if(condition : configurationResult, then : 'true', else : 'null')};</script>
 
 </f:section>

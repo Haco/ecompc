@@ -1,4 +1,6 @@
 <div id="ecom-configurator-optionSelection-package-info">
-	<h2>{package.frontendLabel}</h2>
-	<p>{package.hintText -> f:format.html()}</p>
+	<f:if condition="{package}">
+		<h2>{package.frontendLabel}</h2>
+		<p>{package.hintText -> f:format.html()}</p>
+	</f:if>
 </div>

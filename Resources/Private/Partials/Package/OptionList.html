@@ -1,17 +1,10 @@
 <div id="ecom-configurator-select-options-ajax-update">
-	<f:for each="{options}" as="option" iteration="optionIterator">
-		<a data-t3pid="{pid}" data-t3lang="{sys_language_uid -> f:format.number(decimals:0)}" data-t3cobj="{cObj}" data-option="{option.uid}" data-option-state="{option.active -> f:format.number(decimals:0)}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals:0)}.{option.active -> f:format.number(decimals:0)}')}">
-			<f:render partial="Misc/SetOptionLinkInnerHTML" arguments="{_all}" />
-		</a>
-		<div class="clearfix"></div>
-	</f:for>
+	<f:if condition="{options}">
+		<f:for each="{options}" as="option" iteration="optionIterator">
+			<a data-t3pid="{pid}" data-t3lang="{sys_language_uid -> f:format.number(decimals : 0)}" data-t3cobj="{cObj}" data-option="{option.uid}" data-option-state="{option.active -> f:format.number(decimals : 0)}" class="ecom-configurator-select-package-option-wrap" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals : 0)}.{option.active -> f:format.number(decimals : 0)}')}">
+				<f:render partial="Misc/SetOptionLinkInnerHTML" arguments="{_all}" />
+			</a>
+			<div class="clearfix"></div>
+		</f:for>
+	</f:if>
 </div>
-
-<f:if condition="{package.activeOptions}">
-	<a href="javascript:void(0)" onclick="resetPackage({pid}, {sys_language_uid -> f:format.number(decimals:0)}, {cObj}, {package.uid})" class="ecom-configurator-reset-button"><f:translate id="optionlist.reset_selection" /></a>
-</f:if>
-
-<f:comment>
-	<div class="divider"></div>
-	<a href="javascript:void(0)" class="action-button-default" onclick="goBackToIndex()"><f:translate id="optionlist.confirm_selection" /></a>
-</f:comment>

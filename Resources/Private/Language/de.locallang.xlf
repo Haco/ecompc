@@ -70,8 +70,8 @@
 				<target>Weitere Infos</target>
 			</trans-unit>
 			<trans-unit id="optionlist.reset_selection" approved="yes" xml:space="preserve">
-				<source>» Reset Selection</source>
-				<target>» Auswahl zurücksetzen</target>
+				<source>Reset Selection</source>
+				<target>Auswahl zurücksetzen</target>
 			</trans-unit>
 			<trans-unit id="optionlist.setlink.0.0" approved="yes" xml:space="preserve">
 				<source>Select option</source>
