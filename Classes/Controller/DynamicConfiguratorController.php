@@ -25,6 +25,8 @@ namespace S3b0\Ecompc\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility as CoreUtility;
+use TYPO3\CMS\Extbase\Utility as ExtbaseUtility;
 
 /**
  * DynamicConfiguratorController
@@ -46,9 +48,20 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 	 */
 	public function indexAction(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		parent::indexAction($package);
-		if ($this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package) {
+		if ( $this->process === 1 ) {
+			$this->currentPackage = $package;
+			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
+				$configurationCode = self::getConfigurationCode($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE);
+				$this->view->assign('configurationResult', $configurationCode[0]);
+				$this->view->assign('configurationSummary', $configurationCode[1]);
+			}
+		}
+		if ( $this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 			$this->currentPackage->setCurrent(TRUE);
-			$this->view->assign('options', self::getPackageOptions($this->currentPackage, $this));
+			$this->view->assignMultiple(array(
+				'options' => self::getPackageOptions($this->currentPackage, $this),
+				'currentPackage' => $this->currentPackage
+			));
 		}
 	}
 
@@ -62,11 +75,11 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 		$packageOptions = array();
 		// Fetch selectable options for current package
 		self::getSelectableOptions($package, $packageOptions, $controller);
-		if (count($packageOptions) === 0)
+		if ( count($packageOptions) === 0 )
 			return NULL;
 
 		// Include pricing for enabled users!
-		if ($controller->showPriceLabels) {
+		if ( $controller->showPriceLabels ) {
 			$controller->initializeOptions($package);
 		}
 
@@ -86,9 +99,9 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 		// Run dependency check
 		$selectableOptions = array();
 		/** @var \S3b0\Ecompc\Domain\Model\Option $option */
-		foreach ($options as $option) {
-			if ($controller->checkOptionDependencies($option, $controller->selectedConfiguration)) {
-				if (in_array($option->getUid(), $controller->selectedConfiguration['options']))
+		foreach ( $options as $option ) {
+			if ( $controller->checkOptionDependencies($option, $controller->selectedConfiguration) ) {
+				if ( in_array($option->getUid(), $controller->selectedConfiguration['options']) )
 					$option->setActive(TRUE);
 				$selectableOptions[] = $option;
 			}
@@ -96,15 +109,54 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 	}
 
 	/**
-	 * @param boolean $returnArray
-	 * @param integer $loggerUid
+	 * set configuration code
 	 *
-	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-	 * @return mixed
+	 * @param  \S3b0\Ecompc\Controller\StandardController $controller
+	 * @param  \S3b0\Ecompc\Domain\Model\Configuration    $configuration
+	 * @param  boolean                                    $returnArray
+	 * @param  integer                                    $loggerUid
+	 *
+	 * @return string
 	 */
-	protected function getConfigurationResult($returnArray = FALSE, $loggerUid = 0) {
-		return parent::getConfigurationCode($this->selectableConfigurations->getFirst(), $returnArray, $loggerUid);
+	public static function getConfigurationCode(\S3b0\Ecompc\Controller\StandardController $controller, \S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
+		$configurationCodeWrapper = ($configuration->hasConfigurationCodePrefix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodePrefix', $controller->extensionName) . '">' . $configuration->getConfigurationCodePrefix() . '</span>' : '') . '%s' . ($configuration->hasConfigurationCodeSuffix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodeSuffix', $controller->extensionName) . '">' . $configuration->getConfigurationCodeSuffix() . '</span>' : '');
+		$configurationCodePlainTextWrapper = $configuration->getConfigurationCodePrefix() . '%s' . $configuration->getConfigurationCodeSuffix();
+		$configurationCodeSegmentWrapper = '<span class="ecompc-syntax-help" title="%1$s">%2$s</span>';
+		/*$summaryPlainWrapper = '%1$s: %2$s' . PHP_EOL;*/
+		$summaryHTMLTableWrapper = '<table>%s</table>';
+		$summaryHTMLTableRowWrapper = '<tr><td><b>%1$s:</b></td><td>%2$s</td></tr>';
+
+		$code = '';
+		$plain = '';
+		/*$summaryPlain = '';*/
+		$summaryHTML = '';
+
+		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+		foreach ( $controller->cObj->getEcompcPackages() as $package ) {
+			if ( !$package->isVisibleInFrontend() ) {
+				$code .= sprintf($configurationCodeSegmentWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getConfigurationCodeSegment());
+				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
+				/*$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($this->request->getControllerName() === 'DynamicConfiguratorAjaxRequest' ? ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']' : ''))*/;
+				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($controller->request->getControllerName() === 'DynamicConfiguratorAjaxRequest' ? ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']' : ''));
+			} elseif ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
+				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+				$code .= sprintf($configurationCodeSegmentWrapper, $option->getConfigurationPackage()->getFrontendLabel(), $option->getConfigurationCodeSegment());
+				$plain .= $option->getConfigurationCodeSegment();
+				/*$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), $option->getFrontendLabel() . ($option->hasConfigurationCodeSegment() ? ' [' . $option->getConfigurationCodeSegment() . ']' : ''));*/
+				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), $option->getFrontendLabel() . ($option->hasConfigurationCodeSegment() ? ' [' . $option->getConfigurationCodeSegment() . ']' : ''));
+			}
+		}
+
+		return $returnArray ? array(
+			sprintf($configurationCodeWrapper, $code),
+			sprintf($summaryHTMLTableWrapper, $summaryHTML),
+			sprintf(
+				$controller->settings['requestForm']['additionalParamsQueryString'],
+				sprintf($configurationCodePlainTextWrapper, $plain),
+				$configuration->getFrontendLabel(),
+				$loggerUid
+			)
+		) : sprintf($configurationCodeWrapper, $code);
 	}
 
 	/**

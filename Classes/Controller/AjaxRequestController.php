@@ -50,13 +50,16 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 *
 	 * @return void
 	 * @api
+	 *
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
 	public function initializeAction() {
 		global $TYPO3_CONF_VARS;
 		/** !!! IMPORTANT TO MAKE JSON WORK !!! */
 		$TYPO3_CONF_VARS['FE']['debug'] = '0';
 		/** define type used! */
-		if ($this->request->hasArgument('cObj')) {
+		if ( $this->request->hasArgument('cObj') ) {
 			$this->cObj = $this->contentRepository->findByUid($this->request->getArgument('cObj'));
 		} else {
 			$this->throwStatus(404, \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('404.no_cObj', $this->extensionName));
@@ -88,9 +91,9 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		 * selcps -> indicator for active packages used at JS calculation of progress
 		 */
 		$variablesToRender = array(
-			'pid', 'lang', 'cObj', 'currentPackage', 'packages', 'options', 'showPriceLabels', 'hint', 'process', 'html'
+			'pid', 'lang', 'cObj', 'currentPackage', 'packages', 'options', 'showPriceLabels', 'hint', 'process', 'html', 'showResult', 'configurationResult'
 		);
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment()) {
+		if ( \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment() ) {
 			$variablesToRender[] = 'debug';
 		}
 		$this->view->setVariablesToRender($variablesToRender);
@@ -103,36 +106,27 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		));
 	}
 
-	public function indexAction(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
-		$this->currentPackage = $package;
-		$packages = $this->initializePackages(TRUE);
-		if ($this->process === 1)
-			$this->view->assign('configurationResult', $this->getConfigurationResult()); // Get configuration code | SKU
-		if ($this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package) {
-			$this->view->assign('options', $this->optionRepository->findByConfigurationPackage($this->currentPackage));
-		}
-
-		/** pre-parse hintText since not done by rendering process */
-		$this->currentPackage->setHintText($this->configurationManager->getContentObject()->parseFunc($this->currentPackage->getHintText(), array(), '< lib.parseFunc_RTE'));
-		$this->view->assignMultiple(array(
-			'currentPackage' => $this->currentPackage,
-			'packages' => $packages,
-			'process' => $this->process
-		));
-	}
-
+	/**
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\InvalidArgumentNameException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
+	 */
 	public function initializeGetOptionHintAction() {
-
+		if ( $this->request->hasArgument('option') && !$this->request->getArgument('option') instanceof \S3b0\Ecompc\Domain\Model\Option ) {
+			$this->request->setArgument(
+				'option',
+				\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->request->getArgument('option')) ? $this->optionRepository->findByUid($this->request->getArgument('option')) : NULL
+			);
+		}
 	}
 
 	/**
 	 * action getOptionHint
 	 *
-	 * @param int $option
+	 * @param \S3b0\Ecompc\Domain\Model\Option $option
 	 * @return void
 	 */
-	public function getOptionHintAction($option = 0) {
-		$this->view->assign('hint', $this->optionRepository->findByUid($option)->getHintText());
+	public function getOptionHintAction(\S3b0\Ecompc\Domain\Model\Option $option = NULL) {
+		$this->view->assign('hint', $this->configurationManager->getContentObject()->parseFunc($option->getHintText(), array(), '< lib.parseFunc_RTE'));
 	}
 
 	/**
@@ -148,21 +142,6 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		$option = $this->optionRepository->findByUid($option);
 		parent::setOptionAction($option, $unset);
 
-		// Redirect; depends on multipleSelect or unset flag
-		if ($option->getConfigurationPackage()->isMultipleSelect() || $unset) {
-			$this->view->assignMultiple(array(
-				'proceed' => 'selectPackageOptions',
-				'package' => $option->getConfigurationPackage()->getUid()
-			));
-		} else {
-			$this->view->assign('proceed', 'index');
-		}
-		// Fetch updated configuration
-		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey);
-		$this->view->assignMultiple(array(
-			#	'cfgp' => $this->getUpdatedConfigurationPrice(),
-			'selcps' => count((array) $this->selectedConfiguration['packages'])
-		));
 		$this->forward('index');
 	}
 
@@ -170,6 +149,8 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 * action resetPackage
 	 *
 	 * @param int $package
+	 *
+	 * @deprecated May apply on multiple selects, once fully supported
 	 * @return void
 	 */
 	public function resetPackageAction($package = 0) {
@@ -191,20 +172,20 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 * @return string
 	 */
 	protected function formatCurrency($floatToFormat = 0.0, $signed = FALSE) {
-		$output = number_format($floatToFormat, 2, $this->currency['decimalSeparator'] ?: ',', $this->currency['thousandsSeparator'] ?: '.');
+		$output = number_format($floatToFormat, 2, $this->currency->isNumberSeparatorsInUSFormat() ? '.' : ',', $this->currency->isNumberSeparatorsInUSFormat() ? ',' : '.');
 		// Add algebraic sign if positive
-		if ($floatToFormat > 0 && $signed) {
+		if ( $floatToFormat > 0 && $signed ) {
 			$output = '+' . $output;
-		} elseif (number_format($floatToFormat, 2) == 0.00 && $signed) {
+		} elseif ( number_format($floatToFormat, 2) == 0.00 && $signed ) {
 			$output = '+' . $output;
 			/*return ExtbaseUtility\LocalizationUtility::translate('price.inclusive', 'ecompc');*/
 		}
-		if ($this->currency['symbol'] !== '') {
-			$currencySeparator = $this->currency['separateCurrency'] ?: ' ';
-			if ($this->currency['prependCurrency']) {
-				$output = $this->currency['symbol'] . $currencySeparator . $output;
+		if ( $this->currency->getSymbol() !== '' ) {
+			$currencySeparator = $this->currency->isWhitespaceBetweenCurrencyAndValue()  ?: ' ';
+			if ( $this->currency->isSymbolPrepended() ) {
+				$output = $this->currency->getSymbol() . $currencySeparator . $output;
 			} else {
-				$output .= $currencySeparator . $this->currency['symbol'];
+				$output .= $currencySeparator . $this->currency->getSymbol();
 			}
 		}
 		return $output;
@@ -232,7 +213,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			'pid' => $GLOBALS['TSFE']->id,
 			'cObj' => $this->cObj->getUid()
 		));
-		if ($this->showPriceLabels) {
+		if ( $this->showPriceLabels ) {
 			$view->assignMultiple(array(
 				'showPriceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
 				'currency' => $this->currency, // fetch currency TS
@@ -263,9 +244,9 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
 		$querySettings = $ajaxRequestController->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
 		$querySettings->setRespectStoragePage($ajaxRequestController->request->hasArgument('storagePid') || $ajaxRequestController->cObj->getStoragePidArray());
-		if ($ajaxRequestController->request->hasArgument('storagePid')) {
+		if ( $ajaxRequestController->request->hasArgument('storagePid') ) {
 			$querySettings->setStoragePageIds(array($ajaxRequestController->request->getArgument('storagePid')));
-		} elseif ($ajaxRequestController->cObj->getStoragePidArray()) {
+		} elseif ( $ajaxRequestController->cObj->getStoragePidArray() ) {
 			$querySettings->setStoragePageIds($ajaxRequestController->cObj->getStoragePidArray());
 		}
 		$repository->setDefaultQuerySettings($querySettings);

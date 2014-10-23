@@ -47,24 +47,31 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 	 */
 	public function indexAction(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		$packages = $this->initializePackages(TRUE);
-		if ($package instanceof \S3b0\Ecompc\Domain\Model\Package) {
+		if ( $package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 			$this->currentPackage = $package;
 		}
-		if ($this->process === 1)
-			$this->currentPackage = end($packages->toArray());
-			$this->view->assign('configurationResult', $this->getConfigurationResult()); // Get configuration code | SKU
-		if ($this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package) {
-			$this->view->assign('options', $this->getPackageOptions($this->currentPackage));
+		if ( $this->process === 1 ) {
+			$this->currentPackage = $package;
+			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
+				$this->view->assignMultiple(array(
+					'configurationResult' => \S3b0\Ecompc\Controller\DynamicConfiguratorController::getConfigurationCode($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE, 0), // Get configuration code
+					'showResult' => TRUE
+				));
+			}
+		}
+		if ( $this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package ) {
+			$this->currentPackage->setCurrent(TRUE);
+			/** pre-parse hintText since not done by rendering process */
+			$this->currentPackage->setHintText($this->configurationManager->getContentObject()->parseFunc($this->currentPackage->getHintText(), array(), '< lib.parseFunc_RTE'));
+			$this->view->assignMultiple(array(
+				'options' => $this->getPackageOptions($this->currentPackage),
+				'currentPackage' => $this->currentPackage
+			));
 		}
 
-		$this->currentPackage->setCurrent(TRUE);
-		/** pre-parse hintText since not done by rendering process */
-		$this->currentPackage->setHintText($this->configurationManager->getContentObject()->parseFunc($this->currentPackage->getHintText(), array(), '< lib.parseFunc_RTE'));
 		$this->view->assignMultiple(array(
-			'currentPackage' => $this->currentPackage,
 			'packages' => $packages,
-			'process' => $this->process,
-			'debug' =>$this->currency
+			'process' => $this->process
 		));
 	}
 
@@ -75,11 +82,18 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 	 */
 	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
 		$return = array();
-		$configurationArray = $this->feSession->get($this->configurationSessionStorageKey);
-		if ($options = \S3b0\Ecompc\Controller\DynamicConfiguratorController::getPackageOptions($package, $this)) {
+		$configurationArray = $this->feSession->get($this->configurationSessionStorageKey) ?: array(
+			'options' => array(),
+			'packages' => array()
+		);
+		if ( $options = \S3b0\Ecompc\Controller\DynamicConfiguratorController::getPackageOptions($package, $this) ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
-			foreach ($options as $option) {
-				$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->showPriceLabels, $this->currency);
+			foreach ( $options as $option ) {
+				if ( $option->getConfigurationPackage()->isPercentPricing() ) {
+					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->showPriceLabels, $this->currency, $this->getConfigurationPrice()[1]);
+				} else {
+					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->showPriceLabels, $this->currency);
+				}
 			}
 		}
 
