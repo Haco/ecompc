@@ -13,12 +13,12 @@
 					<tbody>
 					<tr class="align-center">
 						<f:if condition="{pricing.0}">
-							<f:then><td><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.0}</f:format.currency></td></f:then>
+							<f:then><td><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.symbolPrepended}">{pricing.0}</f:format.currency></td></f:then>
 							<f:else><td>-</td></f:else>
 						</f:if>
 						<f:if condition="{pricing.1}">
-							<f:then><td><span id="ecom-configurator-config-header-cfgp"><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.prependCurrency}">{pricing.1}</f:format.currency></span></td></f:then>
-							<f:else><td><span id="ecom-configurator-config-header-cfgp">-</span></td></f:else>
+							<f:then><td><span id="ecom-configurator-config-header-config-price"><f:format.currency currencySign="{currency.symbol}" prependCurrency="{currency.symbolPrepended}">{pricing.1}</f:format.currency></span></td></f:then>
+							<f:else><td><span id="ecom-configurator-config-header-config-price">-</span></td></f:else>
 						</f:if>
 					</tr>
 					</tbody>

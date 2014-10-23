@@ -66,7 +66,7 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 		preg_match_all('([0-9.]*|[\D]?)', $expressionString, $splitArray);
 		$expressionArray = $this->buildExpressionArray($splitArray[0]);
 		$result = $this->evaluateExpressionArray($expressionArray);
-		if ($aliasToCreate) {
+		if ( $aliasToCreate ) {
 			$this->templateVariableContainer->add($aliasToCreate, $result);
 		}
 
@@ -82,13 +82,13 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	function buildExpressionArray($splitArray, $nestingLevel = 0){
 		$expressionArray = array();
 
-		foreach($splitArray as $key => $splitPart){
+		foreach ( $splitArray as $key => $splitPart ) {
 			$splitPart = trim($splitPart);
-			if ($splitPart == '(') {
+			if ( $splitPart == '(' ) {
 				$nestingLevel ++;
-			} elseif ($splitPart == ')') {
+			} elseif ( $splitPart == ')' ) {
 				$nestingLevel --;
-			} elseif (strlen($splitPart)) {
+			} elseif ( strlen($splitPart) ) {
 				$expressionArray[] = $splitPart;
 			}
 		}
@@ -105,9 +105,9 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	function evaluateExpressionArray($expressionArray = array()){
 		$subExpressionsEliminated = FALSE;
 		// eliminate sub expressions, this is recursive, so after first run, all sub expressions should be eliminated
-		if($subExpressionsEliminated === FALSE){
-			foreach($expressionArray as $key => $mathData){
-				if(is_array($mathData)){
+		if ( $subExpressionsEliminated === FALSE ) {
+			foreach ( $expressionArray as $key => $mathData ) {
+				if ( is_array($mathData) ) {
 					$expressionArray[$key] = $this->evaluateExpressionArray($mathData);
 				}
 			}
@@ -115,18 +115,18 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 		}
 		$i = 0;
 		// we loop a maximum of 99 times over the expression before Exception
-		while(count($expressionArray) > 1 && $i < 99){
+		while ( count($expressionArray) > 1 && $i < 99 ) {
 			$prev = NULL;
 			$i ++;
-			foreach ($expressionArray as $key => $mathData) {
+			foreach ( $expressionArray as $key => $mathData ) {
 				// lets see if we have an operator
-				if (array_key_exists($mathData, $this->operatorsWithPrecedenceValue)) {
+				if ( array_key_exists($mathData, $this->operatorsWithPrecedenceValue) ) {
 					// check next
 					$next_key = $this->findNextValidKey($expressionArray, $key);
 					$next = is_numeric($next_key) ? $expressionArray[$next_key] : NULL;
 
-					if (is_numeric($prev) && is_numeric($next)) {
-						switch($mathData) {
+					if ( is_numeric($prev) && is_numeric($next) ) {
+						switch ( $mathData ) {
 							case '-':
 								$eval = $prev - $next;
 								break;
@@ -147,7 +147,7 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 						unset($expressionArray[$next_key]);
 						$expressionArray[$key] = $eval;
 						break;
-					} elseif ($prev !== NULL && array_key_exists($prev, $this->operatorsWithPrecedenceValue) && is_numeric($next) && $mathData === '-') {
+					} elseif ( $prev !== NULL && array_key_exists($prev, $this->operatorsWithPrecedenceValue) && is_numeric($next) && $mathData === '-' ) {
 						$expressionArray[$key] = 0 - $next;
 						unset($expressionArray[$next_key]);
 						break;
@@ -175,9 +175,9 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	function findNextValidKey(array $array, $keyFrom){
 		$i = 0;
 		$key = NULL;
-		while($key == NULL && $i < 99) {
+		while ( $key == NULL && $i < 99 ) {
 			$i++;
-			if ($array[$keyFrom + $i]) {
+			if ( $array[$keyFrom + $i] ) {
 				$key = $keyFrom + $i;
 			}
 		}
@@ -187,6 +187,5 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 
 
 }
-
 
 ?>
