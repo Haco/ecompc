@@ -54,7 +54,7 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$this->view->assignMultiple(array(
-					'configurationResult' => \S3b0\Ecompc\Controller\DynamicConfiguratorController::getConfigurationCode($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE, 0), // Get configuration code
+					'configurationData' => \S3b0\Ecompc\Controller\DynamicConfiguratorController::getConfigurationData($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE, 0), // Get configuration code
 					'showResult' => TRUE
 				));
 			}

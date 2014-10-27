@@ -1,28 +1,32 @@
 body {
 	font-family: "Roboto Condensed", sans-serif;
 }
-a {
+#ecom-configurator-canvas a {
 	cursor: pointer;
 }
-a.ecom-configurator-package-select.ecom-configurator-package-state-0,
-a.ecom-configurator-package-select.current {
+#ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-state-0,
+#ecom-configurator-canvas a.ecom-configurator-package-select.current {
 	cursor: not-allowed;
 }
-a:focus {
+#ecom-configurator-canvas a:focus {
 	outline: 1px dotted black;
 }
-table.vtop tr td {
+#ecom-configurator-canvas table.vtop tr td {
 	vertical-align: top;
 }
 
-img.ecom-configurator-package-icon.icon-state-0 {
+#ecom-configurator-canvas .no-margin {
+	margin: 0;
+}
+
+#ecom-configurator-canvas img.ecom-configurator-package-icon.icon-state-0 {
 	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
 	filter: gray; /* IE6-9 */
 	-webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 }
 
-.align-center,
-.align-center * {
+#ecom-configurator-canvas .align-center,
+#ecom-configurator-canvas .align-center * {
 	text-align: center;
 }
 
@@ -482,6 +486,10 @@ img.ecom-configurator-package-icon.icon-state-0 {
 	}
 	#ecom-configurator-canvas .ecom-configurator-result h2 {
 		font-size: 1.7em;
+		font-weight: normal;
+	}
+	#ecom-configurator-canvas .ecom-configurator-result h3 {
+		font-size: 2em;
 		font-weight: normal;
 	}
 	#ecom-configurator-canvas .ecom-configurator-result h2 > small {

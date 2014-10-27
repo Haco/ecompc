@@ -40,8 +40,9 @@ function txEcompcSetOption() {
 			}
 			if (result.showResult) {
 				pkgInfoDiv.hide();
-				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').first().html(result.configurationResult[0]);
-				$('#ecom-configurator-summary-table').html(result.configurationResult[1]);
+				$('#ecom-configurator-result-canvas .ecom-configurator-result h3.ecom-configurator-result').first().html(result.configurationData[0]);
+				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').first().html(getConfigurationCode(result.configurationData[1]));
+				$('#ecom-configurator-summary-table').html(getConfigurationSummary(result.configurationData[1]));
 				$('.ecompc-syntax-help').tooltip({
 					tooltipClass: "ecompc-custom-tooltip-styling",
 					track: true
@@ -82,7 +83,6 @@ function txEcompcIndex() {
 			}
 			if (result.showResult) {
 				pkgInfoDiv.hide();
-				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').html(result.configurationResult);
 				resultDiv.show();
 			} else {
 				pkgInfoDiv.show();
@@ -277,6 +277,40 @@ function buildSelector(result) {
 		$('#ecom-configurator-select-options-ajax-update').html('').hide();
 		$('#ecom-configurator-reset-configuration-button').hide();
 	}
+}
+
+function getConfigurationCode(config) {
+	var spans = '';
+	for (var i=0; i<config.length; i++) {
+		var addClass = ' class="ecompc-syntax-help"',
+			addTitle = ' title="' + config[i].pkg + '"',
+			prependInnerHTML = '';
+		if (!config[i].pkg) {
+			addClass = '';
+			addTitle = '';
+		}
+		/** Variant with lock icon for fixed packages (!visibleInFrontend) */
+/*
+		if (config[i][2]) {
+			prependInnerHTML = '<i class="icon-lock"></i>';
+		}
+*/
+		spans += '<span' + addClass + addTitle + '>' + prependInnerHTML + config[i][1] + '</span>';
+	}
+
+	return spans;
+}
+
+function getConfigurationSummary(config) {
+	var table = '<table>';
+	for (var i=0; i<config.length; i++) {
+		if (!config[i].pkg) {
+			continue;
+		}
+		table += '<tr><td>' + config[i].pkg + '</td><td>' + config[i][0] + '</td></tr>';
+	}
+	table += '</table>';
+	return table;
 }
 
 

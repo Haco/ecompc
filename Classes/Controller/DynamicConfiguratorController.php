@@ -51,9 +51,9 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 		if ( $this->process === 1 ) {
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
-				$configurationCode = self::getConfigurationCode($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE);
-				$this->view->assign('configurationResult', $configurationCode[0]);
-				$this->view->assign('configurationSummary', $configurationCode[1]);
+				$configurationData = self::getConfigurationData($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE);
+				$this->view->assign('configurationLabel', $configurationData[0]);
+				$this->view->assign('configurationData', $configurationData[1]);
 			}
 		}
 		if ( $this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package ) {
@@ -118,45 +118,53 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 	 *
 	 * @return string
 	 */
-	public static function getConfigurationCode(\S3b0\Ecompc\Controller\StandardController $controller, \S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
-		$configurationCodeWrapper = ($configuration->hasConfigurationCodePrefix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodePrefix', $controller->extensionName) . '">' . $configuration->getConfigurationCodePrefix() . '</span>' : '') . '%s' . ($configuration->hasConfigurationCodeSuffix() ? '<span class="ecompc-syntax-help" title="' . ExtbaseUtility\LocalizationUtility::translate('csh.configCodeSuffix', $controller->extensionName) . '">' . $configuration->getConfigurationCodeSuffix() . '</span>' : '');
-		$configurationCodePlainTextWrapper = $configuration->getConfigurationCodePrefix() . '%s' . $configuration->getConfigurationCodeSuffix();
-		$configurationCodeSegmentWrapper = '<span class="ecompc-syntax-help" title="%1$s">%2$s</span>';
-		/*$summaryPlainWrapper = '%1$s: %2$s' . PHP_EOL;*/
-		$summaryHTMLTableWrapper = '<table>%s</table>';
-		$summaryHTMLTableRowWrapper = '<tr><td><b>%1$s:</b></td><td>%2$s</td></tr>';
-
-		$code = '';
-		$plain = '';
-		/*$summaryPlain = '';*/
-		$summaryHTML = '';
+	public static function getConfigurationData(\S3b0\Ecompc\Controller\StandardController $controller, \S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
+		$configurationLabel = $configuration->getFrontendLabel();
+		$configurationCode = new \ArrayObject();
+		if ( $configuration->hasConfigurationCodePrefix() ) {
+			$configurationCode->append(array(
+				'Prefix',
+				$configuration->getConfigurationCodePrefix(),
+				'pkg' => FALSE
+			));
+		}
 
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ( $controller->cObj->getEcompcPackages() as $package ) {
+			/** NO multipleSelect allowed for dynamic configurators, accordingly skip 'em */
+			if ( $package->isMultipleSelect() ) {
+				continue;
+			}
+			/**  */
 			if ( !$package->isVisibleInFrontend() ) {
-				$code .= sprintf($configurationCodeSegmentWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getConfigurationCodeSegment());
-				$plain .= $package->getDefaultOption()->getConfigurationCodeSegment();
-				/*$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($this->request->getControllerName() === 'DynamicConfiguratorAjaxRequest' ? ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']' : ''))*/;
-				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), $package->getDefaultOption()->getFrontendLabel() . ($controller->request->getControllerName() === 'DynamicConfiguratorAjaxRequest' ? ' [' . $package->getDefaultOption()->getConfigurationCodeSegment() . ']' : ''));
+				$configurationCode->append(array(
+					$package->getDefaultOption()->getFrontendLabel(),
+					$package->getDefaultOption()->getConfigurationCodeSegment(),
+					'pkg' => $package->getDefaultOption()->getConfigurationPackage()->getFrontendLabel(),
+					TRUE
+				));
 			} elseif ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
 				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
-				$code .= sprintf($configurationCodeSegmentWrapper, $option->getConfigurationPackage()->getFrontendLabel(), $option->getConfigurationCodeSegment());
-				$plain .= $option->getConfigurationCodeSegment();
-				/*$summaryPlain .= sprintf($summaryPlainWrapper, $package->getFrontendLabel(), $option->getFrontendLabel() . ($option->hasConfigurationCodeSegment() ? ' [' . $option->getConfigurationCodeSegment() . ']' : ''));*/
-				$summaryHTML .= sprintf($summaryHTMLTableRowWrapper, $package->getFrontendLabel(), $option->getFrontendLabel() . ($option->hasConfigurationCodeSegment() ? ' [' . $option->getConfigurationCodeSegment() . ']' : ''));
+				$configurationCode->append(array(
+					$option->getFrontendLabel(),
+					$option->getConfigurationCodeSegment(),
+					'pkg' => $option->getConfigurationPackage()->getFrontendLabel()
+				));
 			}
 		}
 
-		return $returnArray ? array(
-			sprintf($configurationCodeWrapper, $code),
-			sprintf($summaryHTMLTableWrapper, $summaryHTML),
-			sprintf(
-				$controller->settings['requestForm']['additionalParamsQueryString'],
-				sprintf($configurationCodePlainTextWrapper, $plain),
-				$configuration->getFrontendLabel(),
-				$loggerUid
-			)
-		) : sprintf($configurationCodeWrapper, $code);
+		if ( $configuration->hasConfigurationCodeSuffix() ) {
+			$configurationCode->append(array(
+				'Suffix',
+				$configuration->getConfigurationCodeSuffix(),
+				'pkg' => FALSE
+			));
+		}
+
+		return array(
+			$configurationLabel,
+			$configurationCode
+		);
 	}
 
 	/**

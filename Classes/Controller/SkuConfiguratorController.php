@@ -109,7 +109,7 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 		}
 	}
 
-	public static function getConfigurationCode(\S3b0\Ecompc\Controller\StandardController $controller, \S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
+	public static function getConfigurationData(\S3b0\Ecompc\Controller\StandardController $controller, \S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
 
 	}
 
