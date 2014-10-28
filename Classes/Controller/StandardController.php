@@ -159,12 +159,12 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		if ( !$this->cObj instanceof \S3b0\Ecompc\Domain\Model\Content )
 			$this->throwStatus(404, \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('404.no_cObj', $this->extensionName));
 		// Frontend-Session
-		$this->feSession->setStorageKey('ext-' . $this->request->getControllerExtensionKey());
+		$this->getFeSession()->setStorageKey('ext-' . $this->request->getControllerExtensionKey());
 		\S3b0\Ecompc\Utility\Div::setPriceHandling($this);
 		// Add cObj-pid to configurationSessionStorageKey to make it unique in sessionStorage
 		$this->configurationSessionStorageKey .= $this->cObj->getPid();
 		// Get current configuration (Array: options=array(options)|packages=array(package => option(s)))
-		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey) ?: array(
+		$this->selectedConfiguration = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: array(
 			'options' => array(),
 			'packages' => array()
 		);
@@ -211,10 +211,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		 */
 		if ( $this->isPricingEnabled() && !$this->getCurrency() instanceof \S3b0\Ecompc\Domain\Model\Currency ) {
 			$currency = CoreUtility\GeneralUtility::_GP('currency');
-			if ( !$this->feSession->get('currency') && !$currency ) {
+			if ( !$this->getFeSession()->get('currency') && !$currency ) {
 				$this->forward('selectRegion', 'Standard'); // Add redirect for region selection - influencing currency display
-			} elseif ( !$this->feSession->get('currency') && $currency && ($record = $this->currencyRepository->findByUid($currency)) ) {
-				$this->feSession->store('currency', $currency); // Store region selection
+			} elseif ( !$this->getFeSession()->get('currency') && $currency && ($record = $this->getCurrencyRepository()->findByUid($currency)) ) {
+				$this->getFeSession()->store('currency', $currency); // Store region selection
 				$this->setCurrency($record);
 				$this->redirectToPage();
 			}
@@ -322,7 +322,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 #		// Prepared autoFill. Still some issues, especially regarding traversing as of dependency checks!
 #		if ( $this->settings['auto_set'] )
 #			$this->autoSetOptions($configuration);
-		$this->feSession->store($this->configurationSessionStorageKey, $configuration); // Store configuration in fe_session_data
+		$this->getFeSession()->store($this->configurationSessionStorageKey, $configuration); // Store configuration in fe_session_data
 	}
 
 	/**
@@ -332,7 +332,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function resetAction() {
-		$this->feSession->store($this->configurationSessionStorageKey, array());
+		$this->getFeSession()->store($this->configurationSessionStorageKey, array());
 		$this->redirectToPage();
 	}
 
@@ -365,7 +365,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$persistenceManager->add($logger);
 		$persistenceManager->persistAll();
 		$result = $this->getConfigurationCode($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE, $logger->getUid());
-		$this->feSession->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
+		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
 
 		// Build link & redirect
 		$linkConfiguration = array(
@@ -389,10 +389,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function selectRegionAction() {
-		if ( $this->feSession->get('currency') )
+		if ( $this->getFeSession()->get('currency') )
 			$this->redirectToPage();
 
-		$this->view->assign('currencies', $this->currencyRepository->findAll());
+		$this->view->assign('currencies', $this->getCurrencyRepository()->findAll());
 	}
 
 	/**********************************
@@ -607,7 +607,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**
-	 * @param bool $return
+	 * @param boolean $return
 	 *
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage|null|void
 	 */

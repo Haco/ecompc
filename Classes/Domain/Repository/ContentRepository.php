@@ -55,9 +55,9 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	}
 
 	/**
-	 * @param null $uid
-	 * @param bool $respectSysLanguage
-	 * @param bool $respectStoragePage
+	 * @param null    $uid
+	 * @param boolean $respectSysLanguage
+	 * @param boolean $respectStoragePage
 	 *
 	 * @return null|object
 	 */

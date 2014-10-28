@@ -65,12 +65,12 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			$this->throwStatus(404, \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('404.no_cObj', $this->extensionName));
 		}
 		self::setStoragePid($this);
-		$this->feSession->setStorageKey('ext-' . $this->request->getControllerExtensionKey());
+		$this->getFeSession()->setStorageKey('ext-' . $this->request->getControllerExtensionKey());
 		\S3b0\Ecompc\Utility\Div::setPriceHandling($this);
 		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
 		$this->configurationSessionStorageKey .= $this->cObj->getPid();
 		// Get current configuration (Array: options=array(options)|packages=array(package => option(s)))
-		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey) ?: array(
+		$this->selectedConfiguration = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: array(
 			'options' => array(),
 			'packages' => array()
 		);
@@ -102,7 +102,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			'pid' => $this->cObj->getPid(),
 			'cObj' => $this->cObj->_getProperty('_localizedUid'),
 			'lang' => (int) $GLOBALS['TSFE']->sys_language_content,
-			'pricingEnabled' => $this->pricingEnabled
+			'pricingEnabled' => $this->isPricingEnabled()
 		));
 	}
 
@@ -156,7 +156,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	public function resetPackageAction($package = 0) {
 		$this->selectedConfiguration['options'] = array_diff((array) $this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionUidList($this->packageRepository->findByUid($package)));
 		unset($this->selectedConfiguration['packages'][$package]);
-		$this->feSession->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
+		$this->getFeSession()->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
 
 		$this->view->assignMultiple(array(
 			'package' => $package,
@@ -172,7 +172,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 * @return string
 	 */
 	protected function formatCurrency($floatToFormat = 0.0, $signed = FALSE) {
-		$output = number_format($floatToFormat, 2, $this->currency->isNumberSeparatorsInUSFormat() ? '.' : ',', $this->currency->isNumberSeparatorsInUSFormat() ? ',' : '.');
+		$output = number_format($floatToFormat, 2, $this->getCurrency()->isNumberSeparatorsInUSFormat() ? '.' : ',', $this->getCurrency()->isNumberSeparatorsInUSFormat() ? ',' : '.');
 		// Add algebraic sign if positive
 		if ( $floatToFormat > 0 && $signed ) {
 			$output = '+' . $output;
@@ -180,12 +180,12 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			$output = '+' . $output;
 			/*return ExtbaseUtility\LocalizationUtility::translate('price.inclusive', 'ecompc');*/
 		}
-		if ( $this->currency->getSymbol() !== '' ) {
-			$currencySeparator = $this->currency->isWhitespaceBetweenCurrencyAndValue()  ?: ' ';
-			if ( $this->currency->isSymbolPrepended() ) {
-				$output = $this->currency->getSymbol() . $currencySeparator . $output;
+		if ( $this->getCurrency()->getSymbol() !== '' ) {
+			$currencySeparator = $this->getCurrency()->isWhitespaceBetweenCurrencyAndValue()  ?: ' ';
+			if ( $this->getCurrency()->isSymbolPrepended() ) {
+				$output = $this->getCurrency()->getSymbol() . $currencySeparator . $output;
 			} else {
-				$output .= $currencySeparator . $this->currency->getSymbol();
+				$output .= $currencySeparator . $this->getCurrency()->getSymbol();
 			}
 		}
 		return $output;
@@ -213,10 +213,10 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			'pid' => $GLOBALS['TSFE']->id,
 			'cObj' => $this->cObj->getUid()
 		));
-		if ( $this->pricingEnabled ) {
+		if ( $this->isPricingEnabled() ) {
 			$view->assignMultiple(array(
-				'pricingEnabled' => $this->pricingEnabled, // checks whether price labels are displayed or not!
-				'currency' => $this->currency, // fetch currency TS
+				'pricingEnabled' => $this->isPricingEnabled(), // checks whether price labels are displayed or not!
+				'currency' => $this->getCurrency(), // fetch currency TS
 				'pricing' => $this->getConfigurationPrice() // current configuration price
 			));
 		}

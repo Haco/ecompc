@@ -74,7 +74,7 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 			'process' => $this->process
 		));
 
-		if ( $this->pricingEnabled ) {
+		if ( $this->isPricingEnabled() ) {
 			$this->view->assign('pricing', $this->getConfigurationPrice(NULL, TRUE));
 		}
 	}
@@ -86,7 +86,7 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 	 */
 	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
 		$return = array();
-		$configurationArray = $this->feSession->get($this->configurationSessionStorageKey) ?: array(
+		$configurationArray = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: array(
 			'options' => array(),
 			'packages' => array()
 		);
@@ -95,9 +95,9 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 			foreach ( $options as $option ) {
 				if ( $option->getConfigurationPackage()->isPercentPricing() ) {
-					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->pricingEnabled, $this->currency, $pricing);
+					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->isPricingEnabled(), $this->getCurrency(), $pricing);
 				} else {
-					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->pricingEnabled, $this->currency, $pricing);
+					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->isPricingEnabled(), $this->getCurrency(), $pricing);
 				}
 			}
 		}
