@@ -1,7 +1,7 @@
 <f:if condition="{settings.viewHeader}">
 	<div class="ecom-configurator-configurator-head">
 		<div class="ecom-configurator-config-header-instructions" id="ecom-configurator-ajax-header-instructions">{instructions -> f:format.html()}</div>
-		<f:if condition="{showPriceLabels}">
+		<f:if condition="{pricingEnabled}">
 			<div class="ecom-configurator-config-header-price-table">
 				<table>
 					<thead>

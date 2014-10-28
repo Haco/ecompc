@@ -90,9 +90,9 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 			foreach ( $options as $option ) {
 				if ( $option->getConfigurationPackage()->isPercentPricing() ) {
-					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->showPriceLabels, $this->currency, $this->getConfigurationPrice()[1]);
+					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->pricingEnabled, $this->currency, $this->getConfigurationPrice()[1]);
 				} else {
-					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->showPriceLabels, $this->currency);
+					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->pricingEnabled, $this->currency);
 				}
 			}
 		}

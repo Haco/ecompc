@@ -46,7 +46,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $storage = NULL;
 
 	/**
-	 * @var int
+	 * @var integer
 	 */
 	protected $recursive = 0;
 
@@ -138,14 +138,14 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return int
+	 * @return integer
 	 */
 	public function getRecursive() {
 		return $this->recursive;
 	}
 
 	/**
-	 * @param int $recursive
+	 * @param integer $recursive
 	 */
 	public function setRecursive($recursive) {
 		$this->recursive = $recursive;
@@ -175,7 +175,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $ecompcPackages
 	 */
 	public function getEcompcPackages() {
-		return $this->ecompcPackages;
+		return \S3b0\Ecompc\Utility\ObjectStorageSortingUtility::sortBySorting($this->ecompcPackages);
 	}
 
 	/**

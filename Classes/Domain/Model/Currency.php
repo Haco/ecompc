@@ -36,6 +36,11 @@ namespace S3b0\Ecompc\Domain\Model;
 class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
+	 * @var integer
+	 */
+	protected $sorting = 0;
+
+	/**
 	 * @var string
 	 */
 	protected $label = '';
@@ -94,6 +99,20 @@ class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var boolean
 	 */
 	protected $numberSeparatorsInUSFormat = FALSE;
+
+	/**
+	 * @return integer
+	 */
+	public function getSorting() {
+		return $this->sorting;
+	}
+
+	/**
+	 * @param integer $sorting
+	 */
+	public function setSorting($sorting) {
+		$this->sorting = $sorting;
+	}
 
 	/**
 	 * @return string
@@ -194,14 +213,14 @@ class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return int
+	 * @return integer
 	 */
 	public function getSettings() {
 		return (int) $this->settings;
 	}
 
 	/**
-	 * @param int $settings
+	 * @param integer $settings
 	 */
 	public function setSettings($settings) {
 		$this->settings = $settings;

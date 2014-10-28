@@ -49,7 +49,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 		$PA['fieldConf']['config']['readOnly'] = !$pObj->getBackendUserAuthentication()->isAdmin();
 
 		if ( $PA['row']['CType'] === 'list' && $PA['row']['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE ) {
-			$PA['fieldConf']['config']['foreign_table_where'] = 'AND NOT tx_ecompc_domain_model_package.deleted AND NOT tx_ecompc_domain_model_package.multiple_select AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)';
+			$PA['fieldConf']['config']['foreign_table_where'] = 'AND NOT tx_ecompc_domain_model_package.multiple_select ' . $PA['fieldConf']['config']['foreign_table_where'];
 		}
 
 		// Re-render field based on the "true field type", and not as a "user"
@@ -232,7 +232,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 				$selItems[] = array($configurationPackage['backend_label'] ?: $configurationPackage['frontend_label'], '--div--');
 				if ( $configurationOptions = BackendUtility\BackendUtility::getRecordsByField('tx_ecompc_domain_model_option', 'configuration_package', $configurationPackage['uid'], 'AND NOT deleted AND sys_language_uid IN (-1,0) ORDER BY tx_ecompc_domain_model_option.sorting') ) {
 					foreach ( $configurationOptions as $configurationOption ) {
-						$addItem = array($this->getLabelforTableOption($configurationOption), $configurationOption['uid'], 'clear.gif', '', '', $rowIndex, 'radio');
+						$addItem = array($this->getLabelForTableOption($configurationOption), $configurationOption['uid'], 'clear.gif', '', '', $rowIndex, 'radio');
 						if ( $configurationPackage['multiple_select'] ) {
 							$addItem[6] = 'checkbox';
 							$rowIndex++;
@@ -414,12 +414,12 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	/**
 	 * itemsProcFuncTxEcompcDomainModelDependencyOptions function.
 	 *
-	 * @param  array                                                                       $PA
-	 * @param  \TYPO3\CMS\Backend\Form\DataPreprocessor|\TYPO3\CMS\Backend\Form\FormEngine $pObj
+	 * @param array                              $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
 	 *
 	 * @return void
 	 */
-	function itemsProcFuncTxEcompcDomainModelDependencyOptions(array &$PA, &$pObj)  {
+	function itemsProcFuncTxEcompcDomainModelDependencyOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj)  {
 		// Adding an item!
 		//$PA['items'][] = array($pObj->sL('Added label by PHP function|Tilfjet Dansk tekst med PHP funktion'), 999);
 
@@ -465,22 +465,23 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	/**
 	 * labelUserFuncTxEcompcDomainModelOption function.
 	 *
-	 * @param $parameters
-	 * @param $parentObject
+	 * @param array                              $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+	 *
 	 * @return void
 	 */
-	public function labelUserFuncTxEcompcDomainModelOption(&$parameters, $parentObject) {
-		$parameters['title'] = $this->getLabelforTableOption($parameters['row']);
+	public function labelUserFuncTxEcompcDomainModelOption(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+		$PA['title'] = $this->getLabelForTableOption($PA['row']);
 	}
 
 	/**
-	 * getLabelforTableOption function.
+	 * getLabelForTableOption function.
 	 *
 	 * @param array $record
 	 *
 	 * @return string
 	 */
-	public function getLabelforTableOption(array $record) {
+	public function getLabelForTableOption(array $record) {
 		return ($record['backend_label'] ?: $record['frontend_label']) . (strlen($record['configuration_code_segment']) ? ' »' . $record['configuration_code_segment'] . '«' : '');
 	}
 
@@ -491,9 +492,9 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @param $a
 	 * @param $b
 	 *
-	 * @return int
+	 * @return integer
 	 */
-	final public function cmp ($a, $b) {
+	final public function cmp($a, $b) {
 		return strcmp($a['label'], $b['label']);
 	}
 

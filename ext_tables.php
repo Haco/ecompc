@@ -30,7 +30,7 @@
 				'form_type' => 'user',
 				'userFunc' => 'S3b0\\Ecompc\\User\\TCAMod\\ModifyTCA->userFuncTtContentTxEcompcPackages',
 				'foreign_table' => 'tx_ecompc_domain_model_package',
-				'foreign_table_where' => 'AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)',
+				'foreign_table_where' => 'AND NOT tx_ecompc_domain_model_package.deleted AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0) ORDER BY tx_ecompc_domain_model_package.pid ASC, tx_ecompc_domain_model_package.sorting ASC',
 				'size' => 10,
 				'autoSizeMax' => 30,
 				'minitems' => 1,

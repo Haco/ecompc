@@ -91,7 +91,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		 * selcps -> indicator for active packages used at JS calculation of progress
 		 */
 		$variablesToRender = array(
-			'pid', 'lang', 'cObj', 'currentPackage', 'packages', 'options', 'showPriceLabels', 'hint', 'process', 'html', 'showResult', 'configurationData'
+			'pid', 'lang', 'cObj', 'currentPackage', 'packages', 'options', 'pricingEnabled', 'hint', 'process', 'html', 'showResult', 'configurationData'
 		);
 		if ( \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment() ) {
 			$variablesToRender[] = 'debug';
@@ -102,7 +102,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			'pid' => $this->cObj->getPid(),
 			'cObj' => $this->cObj->_getProperty('_localizedUid'),
 			'lang' => (int) $GLOBALS['TSFE']->sys_language_content,
-			'showPriceLabels' => $this->showPriceLabels
+			'pricingEnabled' => $this->pricingEnabled
 		));
 	}
 
@@ -213,9 +213,9 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 			'pid' => $GLOBALS['TSFE']->id,
 			'cObj' => $this->cObj->getUid()
 		));
-		if ( $this->showPriceLabels ) {
+		if ( $this->pricingEnabled ) {
 			$view->assignMultiple(array(
-				'showPriceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
+				'pricingEnabled' => $this->pricingEnabled, // checks whether price labels are displayed or not!
 				'currency' => $this->currency, // fetch currency TS
 				//'pricing' => $this->selectedConfigurationPrice // current configuration price
 			));

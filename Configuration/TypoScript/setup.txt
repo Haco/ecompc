@@ -49,6 +49,22 @@ config.tx_extbase {
 					}
 				}
 			}
+			S3b0\Ecompc\Domain\Model\Package {
+				mapping {
+					tableName = tx_ecompc_domain_model_package
+					columns {
+						sorting.mapOnProperty = sorting
+					}
+				}
+			}
+			S3b0\Ecompc\Domain\Model\Currency {
+				mapping {
+					tableName = tx_ecompc_domain_model_currency
+					columns {
+						sorting.mapOnProperty = sorting
+					}
+				}
+			}
 		}
 	}
 }
@@ -74,7 +90,7 @@ plugin.tx_ecompc {
 	}
 	settings {
 		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion;Standard->request
-		showPriceLabels = {$plugin.tx_ecompc.constants.showPriceLabels}
+		pricingEnabled = {$plugin.tx_ecompc.constants.pricingEnabled}
 		viewHeader = {$plugin.tx_ecompc.constants.viewHeader}
 		distFeUserGroup = 0
 		resolverUserGroup = {$plugin.tx_ecompc.constants.resolverUserGroup}

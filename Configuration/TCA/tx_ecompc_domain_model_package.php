@@ -14,7 +14,6 @@ return array(
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'dividers2tabs' => TRUE,
-		'default_sortby' => 'ORDER BY backend_label,frontend_label',
 		'versioningWS' => 2,
 		'versioning_followPages' => TRUE,
 		'sortby' => 'sorting',

@@ -13,7 +13,7 @@ plugin.tx_ecompc {
 	}
 	constants {
 		# cat=plugin.tx_ecompc//x10; type=boolean; label=Enable price labels:Show price labels if set (master switch!)
-		showPriceLabels = 1
+		pricingEnabled = 1
 		# cat=plugin.tx_ecompc//x10; type=boolean; label=Show Header:Show header including instructions and pricing
 		viewHeader = 1
 		# cat=plugin.tx_ecompc//x11; type=int; label=Resolver User Group:Uid of user group showing all details to

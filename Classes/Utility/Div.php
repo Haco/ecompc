@@ -8,8 +8,12 @@
 
 namespace S3b0\Ecompc\Utility;
 
-
-class Div extends \S3b0\Ecompc\Controller\StandardController {
+/**
+ * Class Div
+ *
+ * @package S3b0\Ecompc\Utility
+ */
+class Div {
 
 	const BIT_CURRENCY_IS_DEFAULT = 1;
 	const BIT_CURRENCY_PREPEND_SYMBOL = 2;
@@ -18,6 +22,9 @@ class Div extends \S3b0\Ecompc\Controller\StandardController {
 	const CONFIGURATOR_DYN_SIGNATURE = 'ecompc_configurator_dynamic';
 	const CONFIGURATOR_SKU_SIGNATURE = 'ecompc_configurator_sku';
 
+	/**
+	 * @param boolean $isDevelopment
+	 */
 	public static function setEnvironment($isDevelopment = FALSE) {
 		if ( $isDevelopment ) {
 			$GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = 1;
@@ -39,11 +46,12 @@ class Div extends \S3b0\Ecompc\Controller\StandardController {
 		// Get distributors frontend user groups (set @Extension Manager)
 		if ( $GLOBALS['TSFE']->loginUser ) {
 			// Set price flag (displays pricing if TRUE)
-			$controller->showPriceLabels = $controller->settings['viewHeader'] && $controller->settings['showPriceLabels'] ? \TYPO3\CMS\Core\Utility\GeneralUtility::inList($GLOBALS['TSFE']->fe_user->user['usergroup'], $controller->settings['distFeUserGroup']) : FALSE;
+			$settings = $controller->getSettings();
+			$controller->setPricingEnabled($settings['viewHeader'] && $settings['pricingEnabled'] ? \TYPO3\CMS\Core\Utility\GeneralUtility::inList($GLOBALS['TSFE']->fe_user->user['usergroup'], $settings['distFeUserGroup']) : FALSE);
 		}
-		if ( $controller->showPriceLabels ) {
+		if ( $controller->isPricingEnabled() ) {
 			// Fetch currency configuration from TS
-			$controller->currency = $controller->currencyRepository->findByUid($controller->feSession->get('currency'));
+			$controller->setCurrency($controller->getCurrencyRepository()->findByUid($controller->getFeSession()->get('currency')));
 		}
 	}
 

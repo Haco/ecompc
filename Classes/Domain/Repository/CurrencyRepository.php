@@ -36,6 +36,15 @@ namespace S3b0\Ecompc\Domain\Repository;
 class CurrencyRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 	/**
+	 * Sets the default orderings
+	 *
+	 * @var array $defaultOrderings
+	 */
+	protected $defaultOrderings = array(
+		'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+	);
+
+	/**
 	 * Set repository wide settings
 	 */
 	public function initializeObject() {

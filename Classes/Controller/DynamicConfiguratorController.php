@@ -79,7 +79,7 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 			return NULL;
 
 		// Include pricing for enabled users!
-		if ( $controller->showPriceLabels ) {
+		if ( $controller->pricingEnabled ) {
 			$controller->initializeOptions($package);
 		}
 

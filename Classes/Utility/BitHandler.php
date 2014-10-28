@@ -71,4 +71,5 @@ class BitHandler {
 	public function unsetSingleBit($bit = 0) {
 		$this->bits &= ~$bit;
 	}
+
 }

@@ -1,4 +1,4 @@
-<f:if condition="{showPriceLabels}">
+<f:if condition="{pricingEnabled}">
 	<span class="ecom-configurator-select-package-option-price"><f:s3b0.financial.currency currency="{currency}">{option.priceOutput}</f:s3b0.financial.currency>
 	( <f:s3b0.financial.currency currency="{currency}">{option.unitPrice}</f:s3b0.financial.currency><f:if condition="{option.configurationPackage.percentPricing}"> <span style="font-family: 'Lucida Sans Unicode', Arial, sans-serif">≙</span> {f:s3b0.calculation(expressionString : '{option.pricePercental}*100')}%</f:if> )
 	</span>

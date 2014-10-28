@@ -66,7 +66,7 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 			return NULL;
 
 		// Include pricing for enabled users!
-		if ( $controller->showPriceLabels ) {
+		if ( $controller->pricingEnabled ) {
 			$controller->initializeOptions($package);
 		}
 
