@@ -43,6 +43,8 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial;
 class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
+	 * Function render
+	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency       The currency object
 	 * @param mixed                              $floatToFormat  (optional) The float, if any; If not set, renderChildren() will set the value
 	 * @param integer                            $decimals       (optional) Set decimals places.
@@ -79,4 +81,5 @@ class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 		}
 		return $output;
 	}
+
 }

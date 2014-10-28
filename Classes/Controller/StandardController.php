@@ -68,11 +68,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $configurationSessionStorageKey = 'configurator-';
 
 	/**
-	 * Enables/Disables price labels
-	 *
 	 * @var boolean
 	 */
-	protected $showPriceLabels = FALSE;
+	protected $pricingEnabled = FALSE;
 
 	/**
 	 * @var \S3b0\Ecompc\Domain\Model\Currency
@@ -187,10 +185,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			'cObj' => $this->cObj->_getProperty('_localizedUid'),
 			'sys_language_uid' => (int) $GLOBALS['TSFE']->sys_language_content
 		));
-		if ( $this->showPriceLabels ) {
+		if ( $this->isPricingEnabled() ) {
 			$this->view->assignMultiple(array(
-				'showPriceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
-				'currency' => $this->currency, // fetch currency TS
+				'pricingEnabled' => $this->isPricingEnabled(), // checks whether price labels are displayed or not!
+				'currency' => $this->getCurrency(), // fetch currency TS
 				'pricing' => $this->selectedConfigurationPrice // current configuration price
 			));
 		}
@@ -211,18 +209,18 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		/**
 		 * Check for currency when distributor is logged in
 		 */
-		if ( $this->showPriceLabels && !$this->currency instanceof \S3b0\Ecompc\Domain\Model\Currency ) {
+		if ( $this->isPricingEnabled() && !$this->getCurrency() instanceof \S3b0\Ecompc\Domain\Model\Currency ) {
 			$currency = CoreUtility\GeneralUtility::_GP('currency');
 			if ( !$this->feSession->get('currency') && !$currency ) {
 				$this->forward('selectRegion', 'Standard'); // Add redirect for region selection - influencing currency display
 			} elseif ( !$this->feSession->get('currency') && $currency && ($record = $this->currencyRepository->findByUid($currency)) ) {
 				$this->feSession->store('currency', $currency); // Store region selection
-				$this->currency = $record;
+				$this->setCurrency($record);
 				$this->redirectToPage();
 			}
 		}
 		// Get configuration price
-		$this->selectedConfigurationPrice = $this->showPriceLabels ? $this->getConfigurationPrice() : array(0.0, 0.0);
+		$this->selectedConfigurationPrice = $this->isPricingEnabled() ? $this->getConfigurationPrice() : array(0.0, 0.0, 0.0, 0.0, 0.0);
 		/**
 		 * Set required parameter if uid is transmitted only (AJAX requests)
 		 */
@@ -272,6 +270,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Option $option
 	 * @param boolean                          $unset           Identifier to unset option!
+	 *
 	 * @return void
 	 */
 	public function setOptionAction(\S3b0\Ecompc\Domain\Model\Option $option, $unset = FALSE) {
@@ -353,9 +352,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			->setConfiguration($this->cObj->getEcompcConfigurations()->toArray()[0]);
 		if ( $GLOBALS['TSFE']->loginUser ) {
 			$logger->setFeUser($this->frontendUserRepository->findByUid($GLOBALS['TSFE']->fe_user->user['uid']));
-			if ( $this->showPriceLabels ) {
+			if ( $this->isPricingEnabled() ) {
 				$pricing = $this->getConfigurationPrice();
-				$logger->setCurrency($this->currency)->setPrice($pricing[1]);
+				$logger->setCurrency($this->getCurrency())->setPrice($pricing[1]);
 			}
 		}
 
@@ -443,6 +442,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 *
 	 * @param  \S3b0\Ecompc\Domain\Model\Option $option
 	 * @param  array                            $configuration
+	 *
 	 * @return boolean
 	 */
 	protected function checkOptionDependencies(\S3b0\Ecompc\Domain\Model\Option $option, array $configuration) {
@@ -475,26 +475,68 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * Calculates the price for configurations already during configuration process
 	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Package $breakPoint
+	 * @param boolean                           $render
+	 * @param integer                           $tellMeWhatToRender Array pointer to enable rendering of several values calculated [0-4]
+	 *
 	 * @return array
 	 */
-	protected function getConfigurationPrice() {
-		/** @var \S3b0\Ecompc\Domain\Model\Content $cObj */
+	protected function getConfigurationPrice(\S3b0\Ecompc\Domain\Model\Package $breakPoint = NULL, $render = FALSE, $tellMeWhatToRender = 1) {
+		/**
+		 * Fetch parent on localizations
+		 *
+		 * @var \S3b0\Ecompc\Domain\Model\Content $cObj
+		 */
 		$cObj = $this->cObj->_hasProperty('_languageUid') && $this->cObj->_getProperty('_languageUid') ? $this->contentRepository->findByUid($this->cObj->getUid()) : $this->cObj;
-		$base = $cObj->getPrice($this->currency);
-		if ( !$base ) return array(0.0, 0.0);
+		$basePrice = $cObj->getPrice($this->getCurrency());
+		if ( !$basePrice ) return array(0.0, 0.0);
 
 		// Get configuration price
-		$config = $base;
-		if ( count($this->selectedConfiguration['options']) ) {
-			foreach ( (array) $this->selectedConfiguration['options'] as $uid )
-				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
-				if ( $option = $this->optionRepository->findByUid($uid) ) {
-					$option = $this->optionRepository->findByUid($uid);
-					$config += $option->getPricing($this->currency, $config);
+		$configPrice = $basePrice;
+		$configPriceBeforeBreakpoint = 0.0;
+		$configPriceAtBreakpoint = 0.0;
+		$configPriceAfterBreakpoint = 0.0;
+		$breakPointReached = FALSE;
+		if ( count($this->selectedConfiguration['options']) && ($packages = $this->cObj->getEcompcPackages()) ) {
+			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+			foreach ( $packages as $package ) {
+				if ( $breakPoint && $package === $breakPoint ) {
+					$configPriceBeforeBreakpoint = $configPrice;
 				}
+				if ( $options = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options'], $package) ) {
+					/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+					foreach ( $options as $option ) {
+						$configPrice += $option->getPricing($this->getCurrency(), $configPrice);
+						if ( substr($this->request->getControllerName(), 0, 7) === 'Dynamic' ) break;
+					}
+				}
+				if ( $breakPoint && $breakPointReached ) {
+					$configPriceAfterBreakpoint = $configPrice;
+				}
+				if ( $breakPoint && $package === $breakPoint ) {
+					$configPriceAtBreakpoint = $configPrice;
+					$breakPointReached = TRUE;
+				}
+			}
+			if ( $breakPoint && $breakPointReached && $configPriceAfterBreakpoint === 0.0 ) {
+				$configPriceAfterBreakpoint = $configPrice;
+			}
 		}
 
-		return array($base, $config);
+		$returnArray = array($basePrice, $configPrice, $configPriceBeforeBreakpoint, $configPriceAtBreakpoint, $configPriceAfterBreakpoint);
+
+		if ( $render && $this->isPricingEnabled() && ($tellMeWhatToRender >= 0 && $tellMeWhatToRender <= 4) ) {
+			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
+			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
+			return $currencyVH->render(
+				$this->getCurrency(),
+				$returnArray[$tellMeWhatToRender],
+				2,
+				FALSE
+			);
+		}
+
+		return $returnArray;
 	}
 
 	/**
@@ -523,27 +565,27 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				/**************************************************
 				 * Process pricing | Set corresponding properties *
 				 **************************************************/
-				if ( $this->showPriceLabels && $this->cObj->getEcompcPricing() ) {
+				if ( $this->isPricingEnabled() && $this->cObj->getEcompcPricing() ) {
 					/*****************************************************************************************
 					 * Calculate PERCENT price [working on packages WITHOUT multipleSelect() flag set ONLY!] *
 					 *****************************************************************************************/
 					if ( $package->isPercentPricing() && !$package->isMultipleSelect() ) {
-						$currentConfigurationPrice = end($this->getConfigurationPrice());
+						$currentConfigurationPrice = $this->getConfigurationPrice()[1];
 						$configurationPriceExcludingCurrentOption = $package->hasActiveOptions() ? floatval($currentConfigurationPrice / ($this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options'], $package, TRUE)->getPricePercental() + 1)) : 0.0;
 						$optionPrice = floatval($currentConfigurationPrice - $configurationPriceExcludingCurrentOption);
 						if ( in_array($package->getUid(), $this->selectedConfiguration['packages']) && !in_array($option->getUid(), $this->selectedConfiguration['options']) ) {
 							$option->setUnitPrice($optionIsActive ? $optionPrice : floatval($configurationPriceExcludingCurrentOption * $option->getPricePercental()));
 							$option->setPriceOutput($optionIsActive ? $optionPrice : floatval($configurationPriceExcludingCurrentOption * $option->getPricePercental() - $optionPrice));
 						} else {
-							$option->setUnitPrice(in_array($option->getUid(), $this->selectedConfiguration['options']) ? $optionPrice : $option->getPricing($this->currency, $currentConfigurationPrice));
-							$option->setPriceOutput(in_array($option->getUid(), $this->selectedConfiguration['options']) ? 0.00 : $option->getPricing($this->currency, $currentConfigurationPrice));
+							$option->setUnitPrice(in_array($option->getUid(), $this->selectedConfiguration['options']) ? $optionPrice : $option->getPricing($this->getCurrency(), $currentConfigurationPrice));
+							$option->setPriceOutput(in_array($option->getUid(), $this->selectedConfiguration['options']) ? 0.00 : $option->getPricing($this->getCurrency(), $currentConfigurationPrice));
 						}
 					/***************************
 					 * Calculate STATIC prices *
 					 ***************************/
 					} else {
-						$option->setUnitPrice($option->getPricing($this->currency));
-						$priceOutput = $package->isMultipleSelect() || !$activeOptions ? $option->getUnitPrice($this->currency) : $option->getPricing($this->currency) - $activeOptions->getFirst()->getPricing($this->currency);
+						$option->setUnitPrice($option->getPricing($this->getCurrency()));
+						$priceOutput = $package->isMultipleSelect() || !$activeOptions ? $option->getUnitPrice($this->getCurrency()) : $option->getPricing($this->getCurrency()) - $activeOptions->getFirst()->getPricing($this->getCurrency());
 						$option->setPriceOutput($priceOutput);
 					}
 				}
@@ -600,8 +642,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				 */
 				if ( in_array($package->getUid(), $this->selectedConfiguration['packages']) ) {
 					$package->setActiveOptions(array_intersect($this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionUidList($package)));
-					if ( $this->showPriceLabels )
-						$package->setPriceOutput($this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options'], $package), $this->currency);
+					if ( $this->isPricingEnabled() )
+						$package->setPriceOutput($this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options'], $package), $this->getCurrency());
 					if ( !$isActive ) {
 						$isActive = TRUE;
 						if ( $prev instanceof \S3b0\Ecompc\Domain\Model\Package ) {
@@ -636,6 +678,62 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		}
 
 		return $return ? $packages : NULL;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSettings() {
+		return $this->settings;
+	}
+
+	/**
+	 * @param array $settings
+	 */
+	public function setSettings(array $settings) {
+		$this->settings = $settings;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isPricingEnabled() {
+		return $this->pricingEnabled;
+	}
+
+	/**
+	 * @param boolean $showPriceLabels
+	 */
+	public function setPricingEnabled($showPriceLabels) {
+		$this->pricingEnabled = $showPriceLabels;
+	}
+
+	/**
+	 * @return \S3b0\Ecompc\Domain\Model\Currency
+	 */
+	public function getCurrency() {
+		return $this->currency;
+	}
+
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
+	 */
+	public function setCurrency(\S3b0\Ecompc\Domain\Model\Currency $currency = NULL) {
+		$this->currency = $currency;
+	}
+
+	/**
+	 * @return \S3b0\Ecompc\Domain\Repository\CurrencyRepository
+	 */
+	public function getCurrencyRepository() {
+		return $this->currencyRepository;
+	}
+
+	/**
+	 * @return \S3b0\Ecompc\Domain\Session\FrontendSessionHandler
+	 */
+	public function getFeSession() {
+		return $this->feSession;
 	}
 
 }

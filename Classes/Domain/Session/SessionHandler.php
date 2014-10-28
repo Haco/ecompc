@@ -49,10 +49,10 @@ class SessionHandler {
 			$this->mode = $mode;
 		}
 
-		if ( $this->mode === NULL || ($this->mode != "BE" && $this->mode != "FE") ) {
-			throw new \Exception( "TYPO3-Mode is not defined!", 1388660107 );
+		if ( $this->mode === NULL || ($this->mode !== 'BE' && $this->mode !== 'FE') ) {
+			throw new \Exception( 'TYPO3-Mode is not defined!', 1388660107 );
 		}
-		$this->sessionObject = ($this->mode == "BE") ? $GLOBALS['BE_USER'] : $GLOBALS['TSFE']->fe_user;
+		$this->sessionObject = ($this->mode === 'BE') ? $GLOBALS['BE_USER'] : $GLOBALS['TSFE']->fe_user;
 	}
 
 	/**
@@ -91,7 +91,7 @@ class SessionHandler {
 	}
 
 	/**
-	 * Delete all values in session
+	 * Delete all values in session except of currency
 	 *
 	 * @return void
 	 */

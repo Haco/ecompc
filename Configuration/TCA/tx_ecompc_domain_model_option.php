@@ -75,6 +75,12 @@ return array(
 				'type' => 'passthrough',
 			),
 		),
+		'sorting' => array(
+			'l10n_mode' => 'exclude',
+			'config' => array(
+				'type' => 'passthrough',
+			),
+		),
 
 		't3ver_label' => array(
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',

@@ -89,7 +89,7 @@ plugin.tx_ecompc {
 		# rewrittenPropertyMapper = 1
 	}
 	settings {
-		switchableControllerActions = Standard->index;Standard->selectPackageOptions;Standard->setOptions;Standard->resetPackage;Standard->reset;Standard->selectRegion;Standard->request
+		switchableControllerActions = Standard->index;Standard->reset;Standard->selectRegion;Standard->request
 		pricingEnabled = {$plugin.tx_ecompc.constants.pricingEnabled}
 		viewHeader = {$plugin.tx_ecompc.constants.viewHeader}
 		distFeUserGroup = 0
@@ -190,6 +190,7 @@ EcompcDynamicConfigurationAjaxRequest {
 			DynamicConfiguratorAjaxRequest {
 				1 = index
 				2 = setOption
+				3 = getOptionHint
 			}
 		}
 	}
@@ -224,6 +225,7 @@ EcompcSkuConfigurationAjaxRequest {
 			SkuConfiguratorAjaxRequest {
 				1 = index
 				2 = setOption
+				3 = getOptionHint
 			}
 		}
 	}

@@ -32,13 +32,13 @@ function txEcompcSetOption() {
 				resultDiv = $('#ecom-configurator-result-canvas');
 			removeAjaxLoader('ecom-configurator-ajax-loader');
 			updateProcessIndicators(result.process);
-			if (result.currentPackage instanceof Object) {
+			if ( result.currentPackage instanceof Object ) {
 				pkgInfoDiv.html(
 					'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
 					'<p>' + result.currentPackage.hintText + '</p>'
 				).show();
 			}
-			if (result.showResult) {
+			if ( result.showResult ) {
 				pkgInfoDiv.hide();
 				$('#ecom-configurator-result-canvas .ecom-configurator-result h3.ecom-configurator-result').first().html(result.configurationData[0]);
 				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').first().html(getConfigurationCode(result.configurationData[1]));
@@ -54,6 +54,9 @@ function txEcompcSetOption() {
 			}
 			updatePackageNavigation(result.packages);
 			buildSelector(result);
+			if ( result.pricingEnabled && result.pricing ) {
+				$('#ecom-configurator-config-header-config-price').html(result.pricing);
+			}
 		});
 	});
 }
@@ -65,7 +68,7 @@ function txEcompcIndex() {
 	$('.ecom-configurator-package-select').on('click', function (e) {
 		// Prevent default anchor action
 		e.preventDefault();
-		if ($(this).hasClass('ecom-configurator-package-state-0') || $(this).hasClass('current'))
+		if ( $(this).hasClass('ecom-configurator-package-state-0') || $(this).hasClass('current') )
 			return false;
 		addAjaxLoader('ecom-configurator-ajax-loader');
 		genericAjaxRequest($(this).attr('data-t3pid'), $(this).attr('data-t3lang'), 1407764086, 'index', {
@@ -75,13 +78,13 @@ function txEcompcIndex() {
 			var pkgInfoDiv = $('#ecom-configurator-optionSelection-package-info'),
 				resultDiv = $('#ecom-configurator-result-canvas');
 			removeAjaxLoader('ecom-configurator-ajax-loader');
-			if (result.currentPackage instanceof Object) {
+			if ( result.currentPackage instanceof Object ) {
 				pkgInfoDiv.html(
 					'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
 					'<p>' + result.currentPackage.hintText + '</p>'
 				).show();
 			}
-			if (result.showResult) {
+			if ( result.showResult ) {
 				pkgInfoDiv.hide();
 				resultDiv.show();
 			} else {
@@ -216,9 +219,9 @@ function updatePackageNavigation(thePackages) {
 	/**
 	 * Update package states/links
 	 */
-	for (var index in thePackages) {
-		if (thePackages.hasOwnProperty(index)) {
-			if (!thePackages[index].visibleInFrontend)
+	for ( var index in thePackages ) {
+		if ( thePackages.hasOwnProperty(index) ) {
+			if ( !thePackages[index].visibleInFrontend )
 				continue;
 			var newState = thePackages[index].active ? 1 : 0,
 				oldState = thePackages[index].active ? 0 : 1,
@@ -229,7 +232,7 @@ function updatePackageNavigation(thePackages) {
 			faIcon.addClass('icon-check' + (optionActiveState ? '' : '-empty')).removeClass('icon-check' + (optionActiveState ? '-empty' : ''));
 			link.addClass('ecom-configurator-package-state-' + newState).removeClass('ecom-configurator-package-state-' + oldState);
 			icon.addClass('icon-state-' + newState).removeClass('icon-state-' + oldState);
-			if (thePackages[index].current) {
+			if ( thePackages[index].current ) {
 				link.addClass('current');
 				icon.addClass('current');
 			} else {
@@ -249,19 +252,19 @@ function buildSelector(result) {
 	var html = [],
 		prop,
 		tabIndex = 1;
-	if (options !== null && options.length) {
-		for (prop in options) {
-			if (options.hasOwnProperty(prop)) {
+	if ( options !== null && options.length ) {
+		for ( prop in options ) {
+			if ( options.hasOwnProperty(prop) ) {
 				var content = "<a data-t3pid=\"" + result.pid + "\" data-t3lang=\"" + result.lang + "\" data-t3cobj=\"" + result.cObj + "\" data-option=\"" + options[prop].uid + "\" data-option-state=\"" + (options[prop].active ? 1 : 0) + "\" class=\"ecom-configurator-select-package-option-wrap\" tabindex=\"" + tabIndex + "\">";
-				if (result.showPriceLabels) {
+				if ( result.pricingEnabled ) {
 					content += "<span class=\"ecom-configurator-select-package-option-price\">" + options[prop].price + "</span>";
 				}
-				if (options[prop].hint) {
+				if ( options[prop].hint ) {
 					content += "<div class=\"ecom-configurator-select-package-option-info-wrapper\"><span class=\"ecom-configurator-select-package-option-info\">More Info</span></div>";
 				}
 				content += "<div class=\"ecom-configurator-checkbox " + (options[prop].active ? '' : 'un') + "checked\"><span class=\"ecom-configurator-option-checkbox-image\"></span></div>";
 				content += "<span class=\"ecom-configurator-select-package-option option\">" + options[prop].title + "</span></a>";
-				/*if (options[prop].hint) {
+				/*if ( options[prop].hint ) {
 					content += "<span class=\"ecom-configurator-select-package-option-info-hint-box\"><span class=\"close-popover-x\" title=\"Close Info Box\">×</span>###CONTENT###</span>";
 				}*/
 				content += "<div class=\"clearfix\"></div>";
@@ -273,7 +276,7 @@ function buildSelector(result) {
 		$('#ecom-configurator-reset-configuration-button').show();
 		txEcompcSetOption(); // Re-assign Click-function()
 		addInfoTrigger();
-	} else if (result.showResult) {
+	} else if ( result.showResult ) {
 		$('#ecom-configurator-select-options-ajax-update').html('').hide();
 		$('#ecom-configurator-reset-configuration-button').hide();
 	}
@@ -281,17 +284,17 @@ function buildSelector(result) {
 
 function getConfigurationCode(config) {
 	var spans = '';
-	for (var i=0; i<config.length; i++) {
+	for ( var i=0; i<config.length; i++ ) {
 		var addClass = ' class="ecompc-syntax-help"',
 			addTitle = ' title="' + config[i].pkg + '"',
 			prependInnerHTML = '';
-		if (!config[i].pkg) {
+		if ( !config[i].pkg ) {
 			addClass = '';
 			addTitle = '';
 		}
 		/** Variant with lock icon for fixed packages (!visibleInFrontend) */
 /*
-		if (config[i][2]) {
+		if ( config[i][2] ) {
 			prependInnerHTML = '<i class="icon-lock"></i>';
 		}
 */
@@ -303,8 +306,8 @@ function getConfigurationCode(config) {
 
 function getConfigurationSummary(config) {
 	var table = '<table>';
-	for (var i=0; i<config.length; i++) {
-		if (!config[i].pkg) {
+	for ( var i=0; i<config.length; i++ ) {
+		if ( !config[i].pkg ) {
 			continue;
 		}
 		table += '<tr><td>' + config[i].pkg + '</td><td>' + config[i][0] + '</td></tr>';

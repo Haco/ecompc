@@ -25,8 +25,8 @@
 	// Hide hint-box on click and ESC key
 	$('#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box .close-popover-x, #ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box, body').on('click keyup', function(e) {
 		// If the keyup event is triggered
-		if (e.type == 'keyup') {
-			if (e.keyCode == 27) {
+		if ( e.type == 'keyup' ) {
+			if ( e.keyCode == 27 ) {
 				hideHintBox(hintBoxSelector);
 			}
 		// If click event is triggered
@@ -46,7 +46,7 @@
 		$summaryTable.stop().slideToggle('slow').toggleClass('active');
 
 		// Scroll in position if the table is not currently hidden
-		if ($summaryTable.hasClass('active')) {
+		if ( $summaryTable.hasClass('active') ) {
 			$('html, body').stop().animate({
 				scrollTop: $summaryTable.offset().top
 			}, 'slow');
@@ -63,7 +63,7 @@
 		tooltipClass: "ecompc-custom-tooltip-styling",
 		track: true
 	});
-	if (showResult === null) {
+	if ( showResult === null ) {
 		$('#ecom-configurator-result-canvas').hide();
 		$('#ecom-configurator-select-options-ajax-update').show();
 		$('#ecom-configurator-reset-configuration-button').show();

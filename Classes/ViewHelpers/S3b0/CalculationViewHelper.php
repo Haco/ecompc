@@ -46,6 +46,10 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
  */
 class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
+	/**
+	 * Point before dashes setup
+	 * @var array $operatorsWithPrecedenceValue
+	 */
 	protected $operatorsWithPrecedenceValue = array(
 		'+' => 10,
 		'-' => 10,
@@ -55,10 +59,12 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	);
 
 	/**
+	 * Function render
 	 *
 	 * @param string $expressionString The math expression to evaluate
 	 * @param boolean $output should the result be returned?
 	 * @param string $aliasToCreate name of new alias to be set with result
+	 *
 	 * @return string
 	 */
 	public function render($expressionString, $output = TRUE, $aliasToCreate = NULL) {
@@ -74,11 +80,13 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	}
 
 	/**
-	*	later on responsible for presplitting the array by parenthesis to have nested calculations
-	*	@param array $splitArray The array with splitted formula
-	*	@param integer $nestingLevel used for the recursion of nested parenthesis
-	*	@return array multidimensional array with numbers, operators and subarrays (nested)
-	*/
+	 * Later on responsible for pre-splitting the array by parenthesis to have nested calculations
+	 *
+	 * @param array $splitArray The array with splitted formula
+	 * @param integer $nestingLevel used for the recursion of nested parenthesis
+	 *
+	 * @return array multidimensional array with numbers, operators and sub-arrays (nested)
+	 */
 	function buildExpressionArray($splitArray, $nestingLevel = 0){
 		$expressionArray = array();
 
@@ -98,10 +106,12 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	}
 
 	/**
-	*	will try to evaluate the calculation and return a final value
-	*	@param array $expressionArray array to be calculated
+	 * Will try to evaluate the calculation and return a final value
+	 *
+	 * @param array $expressionArray array to be calculated
+	 *
 	 * @return mixed
-	*/
+	 */
 	function evaluateExpressionArray($expressionArray = array()){
 		$subExpressionsEliminated = FALSE;
 		// eliminate sub expressions, this is recursive, so after first run, all sub expressions should be eliminated
@@ -167,11 +177,13 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	}
 
 	/**
-	* find next valid key of (calculation) array (not easy as values get deleted)
-	* @param array $array the array to find a next key
-	* @param integer $keyFrom the key for which you want the next
-	* @return integer
-	*/
+	 * Find next valid key of (calculation) array (not easy as values get deleted)
+	 *
+	 * @param array $array the array to find a next key
+	 * @param integer $keyFrom the key for which you want the next
+	 *
+	 * @return integer
+	 */
 	function findNextValidKey(array $array, $keyFrom){
 		$i = 0;
 		$key = NULL;
@@ -184,7 +196,6 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 
 		return $key;
 	}
-
 
 }
 

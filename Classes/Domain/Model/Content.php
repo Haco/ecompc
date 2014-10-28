@@ -175,7 +175,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $ecompcPackages
 	 */
 	public function getEcompcPackages() {
-		return \S3b0\Ecompc\Utility\ObjectStorageSortingUtility::sortBySorting($this->ecompcPackages);
+		return \S3b0\Ecompc\Utility\ObjectStorageSortingUtility::sortByProperty('sorting', $this->ecompcPackages);
 	}
 
 	/**

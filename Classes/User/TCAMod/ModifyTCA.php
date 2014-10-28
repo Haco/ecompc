@@ -470,7 +470,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return void
 	 */
-	public function labelUserFuncTxEcompcDomainModelOption(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function labelUserFuncTxEcompcDomainModelOption(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		$PA['title'] = $this->getLabelForTableOption($PA['row']);
 	}
 

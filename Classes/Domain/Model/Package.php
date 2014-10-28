@@ -367,7 +367,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 			$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		}
 
-		return \S3b0\Ecompc\Utility\ObjectStorageSortingUtility::sortBySorting($this->options);
+		return \S3b0\Ecompc\Utility\ObjectStorageSortingUtility::sortByProperty('sorting', $this->options);
 	}
 
 	/**

@@ -469,7 +469,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @return array
 	 */
-	public function getSummaryForJSONView(array $selectedOptions = array(), $includePricing = FALSE, \S3b0\Ecompc\Domain\Model\Currency $currency = NULL, $configurationPrice = 0.0) {
+	public function getSummaryForJSONView(array $selectedOptions = array(), $includePricing = FALSE, \S3b0\Ecompc\Domain\Model\Currency $currency = NULL, array $pricing = array()) {
 		$returnArray = array(
 			'uid' => $this->getUid(),
 			'active' => in_array($this->getUid(), $selectedOptions),
@@ -481,12 +481,19 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		);
 
 		if ( $includePricing ) {
+			$unitPrice = $this->getPricing($currency, $pricing[2]);
+			$priceDifference = $this->isActive() ? 0.0 : ($unitPrice - ($pricing[3] - $pricing[2]));
 			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
 			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
 			$returnArray['price'] = $currencyVH->render(
 				$currency,
-				$this->getPricing($currency, $configurationPrice)
-			);
+				$priceDifference
+			) . ' ( ' . $currencyVH->render(
+				$currency,
+				$unitPrice,
+				2,
+				FALSE
+			) . ($this->getConfigurationPackage()->isPercentPricing() ? ' <span style="font-family: \'Lucida Sans Unicode\', Arial, sans-serif">≙</span> ' . ($this->getPricePercental() * 100) . '%' : '') . ' )';
 		}
 
 		return $returnArray;

@@ -19,6 +19,6 @@ class BackendSessionHandler extends \S3b0\Ecompc\Domain\Session\SessionHandler {
 	/**
 	 * @var string
 	 */
-	protected $mode = "BE";
+	protected $mode = 'BE';
 
 }

@@ -16,32 +16,38 @@ namespace S3b0\Ecompc\Utility;
 class ObjectStorageSortingUtility {
 
 	/**
+	 * Sort ObjectStorage objects by any property
+	 *
+	 * @param string                                       $property
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $objectStorage
 	 * @param boolean                                      $returnArray
 	 * @param boolean                                      $reverseOrderings
 	 *
 	 * @return array|\TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
-	public static function sortBySorting(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $objectStorage, $returnArray = FALSE, $reverseOrderings = FALSE) {
-		/**
-		 * Check if there are more than one objects in storage to sort
-		 * If so, check if they provide the property 'sorting'
-		 * If check fails immediately return given ObjectStorage
-		 */
-		if ( !$objectStorage->count() > 1 || !$objectStorage->toArray()[0]->_hasProperty('sorting') ) {
-			return $objectStorage;
-		}
-
+	public static function sortByProperty($property, \TYPO3\CMS\Extbase\Persistence\ObjectStorage $objectStorage, $returnArray = FALSE, $reverseOrderings = FALSE) {
 		/**
 		 * Transform ObjectStorage to array
 		 *
 		 * @var array $objectStorageToArray
 		 */
 		$objectStorageToArray = $objectStorage->toArray();
+
+		/**
+		 * Check if there are more than one objects in storage to sort
+		 * If so, check if they provide the property 'sorting'
+		 * If check fails immediately return given ObjectStorage
+		 */
+		if ( !$objectStorage->count() > 1 || !method_exists(new \S3b0\Ecompc\Utility\ObjectStorageSortingUtility(), 'usortBy' . \TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToUpperCamelCase($property)) ) {
+			return $objectStorage;
+		} elseif ( !$objectStorageToArray[0] instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject ) {
+			return $objectStorage;
+		}
+
 		/**
 		 * Sort the array
 		 */
-		usort($objectStorageToArray, 'S3b0\Ecompc\Utility\ObjectStorageSortingUtility::usortBySorting');
+		usort($objectStorageToArray, 'S3b0\Ecompc\Utility\ObjectStorageSortingUtility::usortBy' . \TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToUpperCamelCase($property));
 		/**
 		 * Reverse array before return if reverseOrderings-flag is set
 		 */
