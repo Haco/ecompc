@@ -91,7 +91,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		 * selcps -> indicator for active packages used at JS calculation of progress
 		 */
 		$variablesToRender = array(
-			'pid', 'lang', 'cObj', 'currentPackage', 'packages', 'options', 'hint', 'progress', 'showResult', 'configurationData', 'pricingEnabled', 'pricing'
+			'controller', 'pid', 'lang', 'cObj', 'currentPackage', 'packages', 'options', 'hint', 'progress', 'showResult', 'configurationData', 'pricingEnabled', 'pricing'
 		);
 		if ( \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment() ) {
 			$variablesToRender[] = 'debug';
@@ -99,6 +99,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		$this->view->setVariablesToRender($variablesToRender);
 		// parent::initializeView();
 		$this->view->assignMultiple(array(
+			'controller' => $this->request->getControllerName(),
 			'pid' => $this->cObj->getPid(),
 			'cObj' => $this->cObj->_getProperty('_localizedUid'),
 			'lang' => (int) $GLOBALS['TSFE']->sys_language_content,

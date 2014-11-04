@@ -46,9 +46,23 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	 */
 	public function indexAction(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		parent::indexAction($package);
+		if ( $this->progress === 1 ) {
+			$this->currentPackage = $package;
+			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
+				$configurationData = self::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this);
+				$this->view->assign('configurationLabel', $configurationData[0]);
+				$this->view->assign('configurationData', array(
+					$configurationData[1],
+					$configurationData[2]
+				));
+			}
+		}
 		if ( $this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 			$this->currentPackage->setCurrent(TRUE);
-			$this->view->assign('options', self::getPackageOptions($this->currentPackage, $this));
+			$this->view->assignMultiple(array(
+				'options' => self::getPackageOptions($this->currentPackage, $this),
+				'currentPackage' => $this->currentPackage
+			));
 		}
 	}
 
@@ -83,14 +97,15 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	public static function getSelectableOptions(\S3b0\Ecompc\Domain\Model\Package $package, array &$selectableOptions, \S3b0\Ecompc\Controller\StandardController $controller) {
 		// Parse configurations
 		$options = array();
-		if ( $controller->selectableConfigurations ) {
-			foreach ( $controller->selectableConfigurations as $configuration ) {
-				if ( $configurationOptions = $configuration->getOptions() ) {
-					/** @var \S3b0\Ecompc\Domain\Model\Option $configurationOption */
-					foreach ( $configurationOptions as $configurationOption ) {
-						if ( $configurationOption->getConfigurationPackage() === $package )
-							$options[$configurationOption->getSorting()] = $configurationOption;
-					}
+		$packageOptions = $controller->optionRepository->findByConfigurationPackage($package);
+
+		if ( $selectableConfigurations = self::getSelectableConfigurations($controller) ) {
+			/** @var \S3b0\Ecompc\Domain\Model\Configuration $configuration */
+			foreach ( $selectableConfigurations as $configuration ) {
+				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+				foreach ( $packageOptions as $option ) {
+					if ( !in_array($option, $options) && $configuration->getOptions()->contains($option) )
+						$options[$option->getSorting()] = $option;
 				}
 			}
 			$options = array_unique($options);
@@ -109,18 +124,49 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 		}
 	}
 
-	public static function getConfigurationData(\S3b0\Ecompc\Controller\StandardController $controller, \S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
+	/**
+	 * function getConfigurationData
+	 *
+	 * @param  \S3b0\Ecompc\Domain\Model\Configuration    $configuration
+	 * @param  \S3b0\Ecompc\Controller\StandardController $controller
+	 *
+	 * @return string
+	 */
+	public static function getConfigurationData(\S3b0\Ecompc\Domain\Model\Configuration $configuration, \S3b0\Ecompc\Controller\StandardController $controller) {
+		$options = new \ArrayObject();
 
+		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+		foreach ( $controller->cObj->getEcompcPackagesFE() as $package ) {
+			/** NO multipleSelect allowed for dynamic configurators, accordingly skip 'em */
+			if ( $package->isMultipleSelect() ) {
+				continue;
+			}
+			if ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
+				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+				$options->append(array(
+					$option->getFrontendLabel(),
+					$option->getConfigurationCodeSegment(),
+					'pkg' => $option->getConfigurationPackage()->getFrontendLabel()
+				));
+			}
+		}
+
+		return array(
+			$configuration->getFrontendLabel(),
+			$options,
+			$configuration->getSku()
+		);
 	}
 
 	/**
 	 * Fetching selectable configurations
 	 *
+	 * @param \S3b0\Ecompc\Controller\StandardController                    $controller
 	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|array|null $current actual setting
-	 * @return void
+	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	public function setSelectableConfigurations(&$current = NULL) {
-		$current = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options']);
+	public function getSelectableConfigurations(\S3b0\Ecompc\Controller\StandardController $controller, &$current = NULL) {
+		return $current ?: $controller->configurationRepository->findByTtContentUidApplyingSelectedOptions($controller->cObj->getUid(), (array) $controller->selectedConfiguration['options']);
 	}
 
 	/**

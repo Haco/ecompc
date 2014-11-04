@@ -27,12 +27,12 @@ namespace S3b0\Ecompc\Controller;
  ***************************************************************/
 
 /**
- * DynamicConfiguratorAjaxRequestController
+ * SkuConfiguratorAjaxRequestController
  *
  * @package S3b0
  * @subpackage Ecompc
  */
-class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxRequestController {
+class SkuConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxRequestController {
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
@@ -46,7 +46,7 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$this->view->assignMultiple(array(
-					'configurationData' => \S3b0\Ecompc\Controller\DynamicConfiguratorController::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this), // Get configuration code
+					'configurationData' => \S3b0\Ecompc\Controller\SkuConfiguratorController::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this), // Get configuration code
 					'showResult' => TRUE
 				));
 			}

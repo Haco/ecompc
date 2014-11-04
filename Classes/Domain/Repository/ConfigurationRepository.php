@@ -1,7 +1,6 @@
 <?php
 namespace S3b0\Ecompc\Domain\Repository;
 
-
 /***************************************************************
  *
  *  Copyright notice
@@ -83,10 +82,18 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 			return NULL;
 
 		$query = $this->createQuery();
-		return $query->matching($query->logicalAnd(
-			$query->equals('tt_content_uid', $uid),
-			$query->in('options', $selectedOptions)
-		))->execute();
+		if ( count($selectedOptions) ) {
+			$logicalAndConstraint = array(
+				$query->equals('tt_content_uid', $uid)
+			);
+			foreach ( $selectedOptions as $optionUid ) {
+				$logicalAndConstraint[] = $query->contains('options', $optionUid);
+			}
+
+			return $query->matching($query->logicalAnd($logicalAndConstraint))->execute();
+		} else {
+			return $this->findByTtContentUid($uid);
+		}
 	}
 
 }

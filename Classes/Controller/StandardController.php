@@ -181,6 +181,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function initializeView() {
 		$this->view->assignMultiple(array(
+			'controller' => $this->request->getControllerName(),
 			'pid' => $GLOBALS['TSFE']->id,
 			'cObj' => $this->cObj->_getProperty('_localizedUid'),
 			'sys_language_uid' => (int) $GLOBALS['TSFE']->sys_language_content
