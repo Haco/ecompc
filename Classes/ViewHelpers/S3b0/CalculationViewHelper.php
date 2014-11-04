@@ -1,7 +1,7 @@
 <?php
 namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
 
-/*                                                                        *
+/**                                                                       *
  * This script belongs to the FLOW3 package "Fluid".                      *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *

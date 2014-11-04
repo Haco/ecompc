@@ -21,8 +21,6 @@ plugin.tx_ecompc {
 		requestForm {
 			# cat=plugin.tx_ecompc//a1; type=int; label=Form pid:Page uid for request form
 			pid = 0
-			# cat=plugin.tx_ecompc//a2; type=string; label=Additional Params:JSON Array with placeholders %x$s [f1:code|f2:name|f3:logUid]
-			additionalParams = {"tx_powermail_pi1":{"field":{"1":"%1$s","2":"%2$s"}},"txecmlog":"%3$u"}
 			# cat=plugin.tx_ecompc//a3; type=string; label=Additional Params Query String:Add Query String [f1:code|f2:name|f3:logUid]
 			additionalParamsQueryString = &tx_powermail_pi1[field][1]=%1$s&tx_powermail_pi1[field][2]=%2$s&txecmlog=%3$u
 			# cat=plugin.tx_ecompc//a4; type=options[,_self,_top,_blank]; label=Target

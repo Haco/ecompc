@@ -26,37 +26,27 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class CObjUidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class GetFileNameViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-	 */
-	protected $configurationManager;
-
-	/**
-	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface An instance of the Configuration Manager
-	 * @return void
-	 */
-	public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager) {
-		$this->configurationManager = $configurationManager;
-	}
-	/**
-	 * Set uid of the content element
+	 * Get file names from TYPO3 declarations á EXT:myext/...
 	 *
-	 * @return int $uid The uid of the content element
+	 * @param string  $path
+	 * @param boolean $absolute
+	 * @return string
 	 */
-	public function render() {
-		// fallback
-		$uid = uniqid();
-		if ( $this->templateVariableContainer->exists('contentObjectData') ) {
-			// this works for templates but not for partials
-			$contentObjectData = $this->templateVariableContainer->get('contentObjectData');
-			$uid = $contentObjectData['uid'];
-		} else {
-			// this should work in every circumstance
-			$uid = $this->configurationManager->getContentObject()->data['uid'];
+	public function render($path = '', $absolute = TRUE) {
+		$uri = '';
+		if ( $absolute ) {
+			$uri = $this->controllerContext->getRequest()->getBaseURI();
 		}
-		return $uid;
+		if ( $path === '' ) {
+			$uri .= $GLOBALS['TSFE']->tmpl->getFileName($this->renderChildren());
+		} else {
+			$uri .= $GLOBALS['TSFE']->tmpl->getFileName($path);
+		}
+
+		return $uri;
 	}
 
 }

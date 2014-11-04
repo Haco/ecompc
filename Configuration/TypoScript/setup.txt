@@ -1,3 +1,10 @@
+lib.tx_ecompc.resolverPath = TEXT
+lib.tx_ecompc.resolverPath {
+	typolink.parameter = 14
+	typolink.additionalParams = &log={GP : log}
+	typolink.additionalParams.stdWrap.insertData = 1
+}
+
 ############################################
 # Map 3rd party table fields on properties #
 ############################################
@@ -89,6 +96,11 @@ plugin.tx_ecompc {
 		# rewrittenPropertyMapper = 1
 	}
 	settings {
+		js {
+			app = EXT:ecompc/Resources/Public/JavaScripts/m.app.js
+			dynConfig = EXT:ecompc/Resources/Public/JavaScripts/m.dcajx.js
+			skuConfig = EXT:ecompc/Resources/Public/JavaScripts/m.scajx.js
+		}
 		switchableControllerActions = Standard->index;Standard->reset;Standard->selectRegion;Standard->request
 		pricingEnabled = {$plugin.tx_ecompc.constants.pricingEnabled}
 		viewHeader = {$plugin.tx_ecompc.constants.viewHeader}
@@ -96,7 +108,6 @@ plugin.tx_ecompc {
 		resolverUserGroup = {$plugin.tx_ecompc.constants.resolverUserGroup}
 		requestForm {
 			pid = {$plugin.tx_ecompc.constants.requestForm.pid}
-			additionalParams = {$plugin.tx_ecompc.constants.requestForm.additionalParams}
 			additionalParamsQueryString = {$plugin.tx_ecompc.constants.requestForm.additionalParamsQueryString}
 			target = {$plugin.tx_ecompc.constants.requestForm.target}
 		}
@@ -111,23 +122,19 @@ plugin.tx_ecompc {
 ##############################
 [globalVar = TSFE:id = {$plugin.tx_ecompc.constants.piPages}]
 page.includeCSSLibs {
-	ecompc = EXT:ecompc/Resources/Public/Stylesheets/app.min.css
+	ecompc = EXT:ecompc/Resources/Public/Stylesheets/m.app.css
 	ecompc.import = 1
-}
-
-page.includeJSFooterlibs {
-	ecompcAppJS = EXT:ecompc/Resources/Public/JavaScripts/app.min.js
-	ecompcAjaxJS = EXT:ecompc/Resources/Public/JavaScripts/ajx.min.js
 }
 [global]
 # Force not minified files to load into Development context
 [applicationContext = Development]
 page.includeCSSLibs {
-	ecompc = EXT:ecompc/Resources/Public/Stylesheets/app.css
+	ecompc = EXT:ecompc/Resources/Public/Stylesheets/Application.css
 }
-page.includeJSFooterlibs {
-	ecompcAppJS = EXT:ecompc/Resources/Public/JavaScripts/app.js
-	ecompcAjaxJS = EXT:ecompc/Resources/Public/JavaScripts/ajax.js
+plugin.tx_ecompc.settings.js {
+	app = EXT:ecompc/Resources/Public/JavaScripts/Application.js
+	dynConfig = EXT:ecompc/Resources/Public/JavaScripts/DynConfAjax.js
+	skuConfig = EXT:ecompc/Resources/Public/JavaScripts/SkuConfAjax.js
 }
 [global]
 

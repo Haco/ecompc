@@ -26,37 +26,24 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class CObjUidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SubstringViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-	 */
-	protected $configurationManager;
-
-	/**
-	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface An instance of the Configuration Manager
-	 * @return void
-	 */
-	public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager) {
-		$this->configurationManager = $configurationManager;
-	}
-	/**
-	 * Set uid of the content element
+	 * Get substr()
 	 *
-	 * @return int $uid The uid of the content element
+	 * @param  string  $string
+	 * @param  integer $startAt
+	 * @param  integer $endAt
+	 * @return string
 	 */
-	public function render() {
-		// fallback
-		$uid = uniqid();
-		if ( $this->templateVariableContainer->exists('contentObjectData') ) {
-			// this works for templates but not for partials
-			$contentObjectData = $this->templateVariableContainer->get('contentObjectData');
-			$uid = $contentObjectData['uid'];
+	public function render($string = '', $startAt = 0, $endAt = NULL) {
+		$string = $string ?: $this->renderChildren();
+
+		if ( $endAt ) {
+			return $GLOBALS['TSFE']->csConvObj->substr($GLOBALS['TSFE']->renderCharset, $string, $startAt, $endAt);
 		} else {
-			// this should work in every circumstance
-			$uid = $this->configurationManager->getContentObject()->data['uid'];
+			return $GLOBALS['TSFE']->csConvObj->substr($GLOBALS['TSFE']->renderCharset, $string, $startAt);
 		}
-		return $uid;
 	}
 
 }

@@ -1,7 +1,6 @@
 <?php
 namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
 
-
 /***************************************************************
  *
  *  Copyright notice

@@ -53,16 +53,22 @@
 		<h3 class="ecom-configurator-result-label no-margin"><f:if condition="{configurationLabel}">{configurationLabel}</f:if></h3>
 		<h2>
 			<f:translate id="index.your_configuration_code" /><br />
-			<small class="ecom-configurator-result-code"><f:render partial="Misc/ConfigurationCode" arguments="{result : configurationData}" /></small>
+			<small class="ecom-configurator-result-code"><f:render partial="Misc/ConfigurationCode" arguments="{result : configurationData, type : '{controller -> f:s3b0.substring(endAt:3)}'}" /></small>
 		</h2>
 		<f:link.action action="reset" noCacheHash="1" class="action-button-default no-arrow">Reconfigure &nbsp; <i class="icon-undo"></i></f:link.action>
 		<a href="#" class="action-button-default ecom-configurator-result-review-config dropdown" title="{f:translate(id : 'index.summary_button_title')}"><i class="icon-list"></i> <f:translate id="index.summary_button" /></a>
 		<f:link.action action="request" noCacheHash="1" additionalParams="{L : sys_language_uid}" class="action-button-default" target="{settings.requestForm.target}"><i class="icon-envelope-alt"></i> <f:translate id="index.request_your_device" /></f:link.action>
 	</div>
 	<div id="ecom-configurator-summary-table">
-		<f:render partial="Misc/ConfigurationSummary" arguments="{result : configurationData}" />
+		<f:render partial="Misc/ConfigurationSummary" arguments="{result : configurationData, type : '{controller -> f:s3b0.substring(endAt:3)}'}" />
 	</div>
 </div>
 
 
 <script language="JavaScript" type="text/javascript">var showResult = {f:if(condition : configurationData, then : 'true', else : 'null')};</script>
+<script language="JavaScript" type="text/javascript">
+	var js = document.createElement("script");
+	js.type = "text/javascript";
+	js.src = "{settings.js.app -> f:s3b0.getFileName()}";
+	document.body.appendChild(js);
+</script>
