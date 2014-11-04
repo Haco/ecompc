@@ -22,7 +22,7 @@ return array(
 			'fe_group' => 'fe_group'
 		),
 		'searchFields' => 'label, iso_4217, symbol, region, local_lang, exchange, flag,',
-		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('static_info_tables') . 'Resources/Public/Images/Icons/icon_static_currencies.gif'
+		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('static_info_tables') ? \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('static_info_tables') . 'Resources/Public/Images/Icons/icon_static_currencies.gif' : ''
 	),
 	'interface' => array(
 		'showRecordFieldList' => 'hidden, label, iso_4217, symbol, settings, region, local_lang, exchange, flag',

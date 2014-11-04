@@ -50,7 +50,7 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 		if ( $package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 			$this->currentPackage = $package;
 		}
-		if ( $this->process === 1 ) {
+		if ( $this->progress === 1 ) {
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$this->view->assignMultiple(array(
@@ -71,7 +71,7 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 
 		$this->view->assignMultiple(array(
 			'packages' => $packages,
-			'process' => $this->process
+			'progress' => $this->progress
 		));
 
 		if ( $this->isPricingEnabled() ) {

@@ -48,10 +48,10 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 	 */
 	public function indexAction(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		parent::indexAction($package);
-		if ( $this->process === 1 ) {
+		if ( $this->progress === 1 ) {
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
-				$configurationData = self::getConfigurationData($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE);
+				$configurationData = self::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this);
 				$this->view->assign('configurationLabel', $configurationData[0]);
 				$this->view->assign('configurationData', $configurationData[1]);
 			}
@@ -109,16 +109,14 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 	}
 
 	/**
-	 * set configuration code
+	 * function getConfigurationData
 	 *
-	 * @param  \S3b0\Ecompc\Controller\StandardController $controller
 	 * @param  \S3b0\Ecompc\Domain\Model\Configuration    $configuration
-	 * @param  boolean                                    $returnArray
-	 * @param  integer                                    $loggerUid
+	 * @param  \S3b0\Ecompc\Controller\StandardController $controller
 	 *
 	 * @return string
 	 */
-	public static function getConfigurationData(\S3b0\Ecompc\Controller\StandardController $controller, \S3b0\Ecompc\Domain\Model\Configuration $configuration, $returnArray = FALSE, $loggerUid = 0) {
+	public static function getConfigurationData(\S3b0\Ecompc\Domain\Model\Configuration $configuration, \S3b0\Ecompc\Controller\StandardController $controller) {
 		$configurationLabel = $configuration->getFrontendLabel();
 		$configurationCode = new \ArrayObject();
 		if ( $configuration->hasConfigurationCodePrefix() ) {

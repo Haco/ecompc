@@ -48,9 +48,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $currentPackage = NULL;
 
 	/**
-	 * @var float
+	 * @var float Progress indicator for progress bar and display
 	 */
-	protected $process = 0.0;
+	protected $progress = 0.0;
 
 	/**
 	 * @var array
@@ -58,9 +58,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $selectedConfiguration = array();
 
 	/**
-	 * @var array
+	 * @var array (base price, configuration price, config price BEFORE breakpoint, config price AT breakpoint, config price AFTER breakpoint)
 	 */
-	protected $selectedConfigurationPrice = array(0.0, 0.0);
+	protected $selectedConfigurationPrice = array(0.0, 0.0, 0.0, 0.0, 0.0);
 
 	/**
 	 * @var string
@@ -261,7 +261,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->view->assignMultiple(array(
 			'instructions' => $this->cObj->getBodytext(),
 			'packages' => $packages,
-			'process' => $this->process
+			'progress' => $this->progress
 		));
 	}
 
@@ -364,14 +364,23 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 		$persistenceManager->add($logger);
 		$persistenceManager->persistAll();
-		$result = $this->getConfigurationCode($this, $this->cObj->getEcompcConfigurations()->toArray()[0], TRUE, $logger->getUid());
-		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
+		/**
+		 * @var array $data
+		 * @todo fit to new return value for writing correct values into db!
+		 */
+		$data = $this->getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this);
+#		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
+		$code = '';
+		foreach ( $data[1] as $codeSegmentData ) {
+			$code .= $codeSegmentData[1];
+		}
+		$addParams = sprintf($this->settings['requestForm']['additionalParamsQueryString'], $code, $data[0], $logger->getUid());
 
 		// Build link & redirect
 		$linkConfiguration = array(
 			'returnLast' => 'url',
 			'parameter' => $this->settings['requestForm']['pid'],
-			'additionalParams' => $result[2] . '&L=' . $GLOBALS['TSFE']->sys_language_content,
+			'additionalParams' => $addParams . '&L=' . $GLOBALS['TSFE']->sys_language_content,
 			'useCacheHash' => FALSE,
 			'addQueryString' => TRUE,
 			'addQueryString.' => array(
@@ -673,8 +682,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			if ( !$isActive ) {
 				$package->setActive(TRUE);
 			}
-			// Get process state update (ratio of active to visible packages) => float from 0 to 1 (*100 = %)
-			$this->process = ( count($this->selectedConfiguration['packages']) - $invisible ) / ( $packages->count() - $invisible );
+			// Get progress state update (ratio of active to visible packages) => float from 0 to 1 (*100 = %)
+			$this->progress = ( count($this->selectedConfiguration['packages']) - $invisible ) / ( $packages->count() - $invisible );
 		}
 
 		return $return ? $packages : NULL;
