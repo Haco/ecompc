@@ -49,12 +49,10 @@ class ResolverController extends \S3b0\Ecompc\Controller\StandardController {
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
 	public function initializeAction() {
-		if ( $this->request->getControllerActionName() !== 'show' ) {
-			if ( CoreUtility\GeneralUtility::_GP('log') && CoreUtility\MathUtility::canBeInterpretedAsInteger(CoreUtility\GeneralUtility::_GP('log')) && ($log = $this->loggerRepository->findByUid(CoreUtility\MathUtility::convertToPositiveInteger(CoreUtility\GeneralUtility::_GP('log')))) ) {
-				$this->redirectToPage(NULL, array(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored('Tx' . $this->request->getControllerExtensionName() . $this->request->getPluginName()) => array('action' => 'show', 'logger' => $log)), FALSE, FALSE);
-			} elseif ( CoreUtility\GeneralUtility::_GP('log') ) {
-				$this->throwStatus(404);
-			}
+		if ( CoreUtility\GeneralUtility::_GP('log') && CoreUtility\MathUtility::canBeInterpretedAsInteger(CoreUtility\GeneralUtility::_GP('log')) && ($log = $this->loggerRepository->findByUid(CoreUtility\MathUtility::convertToPositiveInteger(CoreUtility\GeneralUtility::_GP('log')))) ) {
+			$this->redirectToPage(NULL, array(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored('Tx' . $this->request->getControllerExtensionName() . $this->request->getPluginName()) => array('action' => 'show', 'logger' => $log)), FALSE, FALSE);
+		} elseif ( CoreUtility\GeneralUtility::_GP('log') ) {
+			$this->throwStatus(404);
 		}
 	}
 
@@ -90,7 +88,11 @@ class ResolverController extends \S3b0\Ecompc\Controller\StandardController {
 	 * @param \S3b0\Ecompc\Domain\Model\Logger $logger
 	 * @return void
 	 */
-	public function showAction(\S3b0\Ecompc\Domain\Model\Logger $logger) {
+	public function showAction(\S3b0\Ecompc\Domain\Model\Logger $logger = NULL) {
+		if ( !$logger instanceof \S3b0\Ecompc\Domain\Model\Logger ) {
+			$this->throwStatus(404, 'Log not found!');
+		}
+		/** @var \S3b0\Ecompc\Domain\Model\Configuration $configuration */
 		$configuration = $logger->getConfiguration();
 		$configurationArray = $logger->getSelectedConfiguration();
 		if ( $configuration->getOptions()->count() ) {

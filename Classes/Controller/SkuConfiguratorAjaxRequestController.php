@@ -45,8 +45,9 @@ class SkuConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxR
 		if ( $this->progress === 1 ) {
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
+				$matchingConfiguration = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options'])->getFirst();
 				$this->view->assignMultiple(array(
-					'configurationData' => \S3b0\Ecompc\Controller\SkuConfiguratorController::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this), // Get configuration code
+					'configurationData' => \S3b0\Ecompc\Controller\SkuConfiguratorController::getConfigurationData($matchingConfiguration, $this), // Get configuration code
 					'showResult' => TRUE
 				));
 			}
@@ -73,17 +74,19 @@ class SkuConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxR
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 * @param boolean                           $availableOnly
+	 * @param boolean                           $includePricing
 	 *
 	 * @return array
 	 */
-	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
+	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package, $availableOnly = FALSE, $includePricing = TRUE) {
 		$return = array();
 		$configurationArray = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: array(
 			'options' => array(),
 			'packages' => array()
 		);
 		$pricing = $this->getConfigurationPrice($package);
-		if ( $options = \S3b0\Ecompc\Controller\DynamicConfiguratorController::getPackageOptions($package, $this) ) {
+		if ( $options = \S3b0\Ecompc\Controller\SkuConfiguratorController::getPackageOptions($package, $this, $availableOnly, $includePricing) ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 			foreach ( $options as $option ) {
 				if ( $option->getConfigurationPackage()->isPercentPricing() ) {
@@ -95,6 +98,30 @@ class SkuConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxR
 		}
 
 		return $return;
+	}
+
+	/**
+	 * autoSetOptions
+	 *
+	 * @param array $configuration
+	 * @return void
+	 */
+	protected function autoSetOptions(array &$configuration) {
+		if ( $packages = $this->cObj->getEcompcPackagesFE() ) {
+			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+			foreach ( $packages as $package ) {
+				if ( in_array($package->getUid(), $configuration['packages']) )
+					continue;
+
+				if ( $packageOptions = self::getPackageOptions($package, TRUE, FALSE) ) {
+					if ( count($packageOptions) === 1 ) {
+						// Add option to NEW package
+						$configuration['options'][$packageOptions[0]['sorting']] = $packageOptions[0]['uid'];
+						$configuration['packages'][$package->getUid()] = $package->getUid();
+					}
+				}
+			}
+		}
 	}
 
 }

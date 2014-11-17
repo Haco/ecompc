@@ -49,7 +49,8 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 		if ( $this->progress === 1 ) {
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
-				$configurationData = self::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this);
+				$matchingConfiguration = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options'])->getFirst();
+				$configurationData = self::getConfigurationData($matchingConfiguration, $this);
 				$this->view->assign('configurationLabel', $configurationData[0]);
 				$this->view->assign('configurationData', array(
 					$configurationData[1],
@@ -69,18 +70,20 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Package          $package
 	 * @param \S3b0\Ecompc\Controller\StandardController $controller
+	 * @param boolean                                    $availableOnly
+	 * @param boolean                                    $includePricing
 	 *
 	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array|null
 	 */
-	public static function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package, \S3b0\Ecompc\Controller\StandardController $controller) {
+	public static function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package, \S3b0\Ecompc\Controller\StandardController $controller, $availableOnly = FALSE, $includePricing = TRUE) {
 		$packageOptions = array();
 		// Fetch selectable options for current package
-		self::getSelectableOptions($package, $packageOptions, $controller);
+		self::getSelectableOptions($package, $packageOptions, $controller, $availableOnly);
 		if ( count($packageOptions) === 0 )
 			return NULL;
 
 		// Include pricing for enabled users!
-		if ( $controller->pricingEnabled ) {
+		if ( $includePricing && $controller->pricingEnabled ) {
 			$controller->initializeOptions($package);
 		}
 
@@ -93,19 +96,26 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	 * @param \S3b0\Ecompc\Domain\Model\Package          $package
 	 * @param array                                      $selectableOptions
 	 * @param \S3b0\Ecompc\Controller\StandardController $controller
+	 * @param boolean                                    $availableOnly
 	 */
-	public static function getSelectableOptions(\S3b0\Ecompc\Domain\Model\Package $package, array &$selectableOptions, \S3b0\Ecompc\Controller\StandardController $controller) {
+	public static function getSelectableOptions(\S3b0\Ecompc\Domain\Model\Package $package, array &$selectableOptions, \S3b0\Ecompc\Controller\StandardController $controller, $availableOnly = FALSE) {
 		// Parse configurations
 		$options = array();
 		$packageOptions = $controller->optionRepository->findByConfigurationPackage($package);
 
-		if ( $selectableConfigurations = self::getSelectableConfigurations($controller) ) {
+		if ( $packageOptions && ($selectableConfigurations = self::getSelectableConfigurations($controller)) ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Configuration $configuration */
 			foreach ( $selectableConfigurations as $configuration ) {
 				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 				foreach ( $packageOptions as $option ) {
-					if ( !in_array($option, $options) && $configuration->getOptions()->contains($option) )
-						$options[$option->getSorting()] = $option;
+					if ( $configuration->getOptions()->contains($option) ) {
+						if ( !in_array($option, $options) ) {
+							$option->setInConflictWithSelectedOptions(self::checkOptionForConflicts($option, $packageOptions, $controller), $controller->currentPackage);
+							if ( $availableOnly && $option->isInConflictWithSelectedOptions() )
+								continue;
+							$options[$option->getSorting()] = $option;
+						}
+					}
 				}
 			}
 			$options = array_unique($options);
@@ -132,30 +142,61 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	 *
 	 * @return string
 	 */
-	public static function getConfigurationData(\S3b0\Ecompc\Domain\Model\Configuration $configuration, \S3b0\Ecompc\Controller\StandardController $controller) {
+	public static function getConfigurationData(\S3b0\Ecompc\Domain\Model\Configuration $configuration = NULL, \S3b0\Ecompc\Controller\StandardController $controller) {
 		$options = new \ArrayObject();
+
+		if ( !$configuration instanceof \S3b0\Ecompc\Domain\Model\Configuration ) {
+			return $options;
+		}
 
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ( $controller->cObj->getEcompcPackagesFE() as $package ) {
 			/** NO multipleSelect allowed for dynamic configurators, accordingly skip 'em */
 			if ( $package->isMultipleSelect() ) {
-				continue;
-			}
-			if ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
+				if ( $packageOptions = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package) ) {
+					$labelsAndSegments = array();
+					/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+					foreach ( $packageOptions as $option ) {
+						$labelsAndSegments['labels'][] = $option->getFrontendLabel();
+						$labelsAndSegments['segments'][] = $option->getConfigurationCodeSegment();
+					}
+					$options->append(array(
+						implode(', ', $labelsAndSegments['labels']),
+						implode(', ', $labelsAndSegments['segments']),
+						'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
+						'pkgUid' => $option->getConfigurationPackage()->getUid()
+					));
+				}
+			} elseif ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
 				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 				$options->append(array(
 					$option->getFrontendLabel(),
 					$option->getConfigurationCodeSegment(),
-					'pkg' => $option->getConfigurationPackage()->getFrontendLabel()
+					'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
+					'pkgUid' => $option->getConfigurationPackage()->getUid()
 				));
 			}
 		}
 
 		return array(
 			$configuration->getFrontendLabel(),
-			$options,
-			$configuration->getSku()
+			$configuration->getSku(),
+			$options
 		);
+	}
+
+	public static function checkOptionForConflicts(\S3b0\Ecompc\Domain\Model\Option $option, \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $packageOptions, \S3b0\Ecompc\Controller\StandardController $controller) {
+		$excludeUidList = array();
+		/**
+		 * Exclude same packages options
+		 * @var \S3b0\Ecompc\Domain\Model\Option $packageOption
+		 */
+/*
+		foreach ( $packageOptions as $packageOption ) {
+			$excludeUidList[] = $packageOption->getUid();
+		}
+*/
+		return $controller->configurationRepository->checkOptionForConflictsTtContentUidApplyingSelectedOptions($option, $excludeUidList, $controller->cObj->getUid(), $controller->selectedConfiguration['options']);
 	}
 
 	/**
@@ -166,31 +207,7 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
 	public function getSelectableConfigurations(\S3b0\Ecompc\Controller\StandardController $controller, &$current = NULL) {
-		return $current ?: $controller->configurationRepository->findByTtContentUidApplyingSelectedOptions($controller->cObj->getUid(), (array) $controller->selectedConfiguration['options']);
-	}
-
-	/**
-	 * autoSetOptions
-	 *
-	 * @param array $configuration
-	 * @return void
-	 */
-	protected function autoSetOptions(array &$configuration) {
-		if ( $packages = $this->cObj->getEcompcPackagesFE() ) {
-			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-			foreach ( $packages as $package ) {
-				if ( in_array($package->getUid(), $configuration['packages']) )
-					continue;
-
-				if ( $packageOptions = self::getPackageOptions($package, $this) ) {
-					if ( count($packageOptions) === 1 ) {
-						// Add option to NEW package
-						$configuration['options'][$packageOptions->getFirst()->getSorting()] = $packageOptions->getFirst()->getUid();
-						$configuration['packages'][$package->getUid()] = $package->getUid();
-					}
-				}
-			}
-		}
+		return $current ?: $controller->configurationRepository->findByTtContentUid($controller->cObj->getUid());
 	}
 
 }

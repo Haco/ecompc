@@ -320,9 +320,10 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			}
 		}
 
-#		// Prepared autoFill. Still some issues, especially regarding traversing as of dependency checks!
-#		if ( $this->settings['auto_set'] )
+#		// Prepared autoFill. Still issues. Preserved to be included next versions!
+#		if ( method_exists($this, 'autoSetOptions') && $this->settings['auto_set'] ) {
 #			$this->autoSetOptions($configuration);
+#		}
 		$this->getFeSession()->store($this->configurationSessionStorageKey, $configuration); // Store configuration in fe_session_data
 	}
 
@@ -334,7 +335,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function resetAction() {
 		$this->getFeSession()->store($this->configurationSessionStorageKey, array());
-		$this->redirectToPage();
+		$this->redirect('index');
 	}
 
 	/**
@@ -346,11 +347,37 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function requestAction() {
+		switch ( $this->request->getControllerName() ) {
+			case 'SkuConfigurator':
+				$configuration = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options'])->getFirst();
+				break;
+			case 'DynamicConfigurator':
+				$configuration = $this->cObj->getEcompcConfigurations()->toArray()[0];
+				break;
+			default:
+				/** @var \S3b0\Ecompc\Domain\Model\Configuration $configuration */
+				$configuration = $this->objectManager->get('S3b0\\Ecompc\\Domain\\Model\\Configuration');
+		}
+		/**
+		 * @var array $data
+		 */
+		$data = $this->getConfigurationData($configuration, $this);
+		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
+		$configurationCode = '';
+		if ( $data[1] instanceof \ArrayObject ) {
+			foreach ( $data[1] as $codeSegmentData ) {
+				$configurationCode .= $codeSegmentData[1];
+			}
+		} else {
+			$configurationCode = $data[1];
+		}
+
 		/** @var \S3b0\Ecompc\Domain\Model\Logger $logger */
 		$logger = $this->objectManager->get('S3b0\\Ecompc\\Domain\\Model\\Logger');
 		$logger->setSelectedConfiguration($this->selectedConfiguration)
 			->setIp(CoreUtility\GeneralUtility::getIndpEnv('REMOTE_ADDR'), $this->settings['log']['ipParts'])
-			->setConfiguration($this->cObj->getEcompcConfigurations()->toArray()[0]);
+			->setConfiguration($this->cObj->getEcompcConfigurations()->toArray()[0])
+			->setConfigurationCode($configurationCode);
 		if ( $GLOBALS['TSFE']->loginUser ) {
 			$logger->setFeUser($this->frontendUserRepository->findByUid($GLOBALS['TSFE']->fe_user->user['uid']));
 			if ( $this->isPricingEnabled() ) {
@@ -365,23 +392,13 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 		$persistenceManager->add($logger);
 		$persistenceManager->persistAll();
-		/**
-		 * @var array $data
-		 * @todo fit to new return value for writing correct values into db!
-		 */
-		$data = $this->getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this);
-#		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
-		$code = '';
-		foreach ( $data[1] as $codeSegmentData ) {
-			$code .= $codeSegmentData[1];
-		}
-		$addParams = sprintf($this->settings['requestForm']['additionalParamsQueryString'], $code, $data[0], $logger->getUid());
+		$additionalParams = sprintf($this->settings['requestForm']['additionalParamsQueryString'], $configurationCode, $data[0], $logger->getUid());
 
 		// Build link & redirect
 		$linkConfiguration = array(
 			'returnLast' => 'url',
 			'parameter' => $this->settings['requestForm']['pid'],
-			'additionalParams' => $addParams . '&L=' . $GLOBALS['TSFE']->sys_language_content,
+			'additionalParams' => $additionalParams . '&L=' . $GLOBALS['TSFE']->sys_language_content,
 			'useCacheHash' => FALSE,
 			'addQueryString' => TRUE,
 			'addQueryString.' => array(
@@ -390,7 +407,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			)
 		);
 
-		$this->redirectToUri($this->configurationManager->getContentObject()->typoLink('', $linkConfiguration), 0, 301);
+		$this->redirectToUri($this->configurationManager->getContentObject()->typoLink('', $linkConfiguration));
 	}
 
 	/**
@@ -576,41 +593,37 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				 * Process pricing | Set corresponding properties *
 				 **************************************************/
 				if ( $this->isPricingEnabled() && $this->cObj->getEcompcPricing() ) {
-					/*****************************************************************************************
-					 * Calculate PERCENT price [working on packages WITHOUT multipleSelect() flag set ONLY!] *
-					 *****************************************************************************************/
-					if ( $package->isPercentPricing() && !$package->isMultipleSelect() ) {
-						$currentConfigurationPrice = $this->getConfigurationPrice()[1];
-						$configurationPriceExcludingCurrentOption = $package->hasActiveOptions() ? floatval($currentConfigurationPrice / ($this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options'], $package, TRUE)->getPricePercental() + 1)) : 0.0;
-						$optionPrice = floatval($currentConfigurationPrice - $configurationPriceExcludingCurrentOption);
-						if ( in_array($package->getUid(), $this->selectedConfiguration['packages']) && !in_array($option->getUid(), $this->selectedConfiguration['options']) ) {
-							$option->setUnitPrice($optionIsActive ? $optionPrice : floatval($configurationPriceExcludingCurrentOption * $option->getPricePercental()));
-							$option->setPriceOutput($optionIsActive ? $optionPrice : floatval($configurationPriceExcludingCurrentOption * $option->getPricePercental() - $optionPrice));
-						} else {
-							$option->setUnitPrice(in_array($option->getUid(), $this->selectedConfiguration['options']) ? $optionPrice : $option->getPricing($this->getCurrency(), $currentConfigurationPrice));
-							$option->setPriceOutput(in_array($option->getUid(), $this->selectedConfiguration['options']) ? 0.00 : $option->getPricing($this->getCurrency(), $currentConfigurationPrice));
-						}
-					/***************************
-					 * Calculate STATIC prices *
-					 ***************************/
+					/****************************
+					 * Calculate MultipleSelect *
+					 ****************************/
+					if ( $package->isMultipleSelect() ) {
+						#$option->setUnitPrice(0.0);
+						#$option->setPriceOutput(0.0);
 					} else {
-						$option->setUnitPrice($option->getPricing($this->getCurrency()));
-						$priceOutput = $package->isMultipleSelect() || !$activeOptions ? $option->getUnitPrice($this->getCurrency()) : $option->getPricing($this->getCurrency()) - $activeOptions->getFirst()->getPricing($this->getCurrency());
-						$option->setPriceOutput($priceOutput);
+						/*****************************************************************************************
+						 * Calculate PERCENT price [working on packages WITHOUT multipleSelect() flag set ONLY!] *
+						 *****************************************************************************************/
+						if ( $package->isPercentPricing() ) {
+							$currentConfigurationPrice = $this->getConfigurationPrice()[1];
+							$configurationPriceExcludingCurrentOption = $package->hasActiveOptions() ? floatval($currentConfigurationPrice / ( $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options'], $package, TRUE)->getPricePercental() + 1 )) : 0.0;
+							$optionPrice = floatval($currentConfigurationPrice - $configurationPriceExcludingCurrentOption);
+							if ( in_array($package->getUid(), $this->selectedConfiguration['packages']) && !in_array($option->getUid(), $this->selectedConfiguration['options']) ) {
+								$option->setUnitPrice($optionIsActive ? $optionPrice : floatval($configurationPriceExcludingCurrentOption * $option->getPricePercental()));
+								$option->setPriceOutput($optionIsActive ? $optionPrice : floatval($configurationPriceExcludingCurrentOption * $option->getPricePercental() - $optionPrice));
+							} else {
+								$option->setUnitPrice(in_array($option->getUid(), $this->selectedConfiguration['options']) ? $optionPrice : $option->getPricing($this->getCurrency(), $currentConfigurationPrice));
+								$option->setPriceOutput(in_array($option->getUid(), $this->selectedConfiguration['options']) ? 0.00 : $option->getPricing($this->getCurrency(), $currentConfigurationPrice));
+							}
+						/***************************
+						 * Calculate STATIC prices *
+						 ***************************/
+						} else {
+							$option->setUnitPrice($option->getPricing($this->getCurrency()));
+							$priceOutput = $package->isMultipleSelect() || !$activeOptions ? $option->getUnitPrice($this->getCurrency()) : $option->getPricing($this->getCurrency()) - $activeOptions->getFirst()->getPricing($this->getCurrency());
+							$option->setPriceOutput($priceOutput);
+						}
 					}
 				}
-				/*******************************************
-				 * process SKU based configurator SPECIALS *
-				 *******************************************/
-				// TODO processing
-				/*
-				if ( $dryRun && substr($this->request->getControllerName(), 0, 15) === 'SkuConfigurator' && $package->hasActiveOptions() && $this->selectedConfiguration['options'] ) {
-					$activeOptions = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options']);
-					if ( $package->getActiveOptions()->contains($option) ) {
-
-					}
-				}
-				*/
 				$parsedPackages[] = $package->getUid();
 			}
 		}

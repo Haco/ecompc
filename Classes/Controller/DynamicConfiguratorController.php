@@ -100,6 +100,7 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 		$selectableOptions = array();
 		/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 		foreach ( $options as $option ) {
+			$option->setInConflictWithSelectedOptions(FALSE);
 			if ( $controller->checkOptionDependencies($option, $controller->selectedConfiguration) ) {
 				if ( in_array($option->getUid(), $controller->selectedConfiguration['options']) )
 					$option->setActive(TRUE);
@@ -146,7 +147,8 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 				$configurationCode->append(array(
 					$option->getFrontendLabel(),
 					$option->getConfigurationCodeSegment(),
-					'pkg' => $option->getConfigurationPackage()->getFrontendLabel()
+					'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
+					'pkgUid' => $option->getConfigurationPackage()->getUid()
 				));
 			}
 		}

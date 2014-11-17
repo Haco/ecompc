@@ -65,7 +65,6 @@
 		 * should by showed.
 		 *
 		 * @return bool
-		 * @todo find a better way to determine if update is needed or not.
 		 */
 		public function access() {
 			return TRUE;
@@ -77,8 +76,31 @@
 		 * @return void
 		 */
 		protected function processUpdates() {
-			// TODO Update list_type depending on tx_ecompc_type
+			$this->moveTypeDefinition();
 			$this->updateDatabaseFieldLabels();
+		}
+
+		protected function moveTypeDefinition() {
+			$table = 'tt_content';
+			$title = 'Moving ' . $table . ':tx_ecompc_type definition to ' . $table . ':list_type": ';
+
+			$currentTableFields = $this->databaseConnection->admin_get_fields($table);
+
+			$sql = ('
+				UPDATE ' . $table . ' SET list_type="ecompc_configurator_dynamic" WHERE list_type="ecompc_configurator" AND tx_ecompc_type=1;
+				UPDATE ' . $table . ' SET list_type="ecompc_configurator_sku" WHERE list_type="ecompc_configurator" AND tx_ecompc_type=0;
+			');
+
+			if ( $this->databaseConnection->admin_query($sql) === FALSE ) {
+				$message = ' SQL ERROR: ' . $this->databaseConnection->sql_error();
+				$status = FlashMessage::ERROR;
+			} else {
+				$message = 'OK!';
+				$status = FlashMessage::OK;
+			}
+
+			$this->messageArray[] = array($status, $title, $message);
+			return $status;
 		}
 
 		/**
@@ -201,70 +223,6 @@
 
 			$this->messageArray[] = array($status, $title, $message);
 			return $status;
-		}
-
-		/**
-		 * Renames a flex form field
-		 *
-		 * @param  string $pluginName The pluginName used in list_type
-		 * @param  array $oldFieldPointer Pointer array the old field. E.g. array('sheetName', 'fieldName');
-		 * @param  array $newFieldPointer Pointer array the new field. E.g. array('sheetName', 'fieldName');
-		 * @return void
-		 */
-		protected function renameFlexformField($pluginName, array $oldFieldPointer, array $newFieldPointer) {
-			$title = 'Renaming flexform field for "' . $pluginName . '" - ' .
-				' sheet: ' . $oldFieldPointer[0] . ', field: ' . $oldFieldPointer[1] . ' to ' .
-				' sheet: ' . $newFieldPointer[0] . ', field: ' . $newFieldPointer[1];
-
-			$res = $this->databaseConnection->exec_SELECTquery('uid, pi_flexform',
-				'tt_content',
-				'CType=\'list\' AND list_type=\'' . $pluginName . '\'');
-
-			/** @var \TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools $flexformTools */
-			$flexformTools = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Configuration\\FlexForm\\FlexFormTools');
-
-			while ( $row = $this->databaseConnection->sql_fetch_assoc($res) ) {
-
-				$xmlArray = GeneralUtility::xml2array($row['pi_flexform']);
-
-				if ( !is_array($xmlArray) || !isset($xmlArray['data']) ) {
-					$status = FlashMessage::ERROR;
-					// @todo: This will happen when trying to update news2 > news but pluginName is already set to news
-					// proposal for future: check for news2 somehow?
-					$message = 'Flexform data of plugin "' . $pluginName . '" not found.';
-				} elseif ( !$xmlArray['data'][$oldFieldPointer[0]] ) {
-					$status = FlashMessage::WARNING;
-					$message = 'Flexform data of record tt_content:' . $row['uid'] . ' did not contain ' .
-						'sheet: ' . $oldFieldPointer[0];
-				} else {
-					$updated = FALSE;
-
-					foreach ( $xmlArray['data'][$oldFieldPointer[0]] as $language => $fields ) {
-						if ( $fields[$oldFieldPointer[1]] ) {
-
-							$xmlArray['data'][$newFieldPointer[0]][$language][$newFieldPointer[1]] = $fields[$oldFieldPointer[1]];
-							unset($xmlArray['data'][$oldFieldPointer[0]][$language][$oldFieldPointer[1]]);
-
-							$updated = TRUE;
-						}
-					}
-
-					if ( $updated === TRUE ) {
-						$this->databaseConnection->exec_UPDATEquery('tt_content', 'uid=' . $row['uid'], array(
-							'pi_flexform' => $flexformTools->flexArray2Xml($xmlArray)
-						));
-						$message = 'OK!';
-						$status = FlashMessage::OK;
-					} else {
-						$status = FlashMessage::NOTICE;
-						$message = 'Flexform data of record tt_content:' . $row['uid'] . ' did not contain ' .
-							'sheet: ' . $oldFieldPointer[0] . ', field: ' . $oldFieldPointer[1] . '. This can
-						also be because field has been updated already...';
-					}
-				}
-
-				$this->messageArray[] = array($status, $title, $message);
-			}
 		}
 
 		/**
