@@ -48,6 +48,11 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var string
 	 */
+	protected $configurationCode = '';
+
+	/**
+	 * @var string
+	 */
 	protected $selectedConfiguration = '';
 
 	/**
@@ -126,6 +131,22 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setTstamp($tstamp) {
 		$this->tstamp = $tstamp;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getConfigurationCode() {
+		return $this->configurationCode;
+	}
+
+	/**
+	 * @param string $configurationCode
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
+	 */
+	public function setConfigurationCode($configurationCode) {
+		$this->configurationCode = $configurationCode;
 		return $this;
 	}
 

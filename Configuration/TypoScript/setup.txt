@@ -39,6 +39,7 @@ config.tx_extbase {
 					columns {
 						ses_id.mapOnProperty = sesId
 						tstamp.mapOnProperty = tstamp
+						configuration_code.mapOnProperty = configurationCode
 						selected_configuration.mapOnProperty = selectedConfiguration
 						configuration.mapOnProperty = configuration
 						currency.mapOnProperty = currency
@@ -83,6 +84,7 @@ tx_ecompc_domain_model_package.bodytext.parseFunc.tags.link < lib.parseFunc.tags
 # Frontend Plugin #
 ###################
 plugin.tx_ecompc {
+	mvc.callDefaultActionIfActionCantBeResolved = 1
 	view {
 		templateRootPath = {$plugin.tx_ecompc.view.templateRootPath}
 		partialRootPath = {$plugin.tx_ecompc.view.partialRootPath}

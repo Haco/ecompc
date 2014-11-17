@@ -44,7 +44,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function userFuncTtContentTxEcompcPackages(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTtContentTxEcompcPackages(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		// Disable for non-admins
 		$PA['fieldConf']['config']['readOnly'] = !$pObj->getBackendUserAuthentication()->isAdmin();
 
@@ -65,7 +65,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function userFuncTtContentTxEcompcConfigurations(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTtContentTxEcompcConfigurations(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		// Disable for non-admins
 		$PA['fieldConf']['config']['readOnly'] = !$pObj->getBackendUserAuthentication()->isAdmin();
 
@@ -87,7 +87,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function userFuncTtContentTxEcompcPricing(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTtContentTxEcompcPricing(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		return $this->getPricingFlexForm($PA, $pObj);
 	}
 
@@ -99,11 +99,19 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function userFuncTxEcompcOptionPricing(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTxEcompcOptionPricing(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		return $this->getPricingFlexForm($PA, $pObj);
 	}
 
-	public function userFuncTxEcompcCurrencySettings(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	/**
+	 * userFuncTxEcompcCurrencySettings function.
+	 *
+	 * @param array                              $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+	 *
+	 * @return string
+	 */
+	public function userFuncTxEcompcCurrencySettings(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		$addWhere = \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($PA['row']['uid']) ? ' AND NOT tx_ecompc_domain_model_currency.uid=' . $PA['row']['uid'] : '';
 		if ( $rows = $pObj->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . $addWhere . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency')) ) {
 			/** @var \S3b0\Ecompc\Utility\BitHandler $bitwiseFlag */
@@ -162,7 +170,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function userFuncTxEcompcDomainModelConfigurationSku(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTxEcompcDomainModelConfigurationSku(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
 		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
@@ -178,7 +186,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function userFuncTxEcompcDomainModelConfigurationConfigurationCodeSuffix(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTxEcompcDomainModelConfigurationConfigurationCodeSuffix(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
 		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_SKU_SIGNATURE ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
@@ -194,7 +202,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function userFuncTxEcompcDomainModelConfigurationConfigurationCodePrefix(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTxEcompcDomainModelConfigurationConfigurationCodePrefix(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type');
 		$PA['fieldConf']['config']['readOnly'] = $ttContent['CType'] === 'list' && $ttContent['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_SKU_SIGNATURE ?: $PA['fieldConf']['config']['readOnly'];
 		// Re-render field based on the "true field type", and not as a "user"
@@ -211,7 +219,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 * @see \TYPO3\CMS\Backend\Form\FormEngine->getSingleField_typeSelect_checkbox
 	 * @return string
 	 */
-	public function userFuncTxEcompcDomainModelConfigurationOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTxEcompcDomainModelConfigurationOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		$ttContent = BackendUtility\BackendUtility::getRecord('tt_content', $PA['row']['tt_content_uid'], 'CType,list_type,tx_ecompc_packages');
 		if ( $ttContent['CType'] === 'list' && $ttContent['list_type'] === \S3b0\Ecompc\Utility\Div::CONFIGURATOR_DYN_SIGNATURE )
 			return '';
@@ -362,7 +370,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function userFuncTxEcompcDomainModelOptionPricePercental(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function userFuncTxEcompcDomainModelOptionPricePercental(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		$package = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('tx_ecompc_domain_model_package', $PA['row']['configuration_package']);
 		$PA['fieldConf']['config']['readOnly'] = $package['multiple_select'];
 
@@ -379,7 +387,7 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	 *
 	 * @return string
 	 */
-	public function getPricingFlexForm(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
+	public function getPricingFlexForm(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj = NULL) {
 		if ( $rows = $pObj->getDatabaseConnection()->exec_SELECTgetRows('*', 'tx_ecompc_domain_model_currency', '1=1 ' . BackendUtility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency')) ) {
 			$ds = array(
 				'meta' => array(
@@ -414,12 +422,12 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	/**
 	 * itemsProcFuncTxEcompcDomainModelDependencyOptions function.
 	 *
-	 * @param array                              $PA
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+	 * @param array                                                                       $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine|\TYPO3\CMS\Backend\Form\DataPreprocessor $pObj
 	 *
 	 * @return void
 	 */
-	function itemsProcFuncTxEcompcDomainModelDependencyOptions(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj)  {
+	function itemsProcFuncTxEcompcDomainModelDependencyOptions(array &$PA, $pObj = NULL)  {
 		// Adding an item!
 		//$PA['items'][] = array($pObj->sL('Added label by PHP function|Tilfjet Dansk tekst med PHP funktion'), 999);
 

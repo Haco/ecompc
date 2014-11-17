@@ -276,6 +276,7 @@ CREATE TABLE tx_ecompc_domain_model_logger (
 	ses_id varchar(32) DEFAULT '' NOT NULL,
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	selected_configuration text,
+	configuration_code varchar(255) DEFAULT '' NOT NULL,
 	configuration int(11) unsigned DEFAULT '0',
 	currency int(11) unsigned DEFAULT '0',
 	price double(11,2) DEFAULT '0.00' NOT NULL,

@@ -200,8 +200,9 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$return = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ( $this->ecompcPackages as $package ) {
-			if ( $package->isVisibleInFrontend() )
+			if ( $package->isVisibleInFrontend() ) {
 				$return->attach($package);
+			}
 		}
 
 		return $return;
@@ -298,7 +299,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		 * Return default currency value
 		 */
 		if ( $currency->isDefaultCurrency() ) {
-			return $price > 0 ? floatval($price) : $this->getEcompcBasePriceInDefaultCurrency();
+			return $price > 0 ? floatval($price) : $this->ecompcBasePriceInDefaultCurrency;
 		}
 
 		/**
@@ -315,7 +316,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$db = $GLOBALS['TYPO3_DB'];
 		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
 		// Backwards compatibility
-		$defaultPrice = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])] > 0 ? $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])] : $this->getEcompcBasePriceInDefaultCurrency();
+		$defaultPrice = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])] > 0 ? $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])] : $this->ecompcBasePriceInDefaultCurrency;
 		if ( $defaultPrice && $currency->getExchange() ) {
 			return floatval($defaultPrice * $currency->getExchange());
 		}
@@ -329,13 +330,13 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function getStoragePidArray() {
 		$pidArray = array();
 
-		if ( $this->getStorage() instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->getStorage()->count() ) {
+		if ( $this->storage instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->storage->count() ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Page $storage */
-			foreach ( $this->getStorage() as $storage ) {
+			foreach ( $this->storage as $storage ) {
 				/** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
 				$pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 				if ( $rootLine = $pageRepository->getRootLine($storage->getUid()) ) {
-					$limit = $this->getRecursive() < count($rootLine) ? $this->getRecursive() + 1 : count($rootLine);
+					$limit = $this->recursive < count($rootLine) ? $this->recursive + 1 : count($rootLine);
 					for ( $i = 0; $i < $limit; $i++ ) {
 						$current = current($rootLine);
 						$pidArray[] = $current['uid'];

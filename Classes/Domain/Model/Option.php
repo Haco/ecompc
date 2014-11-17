@@ -55,6 +55,11 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $configurationCodeSegment = '';
 
 	/**
+	 * @var boolean
+	 */
+	protected $configurationCodeSegmentSet = FALSE;
+
+	/**
 	 * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
 	 */
 	protected $image = NULL;
@@ -105,34 +110,14 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $active = FALSE;
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
+	 * @var boolean
 	 */
-	protected $conflictsWithSelectedOptions = NULL;
+	protected $inConflictWithSelectedOptions = TRUE;
 
 	/**
 	 * @var boolean
 	 */
 	protected $disabled = FALSE;
-
-	/**
-	 * __construct
-	 */
-	public function __construct() {
-		//Do not remove the next line: It would break the functionality
-		$this->initStorageObjects();
-	}
-
-	/**
-	 * Initializes all ObjectStorage properties
-	 * Do not modify this method!
-	 * It will be rewritten on each save in the extension builder
-	 * You may modify the constructor of this class instead
-	 *
-	 * @return void
-	 */
-	protected function initStorageObjects() {
-		$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-	}
 
 	/**
 	 * @return integer
@@ -196,7 +181,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @return boolean
 	 */
-	public function hasConfigurationCodeSegment() {
+	public function isConfigurationCodeSegmentSet() {
 		return (bool) strlen($this->getConfigurationCodeSegment());
 	}
 
@@ -228,6 +213,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setHintText($hintText) {
 		$this->hintText = $hintText;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function hasHintText() {
+		return (bool) strlen($this->hintText);
 	}
 
 	/**
@@ -302,7 +294,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		 * Return default currency value
 		 */
 		if ( $currency->isDefaultCurrency() ) {
-			return floatval($price) > 0 ? $price : $this->getPrice();
+			return floatval($price) ?: $this->getPrice();
 		}
 
 		/**
@@ -318,7 +310,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
 		$db = $GLOBALS['TYPO3_DB'];
 		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
-		$defaultPrice = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])];
+		$defaultPrice = floatval($convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]) ?: $this->getPrice();
 		if ( $defaultPrice && $currency->getExchange() ) {
 			return floatval($defaultPrice * $currency->getExchange());
 		}
@@ -410,55 +402,24 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOption
+	 * @return boolean $inConflictWithSelectedOptions
+	 */
+	public function isInConflictWithSelectedOptions() {
+		return $this->inConflictWithSelectedOptions;
+	}
+
+	/**
+	 * @param boolean                           $inConflictWithSelectedOptions
+	 * @param \S3b0\Ecompc\Domain\Model\Package $package
 	 * @return void
 	 */
-	public function addConflictsWithSelectedOption(\S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOption) {
-		if ( $this->conflictsWithSelectedOptions === NULL ) {
-			$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+	public function setInConflictWithSelectedOptions($inConflictWithSelectedOptions, \S3b0\Ecompc\Domain\Model\Package $package = NULL) {
+		$this->inConflictWithSelectedOptions = $inConflictWithSelectedOptions;
+
+		if ( $this->isInConflictWithSelectedOptions() ) {
+			$this->setDisabled(TRUE);
+			$this->setFrontendLabel( $this->getFrontendLabel() . ' (not valid)' );
 		}
-
-		$this->conflictsWithSelectedOptions->attach($conflictsWithSelectedOption);
-	}
-
-	/**
-	 * @param \S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOptionToRemove
-	 * @return void
-	 */
-	public function removeConflictsWithSelectedOption(\S3b0\Ecompc\Domain\Model\Option $conflictsWithSelectedOptionToRemove) {
-		$this->conflictsWithSelectedOptions->detach($conflictsWithSelectedOptionToRemove);
-	}
-
-	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $conflictsWithSelectedOptions
-	 */
-	public function getConflictsWithSelectedOptions() {
-		if ( $this->conflictsWithSelectedOptions === NULL ) {
-			$this->conflictsWithSelectedOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		}
-
-		return $this->conflictsWithSelectedOptions;
-	}
-
-	/**
-	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $conflictsWithSelectedOptions
-	 * @return void
-	 */
-	public function setConflictsWithSelectedOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $conflictsWithSelectedOptions = null) {
-		$this->conflictsWithSelectedOptions = $conflictsWithSelectedOptions;
-	}
-
-	/**
-	 * @param array                              $selectedOptions
-	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
-	 * @param float                              $configurationPrice
-	 *
-	 * @return string
-	 */
-	private function getPriceDifference(array $selectedOptions = array(), \S3b0\Ecompc\Domain\Model\Currency $currency = NULL, $configurationPrice = 0.0) {
-		$unitPrice = $this->getPricing($currency, $configurationPrice);
-
-		return '';
 	}
 
 	/**
@@ -471,18 +432,19 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function getSummaryForJSONView(array $selectedOptions = array(), $includePricing = FALSE, \S3b0\Ecompc\Domain\Model\Currency $currency = NULL, array $pricing = array()) {
 		$returnArray = array(
-			'uid' => $this->getUid(),
-			'active' => in_array($this->getUid(), $selectedOptions),
-			'state' => $this->getConfigurationPackage()->isActive(),
-			'package' => $this->getConfigurationPackage()->getUid(),
-			'disabled' => $this->isDisabled(),
-			'title' => $this->getFrontendLabel() . ($this->hasConfigurationCodeSegment() ? ' [' . $this->getConfigurationCodeSegment() . ']' : ''),
-			'hint' => (bool) strlen($this->getHintText())
+			'uid' => $this->uid,
+			'sorting' => $this->sorting,
+			'active' => in_array($this->uid, $selectedOptions),
+			'state' => $this->configurationPackage->isActive(),
+			'package' => $this->configurationPackage->getUid(),
+			'disabled' => $this->disabled,
+			'title' => $this->frontendLabel . ($this->isConfigurationCodeSegmentSet() ? ' [' . $this->configurationCodeSegment . ']' : ''),
+			'hint' => (bool) strlen($this->hasHintText())
 		);
 
 		if ( $includePricing ) {
 			$unitPrice = $this->getPricing($currency, $pricing[2]);
-			$priceDifference = $this->isActive() ? 0.0 : ($unitPrice - ($pricing[3] - $pricing[2]));
+			$priceDifference = $this->active ? 0.0 : ($unitPrice - ($pricing[3] - $pricing[2]));
 			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
 			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
 			$returnArray['price'] = $currencyVH->render(
@@ -493,7 +455,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 				$unitPrice,
 				2,
 				FALSE
-			) . ($this->getConfigurationPackage()->isPercentPricing() ? ' <span style="font-family: \'Lucida Sans Unicode\', Arial, sans-serif">≙</span> ' . ($this->getPricePercental() * 100) . '%' : '') . ' )';
+			) . ($this->configurationPackage->isPercentPricing() ? ' <span style="font-family: \'Lucida Sans Unicode\', Arial, sans-serif">≙</span> ' . ($this->getPricePercental() * 100) . '%' : '') . ' )';
 		}
 
 		return $returnArray;
