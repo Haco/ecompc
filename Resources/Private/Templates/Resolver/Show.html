@@ -12,7 +12,7 @@
 			<tr><td>Configuration : </td><td style="padding-left: 0; padding-right: 0"><f:render partial="Misc/OptionList" arguments="{options : options}" /></td></tr>
 			<f:security.ifHasRole role="{settings.resolverUserGroup}">
 				<tr><td>Currency : </td><td><f:if condition="{log.feUser}"><f:then>{log.currency.label} [{log.currency.symbol}]</f:then><f:else>-</f:else></f:if></td></tr>
-				<tr><td>Configuration Price : </td><td><f:if condition="{log.feUser}"><f:then>{log.price}</f:then><f:else>-</f:else></f:if></td></tr>
+				<tr><td>Configuration Price : </td><td><f:if condition="{log.feUser}"><f:then><f:s3b0.financial.currency currency="{log.currency}" signed="0" usFormat="{settings.usFormat}">{log.price}</f:s3b0.financial.currency></f:then><f:else>-</f:else></f:if></td></tr>
 				<tr><td>User : </td><td><f:if condition="{log.feUser}"><f:then><f:link.action action="showUserInformation" arguments="{frontendUser : log.feUser}">{log.feUser.name} [{log.feUser.username}]</f:link.action></f:then><f:else>-</f:else></f:if></td></tr>
 				<tr><td>Date : </td><td>{log.tstamp -> f:format.date(format : dateFormat)}</td></tr>
 				<tr><td>IP-Address (masked for privacy) : </td><td>{log.ip}</td></tr>

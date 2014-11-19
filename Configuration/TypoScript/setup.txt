@@ -116,6 +116,7 @@ plugin.tx_ecompc {
 		log {
 			ipParts = {$plugin.tx_ecompc.constants.log.ipParts}
 		}
+		usFormat = 0
 	}
 }
 

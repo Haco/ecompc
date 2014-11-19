@@ -202,7 +202,7 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return float
 	 */
 	public function getPrice() {
-		return number_format($this->price, 2);
+		return $this->price;
 	}
 
 	/**

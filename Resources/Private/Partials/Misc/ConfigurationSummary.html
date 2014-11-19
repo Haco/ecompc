@@ -1,6 +1,1 @@
-<f:if condition="{type} == 'Dyn'">
-	<table><f:for each="{result}" as="codeSegment"><f:if condition="{codeSegment.pkg}"><tr><td>{codeSegment.pkg}</td><td>{codeSegment.0 -> f:format.nl2br()}</td><td><f:if condition="{codeSegment.pkgUid}"><a data-package="{codeSegment.pkgUid}" class="ecom-configurator-package-select"><i class="fa fa-edit"></i></a></f:if></td></tr></f:if></f:for></table>
-</f:if>
-<f:if condition="{type} == 'Sku'">
-	<table><f:for each="{result.1}" as="codeSegment"><f:if condition="{codeSegment.pkg}"><tr><td>{codeSegment.pkg}</td><td>{codeSegment.0 -> f:format.nl2br()}</td><td><f:if condition="{codeSegment.pkgUid}"><a data-package="{codeSegment.pkgUid}" class="ecom-configurator-package-select"><i class="fa fa-edit"></i></a></f:if></td></tr></f:if></f:for></table>
-</f:if>
+<table><f:for each="{result}" as="codeSegment"><f:if condition="{codeSegment.pkg}"><tr><td>{codeSegment.pkg}</td><td>{codeSegment.0 -> f:format.nl2br()}</td><td><f:if condition="{codeSegment.pkgUid}"><a data-package="{codeSegment.pkgUid}" class="ecom-configurator-package-select"><i class="fa fa-edit"></i></a></f:if></td><f:if condition="{pricingEnabled}"><td class="align-right">{codeSegment.pricing}</td></f:if></tr></f:if></f:for></table>

@@ -46,7 +46,7 @@ function txEcompcSetOption() {
 				pkgInfoDiv.hide();
 				$('#ecom-configurator-result-canvas .ecom-configurator-result h3.ecom-configurator-result-label').first().html(result.configurationData[0]);
 				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').first().html(getConfigurationCode(result.configurationData[1]));
-				$('#ecom-configurator-summary-table').html(getConfigurationSummary(result.configurationData[1]));
+				$('#ecom-configurator-summary-table').html(getConfigurationSummary(result.configurationData[1], result.pricingEnabled));
 				$('.ecompc-syntax-help').tooltip({
 					tooltipClass: "ecompc-custom-tooltip-styling",
 					track: true
@@ -282,13 +282,17 @@ function getConfigurationCode(config) {
 	return spans;
 }
 
-function getConfigurationSummary(config) {
+function getConfigurationSummary(config, pricingEnabled) {
 	var table = "<table>";
 	for ( var i=0; i<config.length; i++ ) {
 		if ( !config[i].pkg ) {
 			continue;
 		}
-		table += "<tr><td>" + config[i].pkg + "</td><td>" + config[i][0] + "</td><td>" + (config[i].pkgUid ? "<a data-package=\"" + config[i].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td></tr>";
+		table += "<tr><td>" + config[i].pkg + "</td><td>" + config[i][0] + "</td><td>" + (config[i].pkgUid ? "<a data-package=\"" + config[i].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td>";
+		if ( pricingEnabled ) {
+			table += "<td class=\"align-right\">" + config[i].pricing + "</td>";
+		}
+		table += "</tr>";
 	}
 	table += "</table>";
 	return table;

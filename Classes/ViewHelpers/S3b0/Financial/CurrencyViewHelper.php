@@ -50,13 +50,14 @@ class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	 * @param integer                            $decimals       (optional) Set decimals places.
 	 * @param boolean                            $signed         (optional) Select if algebraic sign should be added
 	 * @param boolean                            $zeroLabel      (optional) If set a text like 'incl.' will be added instead of zero values
+	 * @param boolean                            $usFormat       (optional) Indicator for US formats
 	 *
 	 * @return string the formatted amount.
 	 * @api
 	 */
-	public function render(\S3b0\Ecompc\Domain\Model\Currency $currency, $floatToFormat = NULL, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE) {
-		$decimalSeparator = $currency->isNumberSeparatorsInUSFormat() ? '.' : ',';
-		$thousandsSeparator = $currency->isNumberSeparatorsInUSFormat() ? ',' : '.';
+	public function render(\S3b0\Ecompc\Domain\Model\Currency $currency, $floatToFormat = NULL, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE, $usFormat = FALSE) {
+		$decimalSeparator = $currency->isNumberSeparatorsInUSFormat() || $usFormat ? '.' : ',';
+		$thousandsSeparator = $currency->isNumberSeparatorsInUSFormat() || $usFormat ? ',' : '.';
 		$floatToFormat = $floatToFormat !== NULL ? $floatToFormat : $this->renderChildren();
 		if ( empty($floatToFormat) ) {
 			$floatToFormat = 0.0;

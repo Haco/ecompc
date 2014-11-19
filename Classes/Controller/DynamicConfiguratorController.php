@@ -52,8 +52,11 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$configurationData = self::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this);
-				$this->view->assign('configurationLabel', $configurationData[0]);
-				$this->view->assign('configurationData', $configurationData[1]);
+				$this->view->assignMultiple(array(
+					'configurationLabel' => $configurationData[0],
+					'configurationData' => $configurationData[1],
+					'configurationCode' => $configurationData[1]
+				));
 			}
 		}
 		if ( $this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package ) {
@@ -118,6 +121,11 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 	 * @return string
 	 */
 	public static function getConfigurationData(\S3b0\Ecompc\Domain\Model\Configuration $configuration, \S3b0\Ecompc\Controller\StandardController $controller) {
+		if ( $controller->pricingEnabled ) {
+			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
+			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
+		}
+
 		$configurationLabel = $configuration->getFrontendLabel();
 		$configurationCode = new \ArrayObject();
 		if ( $configuration->hasConfigurationCodePrefix() ) {
@@ -148,7 +156,15 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 					$option->getFrontendLabel(),
 					$option->getConfigurationCodeSegment(),
 					'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
-					'pkgUid' => $option->getConfigurationPackage()->getUid()
+					'pkgUid' => $option->getConfigurationPackage()->getUid(),
+					'pricing' => !$controller->pricingEnabled ?: $currencyVH->render(
+						$controller->currency,
+						$option->getPricing($controller->currency),
+						2,
+						TRUE,
+						FALSE,
+						$controller->settings['usFormat']
+					)
 				));
 			}
 		}

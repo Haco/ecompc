@@ -47,14 +47,17 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 	public function indexAction(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		parent::indexAction($package);
 		if ( $this->progress === 1 ) {
+			if ( $this->pricingEnabled ) {
+				$this->initializeOptions();
+			}
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$matchingConfiguration = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options'])->getFirst();
 				$configurationData = self::getConfigurationData($matchingConfiguration, $this);
-				$this->view->assign('configurationLabel', $configurationData[0]);
-				$this->view->assign('configurationData', array(
-					$configurationData[1],
-					$configurationData[2]
+				$this->view->assignMultiple(array(
+					'configurationLabel' => $configurationData[0],
+					'configurationData' => $configurationData[2],
+					'configurationCode' => $configurationData[1]
 				));
 			}
 		}
@@ -149,6 +152,11 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 			return $options;
 		}
 
+		if ( $controller->pricingEnabled ) {
+			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
+			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
+		}
+
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ( $controller->cObj->getEcompcPackagesFE() as $package ) {
 			/** NO multipleSelect allowed for dynamic configurators, accordingly skip 'em */
@@ -160,14 +168,21 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 					foreach ( $packageOptions as $option ) {
 						$labelsAndSegments['labels'][] = $option->getFrontendLabel();
 						$labelsAndSegments['segments'][] = $option->getConfigurationCodeSegment();
-						$pricing += $option->getUnitPrice();
+						$pricing += $option->getPricing($controller->currency);
 					}
 					$options->append(array(
 						implode(', ', $labelsAndSegments['labels']),
 						implode(', ', $labelsAndSegments['segments']),
 						'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
 						'pkgUid' => $option->getConfigurationPackage()->getUid(),
-						'pricing' => $pricing
+						'pricing' => !$controller->pricingEnabled ?: $currencyVH->render(
+							$controller->currency,
+							$pricing,
+							2,
+							TRUE,
+							FALSE,
+							$controller->settings['usFormat']
+						)
 					));
 				}
 			} elseif ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
@@ -177,7 +192,14 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 					$option->getConfigurationCodeSegment(),
 					'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
 					'pkgUid' => $option->getConfigurationPackage()->getUid(),
-					'pricing' => $option->getUnitPrice()
+					'pricing' => !$controller->pricingEnabled ?: $currencyVH->render(
+						$controller->currency,
+						$option->getPricing($controller->currency),
+						2,
+						TRUE,
+						FALSE,
+						$controller->settings['usFormat']
+					)
 				));
 			}
 		}

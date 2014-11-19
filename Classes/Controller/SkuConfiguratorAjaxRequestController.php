@@ -90,9 +90,9 @@ class SkuConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxR
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 			foreach ( $options as $option ) {
 				if ( $option->getConfigurationPackage()->isPercentPricing() ) {
-					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->isPricingEnabled(), $this->getCurrency(), $pricing);
+					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->isPricingEnabled(), $this->getCurrency(), $pricing, $this->settings['usFormat']);
 				} else {
-					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->isPricingEnabled(), $this->getCurrency(), $pricing);
+					$return[] = $option->getSummaryForJSONView($configurationArray['options'], $this->isPricingEnabled(), $this->getCurrency(), $pricing, $this->settings['usFormat']);
 				}
 			}
 		}

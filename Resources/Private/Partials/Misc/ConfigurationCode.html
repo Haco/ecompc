@@ -2,7 +2,7 @@
 	<f:for each="{result}" as="codeSegment"><span{f:if(condition : codeSegment.pkg, then : ' class="ecompc-syntax-help" title="{codeSegment.pkg}"')}>{codeSegment.1}</span></f:for>
 </f:if>
 <f:if condition="{type} == 'Sku'">
-	<span>{result.0}</span>
+	<span>{result}</span>
 </f:if>
 
 <f:comment>

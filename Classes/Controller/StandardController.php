@@ -559,7 +559,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				$this->getCurrency(),
 				$returnArray[$tellMeWhatToRender],
 				2,
-				FALSE
+				FALSE,
+				FALSE,
+				$this->settings['usFormat']
 			);
 		}
 

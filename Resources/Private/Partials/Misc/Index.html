@@ -57,14 +57,14 @@
 		<h3 class="ecom-configurator-result-label no-margin"><f:if condition="{configurationLabel}">{configurationLabel}</f:if></h3>
 		<h2>
 			<f:translate id="index.your_configuration_code" /><br />
-			<small class="ecom-configurator-result-code"><f:render partial="Misc/ConfigurationCode" arguments="{result : configurationData, type : '{controller -> f:s3b0.substring(endAt:3)}'}" /></small>
+			<small class="ecom-configurator-result-code"><f:render partial="Misc/ConfigurationCode" arguments="{result : configurationCode, type : '{controller -> f:s3b0.substring(endAt:3)}'}" /></small>
 		</h2>
 		<f:link.action action="reset" noCacheHash="1" class="action-button-default no-arrow">Reconfigure &nbsp; <i class="fa fa-undo"></i></f:link.action>
 		<a class="action-button-default ecom-configurator-result-review-config dropdown" title="{f:translate(id : 'index.summary_button_title')}"><i class="fa fa-list"></i> <f:translate id="index.summary_button" /></a>
 		<f:link.action action="request" noCacheHash="1" additionalParams="{L : sys_language_uid}" class="action-button-default" target="{settings.requestForm.target}"><i class="fa fa-envelope-alt"></i> <f:translate id="index.request_your_device" /></f:link.action>
 	</div>
 	<div id="ecom-configurator-summary-table">
-		<f:render partial="Misc/ConfigurationSummary" arguments="{result : configurationData, type : '{controller -> f:s3b0.substring(endAt:3)}'}" />
+		<f:render partial="Misc/ConfigurationSummary" arguments="{result : configurationData, pricingEnabled: pricingEnabled, type : '{controller -> f:s3b0.substring(endAt:3)}'}" />
 	</div>
 </div>
 
