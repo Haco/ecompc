@@ -39,11 +39,11 @@ if ( !defined('TYPO3_MODE') ) {
 	'S3b0.' . $_EXTKEY,
 	'Resolver',
 	array(
-		'Resolver' => 'list,show,showUserInformation'
+		'Resolver' => 'show,list,showUserInformation'
 	),
 	// non-cacheable actions
 	array(
-		'Resolver' => 'list,show,showUserInformation'
+		'Resolver' => 'show,list,showUserInformation'
 	)
 );
 

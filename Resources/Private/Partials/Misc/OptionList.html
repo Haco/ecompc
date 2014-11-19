@@ -1,9 +1,11 @@
-<table class="vtop">
+<table class="ecom-configurator-resolve-table-config">
 	<f:groupedFor each="{options}" as="packageOptions" groupBy="configurationPackage" groupKey="package">
 		<tr>
-			<td>{package.frontendLabel}:</td><td><ul style="margin:0">
-			<f:for each="{packageOptions}" as="option" iteration="i">
-				<li>{option.frontendLabel}{f:if(condition:option.configurationCodeSegment,then:' [{option.configurationCodeSegment}]')}</li>
+			<td>{package.frontendLabel}:</td><td><ul>
+			<f:for each="{packageOptions}" as="option">
+				<f:alias map="{lb : option.frontendLabel, cs : option.configurationCodeSegment, cd : option.configurationCodeSegmentSet}">
+					<li>{lb}{f:if(condition : '{cd}', then : ' [{cs}]')}</li>
+				</f:alias>
 			</f:for>
 		</ul></td>
 		</tr>

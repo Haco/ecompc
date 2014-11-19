@@ -42,8 +42,8 @@
 				<target>Jetzt Anfragen</target>
 			</trans-unit>
 			<trans-unit id="index.reset_configuration" approved="yes" xml:space="preserve">
-				<source>» Reset Configuration</source>
-				<target>» Konfiguration zurücksetzen</target>
+				<source>Reset Configuration</source>
+				<target>Konfiguration zurücksetzen</target>
 			</trans-unit>
 			<trans-unit id="index.summary_button" approved="yes" xml:space="preserve">
 				<source>Summary</source>
@@ -127,6 +127,11 @@
 			<trans-unit id="currency.usd.region">
 				<source>North, Middle and South America</source>
 				<target>Nord-, Mittel- und Südamerika</target>
+			</trans-unit>
+
+			<trans-unit id="mark_incompatible_options">
+				<source>invalid</source>
+				<target>ungültige Auswahl</target>
 			</trans-unit>
 		</body>
 	</file>

@@ -597,8 +597,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					 * Calculate MultipleSelect *
 					 ****************************/
 					if ( $package->isMultipleSelect() ) {
-						#$option->setUnitPrice(0.0);
-						#$option->setPriceOutput(0.0);
+						$option->setUnitPrice($option->getPricing($this->getCurrency()));
+						$priceOutput = $option->getUnitPrice();
+						$option->setPriceOutput($priceOutput);
 					} else {
 						/*****************************************************************************************
 						 * Calculate PERCENT price [working on packages WITHOUT multipleSelect() flag set ONLY!] *
@@ -619,7 +620,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 						 ***************************/
 						} else {
 							$option->setUnitPrice($option->getPricing($this->getCurrency()));
-							$priceOutput = $package->isMultipleSelect() || !$activeOptions ? $option->getUnitPrice($this->getCurrency()) : $option->getPricing($this->getCurrency()) - $activeOptions->getFirst()->getPricing($this->getCurrency());
+							$priceOutput = $package->isMultipleSelect() || !$activeOptions ? $option->getUnitPrice() : $option->getPricing($this->getCurrency()) - $activeOptions->getFirst()->getPricing($this->getCurrency());
 							$option->setPriceOutput($priceOutput);
 						}
 					}

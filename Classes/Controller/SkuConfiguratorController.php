@@ -155,16 +155,19 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 			if ( $package->isMultipleSelect() ) {
 				if ( $packageOptions = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package) ) {
 					$labelsAndSegments = array();
+					$pricing = 0.0;
 					/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 					foreach ( $packageOptions as $option ) {
 						$labelsAndSegments['labels'][] = $option->getFrontendLabel();
 						$labelsAndSegments['segments'][] = $option->getConfigurationCodeSegment();
+						$pricing += $option->getUnitPrice();
 					}
 					$options->append(array(
 						implode(', ', $labelsAndSegments['labels']),
 						implode(', ', $labelsAndSegments['segments']),
 						'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
-						'pkgUid' => $option->getConfigurationPackage()->getUid()
+						'pkgUid' => $option->getConfigurationPackage()->getUid(),
+						'pricing' => $pricing
 					));
 				}
 			} elseif ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
@@ -173,7 +176,8 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 					$option->getFrontendLabel(),
 					$option->getConfigurationCodeSegment(),
 					'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
-					'pkgUid' => $option->getConfigurationPackage()->getUid()
+					'pkgUid' => $option->getConfigurationPackage()->getUid(),
+					'pricing' => $option->getUnitPrice()
 				));
 			}
 		}
@@ -187,15 +191,16 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 
 	public static function checkOptionForConflicts(\S3b0\Ecompc\Domain\Model\Option $option, \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $packageOptions, \S3b0\Ecompc\Controller\StandardController $controller) {
 		$excludeUidList = array();
-		/**
-		 * Exclude same packages options
-		 * @var \S3b0\Ecompc\Domain\Model\Option $packageOption
-		 */
-/*
-		foreach ( $packageOptions as $packageOption ) {
-			$excludeUidList[] = $packageOption->getUid();
+		/** In case of first package skip this step */
+		if ( count($controller->selectedConfiguration['packages']) > 1 ) {
+			/**
+			 * Exclude same packages options
+			 * @var \S3b0\Ecompc\Domain\Model\Option $packageOption
+			 */
+			foreach ( $packageOptions as $packageOption ) {
+				$excludeUidList[] = $packageOption->getUid();
+			}
 		}
-*/
 		return $controller->configurationRepository->checkOptionForConflictsTtContentUidApplyingSelectedOptions($option, $excludeUidList, $controller->cObj->getUid(), $controller->selectedConfiguration['options']);
 	}
 

@@ -1,23 +1,11 @@
 <tr>
 	<td>{log.configuration.frontendLabel}</td>
-	<td><f:render partial="Misc/OptionList" arguments="{options : options}" /></td>
+	<td>{log.configurationCode}</td>
 	<f:security.ifHasRole role="{settings.resolverUserGroup}">
-		<f:if condition="{log.feUser}">
-			<f:then>
-				<td>{log.currency.label} [{log.currency.symbol}]</td>
-				<td>{log.price}</td>
-				<td><f:link.action action="showUserInformation" arguments="{frontendUser : log.feUser}">{log.feUser.name} [{log.feUser.username}]</f:link.action></td>
-			</f:then>
-			<f:else>
-				<td>-</td>
-				<td>-</td>
-				<td>-</td>
-			</f:else>
-		</f:if>
+		<td><f:if condition="{log.feUser}"><f:then><f:link.action action="showUserInformation" arguments="{frontendUser : log.feUser}">{log.feUser.name} [{log.feUser.username}]</f:link.action></f:then><f:else>-</f:else></f:if></td>
 		<td>{log.tstamp -> f:format.date(format : dateFormat)}</td>
-		<td>{log.ip}</td>
 	</f:security.ifHasRole>
 	<f:if condition="{action} == 'list'">
-		<td><f:link.action action="show" arguments="{logger : log}">Show</f:link.action></td>
+		<td><f:link.action action="show" arguments="{logger : log}" class="action-button-default">Show</f:link.action></td>
 	</f:if>
 </tr>

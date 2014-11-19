@@ -60,7 +60,7 @@
 				<source>More Info</source>
 			</trans-unit>
 			<trans-unit id="optionlist.reset_selection" xml:space="preserve">
-				<source>» Reset Selection</source>
+				<source>Reset Selection</source>
 			</trans-unit>
 			<trans-unit id="optionlist.setlink.0.0" xml:space="preserve">
 				<source>Select option</source>
@@ -103,6 +103,10 @@
 			</trans-unit>
 			<trans-unit id="currency.usd.region">
 				<source>North, Middle and South America</source>
+			</trans-unit>
+
+			<trans-unit id="mark_incompatible_options">
+				<source>invalid</source>
 			</trans-unit>
 		</body>
 	</file>

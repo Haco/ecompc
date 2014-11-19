@@ -22,11 +22,15 @@ function removeAjaxLoader(element) {
 function txEcompcSetOption() {
 	$('.ecom-configurator-select-package-option-wrap').on('click', function (e) {
 		e.preventDefault();
+		if ( $(this).hasClass('disabled') ) {
+			$(this).blur();
+			return void(0);
+		}
 		addAjaxLoader('ecom-configurator-ajax-loader');
-		genericAjaxRequest($(this).attr('data-t3pid'), $(this).attr('data-t3lang'), 1407764086, 'setOption', {
+		genericAjaxRequest(t3pid, t3lang, 1407764086, 'setOption', {
 			option: $(this).attr('data-option'),
 			unset: $(this).attr('data-option-state'),
-			cObj: $(this).attr('data-t3cobj')
+			cObj: t3cobj
 		}, function (result) {
 			var pkgInfoDiv = $('#ecom-configurator-optionSelection-package-info'),
 				resultDiv = $('#ecom-configurator-result-canvas');
@@ -40,7 +44,7 @@ function txEcompcSetOption() {
 			}
 			if ( result.showResult ) {
 				pkgInfoDiv.hide();
-				$('#ecom-configurator-result-canvas .ecom-configurator-result h3.ecom-configurator-result').first().html(result.configurationData[0]);
+				$('#ecom-configurator-result-canvas .ecom-configurator-result h3.ecom-configurator-result-label').first().html(result.configurationData[0]);
 				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').first().html(getConfigurationCode(result.configurationData[1]));
 				$('#ecom-configurator-summary-table').html(getConfigurationSummary(result.configurationData[1]));
 				$('.ecompc-syntax-help').tooltip({
@@ -48,9 +52,16 @@ function txEcompcSetOption() {
 					track: true
 				});
 				resultDiv.show();
+				$('#ecom-configurator-show-result-button').hide();
+				txEcompcIndex(); // Re-assign Click-function()
 			} else {
 				pkgInfoDiv.show();
 				resultDiv.hide();
+				if ( result.progress === 1 ) {
+					$('#ecom-configurator-show-result-button').show();
+				} else {
+					$('#ecom-configurator-show-result-button').hide();
+				}
 			}
 			updatePackageNavigation(result.packages);
 			buildSelector(result);
@@ -71,9 +82,9 @@ function txEcompcIndex() {
 		if ( $(this).hasClass('ecom-configurator-package-state-0') || $(this).hasClass('current') )
 			return false;
 		addAjaxLoader('ecom-configurator-ajax-loader');
-		genericAjaxRequest($(this).attr('data-t3pid'), $(this).attr('data-t3lang'), 1407764086, 'index', {
+		genericAjaxRequest(t3pid, t3lang, 1407764086, 'index', {
 			package: $(this).attr('data-package'),
-			cObj: $(this).attr('data-t3cobj')
+			cObj: t3cobj
 		}, function (result) {
 			var pkgInfoDiv = $('#ecom-configurator-optionSelection-package-info'),
 				resultDiv = $('#ecom-configurator-result-canvas');
@@ -87,53 +98,20 @@ function txEcompcIndex() {
 			if ( result.showResult ) {
 				pkgInfoDiv.hide();
 				resultDiv.show();
+				$('#ecom-configurator-show-result-button').hide();
 			} else {
 				pkgInfoDiv.show();
 				resultDiv.hide();
+				if ( result.progress === 1 ) {
+					$('#ecom-configurator-show-result-button').show();
+				} else {
+					$('#ecom-configurator-show-result-button').hide();
+				}
 			}
 			updatePackageNavigation(result.packages);
 			buildSelector(result);
 		});
 	});
-}
-
-// Popup on click
-function addInfoTrigger() {
-	var triggerHint = '#ecom-configurator-canvas .ecom-configurator-select-package-option-info',
-		hintBoxSelector = '#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box',
-		windowHeight,
-		popupHeight,
-		scrollPosition,
-		currentHintBox;
-
-	$(triggerHint).on('click', function(e) {
-		/**
-		 * First hide every active hint box @deprecated since one box is used switching content via AJAX
-		 */
-		//hideHintBox(hintBoxSelector);
-
-		// Prevent default anchor action
-		e.preventDefault();
-
-		// AJAX request
-		getOptionHint($(this).parents('a').first().attr('data-option'), $(this).parents('a').first().attr('data-t3pid'), $(this).parents('a').first().attr('data-t3lang'), $(this).parents('a').first().attr('data-t3cobj'));
-
-		// Setting new vars
-		windowHeight = $(document).height();
-		currentHintBox = $(hintBoxSelector);
-
-		// Calculate position of the hint-box
-		popupHeight = $(currentHintBox).outerHeight();
-		// Check if popup high exceeds window height
-		// Then set position top 15px
-		scrollPosition = -5;
-		// Show Popup
-		//currentHintBox.css('display', 'block').animate({'top': scrollPosition, 'opacity': 1}, 'fast');
-		currentHintBox.slideDown();
-
-		// Prevent Option-a-tag from executing
-		return false;
-	})
 }
 
 /**
@@ -229,7 +207,7 @@ function updatePackageNavigation(thePackages) {
 				faIcon = $('#ecom-configurator-package-' + thePackages[index].uid + '-link i'),
 				link = $('#ecom-configurator-package-' + thePackages[index].uid + '-link'),
 				icon = $('#ecom-configurator-package-' + thePackages[index].uid + '-icon');
-			faIcon.addClass('icon-check' + (optionActiveState ? '' : '-empty')).removeClass('icon-check' + (optionActiveState ? '-empty' : ''));
+			faIcon.addClass('fa-' + (optionActiveState ? 'check-' : '') + 'square-o').removeClass('fa-' + (optionActiveState ? '' : 'check-') + 'square-o');
 			link.addClass('ecom-configurator-package-state-' + newState).removeClass('ecom-configurator-package-state-' + oldState);
 			icon.addClass('icon-state-' + newState).removeClass('icon-state-' + oldState);
 			if ( thePackages[index].current ) {
@@ -255,7 +233,7 @@ function buildSelector(result) {
 	if ( options !== null && options.length ) {
 		for ( prop in options ) {
 			if ( options.hasOwnProperty(prop) ) {
-				var content = "<a data-t3pid=\"" + result.pid + "\" data-t3lang=\"" + result.lang + "\" data-t3cobj=\"" + result.cObj + "\" data-option=\"" + options[prop].uid + "\" data-option-state=\"" + (options[prop].active ? 1 : 0) + "\" class=\"ecom-configurator-select-package-option-wrap\" tabindex=\"" + tabIndex + "\">";
+				var content = "<a data-t3pid=\"" + result.pid + "\" data-t3lang=\"" + result.lang + "\" data-t3cobj=\"" + result.cObj + "\" data-option=\"" + options[prop].uid + "\" data-option-state=\"" + (options[prop].active ? 1 : 0) + "\" class=\"ecom-configurator-select-package-option-wrap " + (options[prop].disabled ? "disabled" : "enabled") + "\" tabindex=\"" + tabIndex + "\">";
 				if ( result.pricingEnabled ) {
 					content += "<span class=\"ecom-configurator-select-package-option-price\">" + options[prop].price + "</span>";
 				}
@@ -295,7 +273,7 @@ function getConfigurationCode(config) {
 		/** Variant with lock icon for fixed packages (!visibleInFrontend) */
 /*
 		if ( config[i][2] ) {
-			prependInnerHTML = '<i class="icon-lock"></i>';
+			prependInnerHTML = '<i class="fa fa-lock"></i>';
 		}
 */
 		spans += '<span' + addClass + addTitle + '>' + prependInnerHTML + config[i][1] + '</span>';
@@ -305,15 +283,54 @@ function getConfigurationCode(config) {
 }
 
 function getConfigurationSummary(config) {
-	var table = '<table>';
+	var table = "<table>";
 	for ( var i=0; i<config.length; i++ ) {
 		if ( !config[i].pkg ) {
 			continue;
 		}
-		table += '<tr><td>' + config[i].pkg + '</td><td>' + config[i][0] + '</td></tr>';
+		table += "<tr><td>" + config[i].pkg + "</td><td>" + config[i][0] + "</td><td>" + (config[i].pkgUid ? "<a data-package=\"" + config[i].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td></tr>";
 	}
-	table += '</table>';
+	table += "</table>";
 	return table;
+}
+
+// Popup on click
+function addInfoTrigger() {
+	var triggerHint = '#ecom-configurator-canvas .ecom-configurator-select-package-option-info',
+		hintBoxSelector = '#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box',
+		windowHeight,
+		popupHeight,
+		scrollPosition,
+		currentHintBox;
+
+	$(triggerHint).on('click', function(e) {
+		/**
+		 * First hide every active hint box @deprecated since single box is used - switching contents via AJAX
+		 */
+			//hideHintBox(hintBoxSelector);
+
+			// Prevent default anchor action
+		e.preventDefault();
+
+		// AJAX request
+		getOptionHint($(this).parents('a').first().attr('data-option'), t3pid, t3lang, t3cobj);
+
+		// Setting new vars
+		windowHeight = $(document).height();
+		currentHintBox = $(hintBoxSelector);
+
+		// Calculate position of the hint-box
+		popupHeight = $(currentHintBox).outerHeight();
+		// Check if popup high exceeds window height
+		// Then set position top 15px
+		scrollPosition = -5;
+		// Show Popup
+		//currentHintBox.css('display', 'block').animate({'top': scrollPosition, 'opacity': 1}, 'fast');
+		currentHintBox.slideDown();
+
+		// Prevent Option-a-tag from executing
+		return false;
+	})
 }
 
 

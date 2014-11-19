@@ -418,7 +418,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 		if ( $this->isInConflictWithSelectedOptions() ) {
 			$this->setDisabled(TRUE);
-			$this->setFrontendLabel( $this->getFrontendLabel() . ' (not valid)' );
+			$this->setFrontendLabel($this->frontendLabel . ' • ' . \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('mark_incompatible_options', 'ecompc'));
 		}
 	}
 
@@ -444,7 +444,11 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 		if ( $includePricing ) {
 			$unitPrice = $this->getPricing($currency, $pricing[2]);
-			$priceDifference = $this->active ? 0.0 : ($unitPrice - ($pricing[3] - $pricing[2]));
+			if ( $this->configurationPackage->isMultipleSelect() ) {
+				$priceDifference = $this->active ? 0.0 : $unitPrice;
+			} else {
+				$priceDifference = $this->active ? 0.0 : ($unitPrice - ($pricing[3] - $pricing[2]));
+			}
 			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
 			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
 			$returnArray['price'] = $currencyVH->render(

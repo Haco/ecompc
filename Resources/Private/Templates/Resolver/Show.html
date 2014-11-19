@@ -4,10 +4,12 @@
 
 	<f:flashMessages renderMode="div" />
 
-	<table class="vtop">
+	<f:security.ifHasRole role="{settings.resolverUserGroup}"><f:link.action action="list" target="_blank" class="action-button-default"> Show List</f:link.action><br /><br /></f:security.ifHasRole>
+	<table class="ecom-configurator-resolve-table">
 		<tbody>
 			<tr><td>Product : </td><td>{log.configuration.frontendLabel}</td></tr>
-			<tr><td>Configuration : </td><td><f:render partial="Misc/OptionList" arguments="{options : options}" /></td></tr>
+			<tr><td>Configuration Code / SKU : </td><td>{log.configurationCode}</td></tr>
+			<tr><td>Configuration : </td><td style="padding-left: 0; padding-right: 0"><f:render partial="Misc/OptionList" arguments="{options : options}" /></td></tr>
 			<f:security.ifHasRole role="{settings.resolverUserGroup}">
 				<tr><td>Currency : </td><td><f:if condition="{log.feUser}"><f:then>{log.currency.label} [{log.currency.symbol}]</f:then><f:else>-</f:else></f:if></td></tr>
 				<tr><td>Configuration Price : </td><td><f:if condition="{log.feUser}"><f:then>{log.price}</f:then><f:else>-</f:else></f:if></td></tr>
@@ -17,5 +19,6 @@
 			</f:security.ifHasRole>
 		</tbody>
 	</table>
+
 
 </f:section>

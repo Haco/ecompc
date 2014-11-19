@@ -72,4 +72,5 @@
 		$('#ecom-configurator-select-options-ajax-update').hide();
 		$('#ecom-configurator-reset-configuration-button').hide();
 	}
+	$('#ecom-configurator-show-result-button').hide();
 })(jQuery);

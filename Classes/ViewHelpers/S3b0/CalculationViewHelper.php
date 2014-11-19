@@ -42,7 +42,6 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
  * @version $Id:
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  * @scope prototype
- * @todo refine documentation
  */
 class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
@@ -170,7 +169,7 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 
 		}
 		if ( $i >= 99 ) {
-			// TODO: exception
+			throw new \TYPO3\CMS\Fluid\Core\ViewHelper\Exception('Too many calculations passed to S3b0\\CalculationViewhelper', 1415258817);
 		}
 
 		return count($expressionArray) == 1 ? reset($expressionArray) : '';
