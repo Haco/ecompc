@@ -268,7 +268,7 @@ function getConfigurationSummary(config, pricingEnabled) {
 		}
 		table += "<tr><td>" + config[i].pkg + "</td><td>" + config[i][0].replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2') + "</td><td>" + (config[i].pkgUid ? "<a data-package=\"" + config[i].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td>";
 		if ( pricingEnabled ) {
-			table += "<td class=\"align-right\">" + config[i].pricing + "</td>";
+			table += "<td class=\"align-right\">" + (config[i].pricing ? config[i].pricing : "") + "</td>";
 		}
 		table += "</tr>";
 	}

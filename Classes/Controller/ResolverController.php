@@ -54,6 +54,9 @@ class ResolverController extends \S3b0\Ecompc\Controller\StandardController {
 		} elseif ( CoreUtility\GeneralUtility::_GP('log') ) {
 			$this->throwStatus(404);
 		}
+		if ( $this->request->getControllerActionName() != 'show' && !($GLOBALS['TSFE']->fe_user->groupData['uid'] && in_array($this->settings['resolverUserGroup'], $GLOBALS['TSFE']->fe_user->groupData['uid'])) ) {
+			$this->redirect('show');
+		}
 	}
 
 	/**

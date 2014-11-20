@@ -157,6 +157,7 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
 		}
 
+		$price = !$controller->pricingEnabled ?: $controller->cObj->getPrice($controller->currency);
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ( $controller->cObj->getEcompcPackagesFE() as $package ) {
 			/** NO multipleSelect allowed for dynamic configurators, accordingly skip 'em */
@@ -184,6 +185,7 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 							$controller->settings['usFormat']
 						)
 					));
+					$price += $pricing;
 				}
 			} elseif ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
 				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
@@ -194,13 +196,14 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 					'pkgUid' => $option->getConfigurationPackage()->getUid(),
 					'pricing' => !$controller->pricingEnabled ?: $currencyVH->render(
 						$controller->currency,
-						$option->getPricing($controller->currency),
+						$option->getPricing($controller->currency, $price),
 						2,
 						TRUE,
 						FALSE,
 						$controller->settings['usFormat']
 					)
 				));
+				$price += $option->getPricing($controller->currency, $price);
 			}
 		}
 

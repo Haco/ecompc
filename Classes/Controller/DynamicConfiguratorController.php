@@ -136,6 +136,7 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 			));
 		}
 
+		$price = !$controller->pricingEnabled ?: $controller->cObj->getPrice($controller->currency);
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ( $controller->cObj->getEcompcPackages() as $package ) {
 			/** NO multipleSelect allowed for dynamic configurators, accordingly skip 'em */
@@ -159,13 +160,14 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 					'pkgUid' => $option->getConfigurationPackage()->getUid(),
 					'pricing' => !$controller->pricingEnabled ?: $currencyVH->render(
 						$controller->currency,
-						$option->getPricing($controller->currency),
+						$option->getPricing($controller->currency, $price),
 						2,
 						TRUE,
 						FALSE,
 						$controller->settings['usFormat']
 					)
 				));
+				$price += $option->getPricing($controller->currency, $price);
 			}
 		}
 
