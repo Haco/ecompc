@@ -82,7 +82,7 @@ body {
 	color: #fff;
 }
 
-#ecom-configurator-canvas .action-button-default.left-arrow {
+#ecom-configurator-canvas .action-button-default.arrow-left {
 	background-image: url('../Images/white_arrow_left.png');
 	background-position: 10px center;
 	padding-left: 30px;

@@ -25,6 +25,8 @@ plugin.tx_ecompc {
 			additionalParamsQueryString = &tx_powermail_pi1[field][1]=%1$s&tx_powermail_pi1[field][2]=%2$s&txecmlog=%3$u
 			# cat=plugin.tx_ecompc//a4; type=options[,_self,_top,_blank]; label=Target
 			target = _self
+			# cat=plugin.tx_ecompc//a5; type=int+; label=Resolver PID:Uid of page containing resolver plugin
+			resolverPid = 0
 		}
 		log {
 			# cat=plugin.tx_ecompc//a01; type=options[0,1,2,3,4]; label=IP parts count:Parts of IP to track. Value 4 would track full IP, 0 instead would not track any.

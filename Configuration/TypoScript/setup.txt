@@ -1,9 +1,12 @@
 lib.tx_ecompc.resolverPath = TEXT
 lib.tx_ecompc.resolverPath {
-	typolink.parameter = 14
+	typolink.parameter = {$plugin.tx_ecompc.constants.requestForm.resolverPid}
 	typolink.additionalParams = &log={GP : log}
 	typolink.additionalParams.stdWrap.insertData = 1
+	typolink.returnLast = url
+	typolink.forceAbsoluteUrl = 1
 }
+plugin.tx_powermail.settings.setup.prefill.configuration_resolver < lib.tx_ecompc.resolverPath
 
 ############################################
 # Map 3rd party table fields on properties #

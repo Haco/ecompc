@@ -4,7 +4,6 @@
 
 	<f:flashMessages renderMode="div" />
 
-	<f:security.ifHasRole role="{settings.resolverUserGroup}"><f:link.action action="list" target="_blank" class="action-button-default"> Show List</f:link.action><br /><br /></f:security.ifHasRole>
 	<table class="ecom-configurator-resolve-table">
 		<tbody>
 			<tr><td>Product : </td><td>{log.configuration.frontendLabel}</td></tr>
@@ -20,5 +19,6 @@
 		</tbody>
 	</table>
 
+	<f:security.ifHasRole role="{settings.resolverUserGroup}"><div class="divider"></div><f:link.action action="list" target="_blank" class="action-button-default arrow-left"> Show List</f:link.action><br /><br /></f:security.ifHasRole>
 
 </f:section>
