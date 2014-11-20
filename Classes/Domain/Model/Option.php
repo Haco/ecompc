@@ -418,7 +418,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 		if ( $this->isInConflictWithSelectedOptions() ) {
 			$this->setDisabled(TRUE);
-			$this->setFrontendLabel($this->frontendLabel . ' • ' . \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('mark_incompatible_options', 'ecompc'));
+			$this->setFrontendLabel($this->frontendLabel . ' • ' . \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('incompatible_options', 'ecompc'));
 		}
 	}
 

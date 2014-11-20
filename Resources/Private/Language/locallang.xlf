@@ -1,113 +1,140 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2014-09-11T10:03:16Z">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-11-20T12:34:13Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
 		<body>
-			<trans-unit id="404.dbl_config_found" xml:space="preserve">
-				<source>It seems like you got more than one configurator on current page. This error occurs because only one configurator per page is allowed!</source>
-			</trans-unit>
-			<trans-unit id="404.no_config_found" xml:space="preserve">
-				<source>No configurations found!</source>
-			</trans-unit>
-			<trans-unit id="404.no_unique_sku_found" xml:space="preserve">
-				<source>Something went wrong! Please contact your system administrator for assistance. [@mSKU]</source>
-			</trans-unit>
-			<trans-unit id="csh.configCodePrefix" xml:space="preserve">
-				<source></source>
-			</trans-unit>
-			<trans-unit id="csh.configCodeSuffix" xml:space="preserve">
-				<source></source>
-			</trans-unit>
-			<trans-unit id="index.header.back_to_selection" xml:space="preserve">
-				<source>Back to Module Selection</source>
-			</trans-unit>
-			<trans-unit id="index.header.base_price" xml:space="preserve">
-				<source>Base price</source>
-			</trans-unit>
-			<trans-unit id="index.header.config_price" xml:space="preserve">
-				<source>Config price</source>
-			</trans-unit>
-			<trans-unit id="index.package.no_price_label" xml:space="preserve">
-				<source>+ additional costs</source>
-			</trans-unit>
-			<trans-unit id="index.package.your_choice" xml:space="preserve">
-				<source>Your choice:</source>
-			</trans-unit>
-			<trans-unit id="index.request_your_device" xml:space="preserve">
-				<source>Request your device</source>
-			</trans-unit>
-			<trans-unit id="index.reset_configuration" xml:space="preserve">
-				<source>Reset Configuration</source>
-			</trans-unit>
-			<trans-unit id="index.summary_button" xml:space="preserve">
-				<source>Summary</source>
-			</trans-unit>
-			<trans-unit id="index.summary_button_title" xml:space="preserve">
-				<source>Review your Configuration</source>
-			</trans-unit>
-			<trans-unit id="index.x_percent_done" xml:space="preserve">
-				<source>% done</source>
-			</trans-unit>
-			<trans-unit id="index.your_configuration_code" xml:space="preserve">
-				<source>Your Configuration Code</source>
-			</trans-unit>
-			<trans-unit id="optionlist.confirm_selection" xml:space="preserve">
-				<source>Confirm Selection</source>
-			</trans-unit>
-			<trans-unit id="optionlist.more_info" xml:space="preserve">
-				<source>More Info</source>
-			</trans-unit>
-			<trans-unit id="optionlist.reset_selection" xml:space="preserve">
-				<source>Reset Selection</source>
-			</trans-unit>
-			<trans-unit id="optionlist.setlink.0.0" xml:space="preserve">
-				<source>Select option</source>
-			</trans-unit>
-			<trans-unit id="optionlist.setlink.0.1" xml:space="preserve">
-				<source>Unselect option</source>
-			</trans-unit>
-			<trans-unit id="optionlist.setlink.1.0" xml:space="preserve">
-				<source>Add this option</source>
-			</trans-unit>
-			<trans-unit id="optionlist.setlink.1.1" xml:space="preserve">
-				<source>Remove this option</source>
-			</trans-unit>
-			<trans-unit id="optionlist.unit_price" xml:space="preserve">
-				<source>Unit Price</source>
-			</trans-unit>
-			<trans-unit id="optionlist.unit_price.abbr" xml:space="preserve">
-				<source>UP</source>
-			</trans-unit>
-			<trans-unit id="price.inclusive" xml:space="preserve">
-				<source>incl.</source>
-			</trans-unit>
-			<trans-unit id="selectregion.choose_text" xml:space="preserve">
-				<source>Please choose a region/currency</source>
-			</trans-unit>
-			<trans-unit id="selectregion.warning_onetime_text" xml:space="preserve">
-				<source>This is a one time selection! You won´t be able to return and switch currency.</source>
-			</trans-unit>
-
-			<!-- DEFAULT CURRENCY REGIONS -->
-
-			<trans-unit id="currency.eur.region">
-				<source>Europe</source>
-			</trans-unit>
-			<trans-unit id="currency.chf.region">
-				<source>Switzerland</source>
-			</trans-unit>
-			<trans-unit id="currency.gbp.region">
-				<source>United Kingdom</source>
-			</trans-unit>
-			<trans-unit id="currency.usd.region">
-				<source>North, Middle and South America</source>
-			</trans-unit>
-
-			<trans-unit id="mark_incompatible_options">
-				<source>invalid</source>
-			</trans-unit>
+		<trans-unit id="404.dbl_config_found" xml:space="preserve">
+			<source>It seems like you got more than one configurator on current page. This error occurs because only one configurator per page is allowed!</source>
+		</trans-unit>
+		<trans-unit id="404.no_config_found" xml:space="preserve">
+			<source>No configurations found!</source>
+		</trans-unit>
+		<trans-unit id="404.no_unique_sku_found" xml:space="preserve">
+			<source>Something went wrong! Please contact your system administrator for assistance. [@mSKU]</source>
+		</trans-unit>
+		<trans-unit id="currency.chf.region" xml:space="preserve">
+			<source>Switzerland</source>
+		</trans-unit>
+		<trans-unit id="currency.eur.region" xml:space="preserve">
+			<source>Europe</source>
+		</trans-unit>
+		<trans-unit id="currency.gbp.region" xml:space="preserve">
+			<source>United Kingdom</source>
+		</trans-unit>
+		<trans-unit id="currency.usd.region" xml:space="preserve">
+			<source>North, Middle and South America</source>
+		</trans-unit>
+		<trans-unit id="incompatible_options" xml:space="preserve">
+			<source>This option is not available in current selection!</source>
+		</trans-unit>
+		<trans-unit id="index.header.back_to_selection" xml:space="preserve">
+			<source>Back to Module Selection</source>
+		</trans-unit>
+		<trans-unit id="index.header.base_price" xml:space="preserve">
+			<source>Base price</source>
+		</trans-unit>
+		<trans-unit id="index.header.config_price" xml:space="preserve">
+			<source>Config price</source>
+		</trans-unit>
+		<trans-unit id="index.package.no_price_label" xml:space="preserve">
+			<source>+ additional costs</source>
+		</trans-unit>
+		<trans-unit id="index.package.your_choice" xml:space="preserve">
+			<source>Your choice:</source>
+		</trans-unit>
+		<trans-unit id="index.request_your_device" xml:space="preserve">
+			<source>Request your device</source>
+		</trans-unit>
+		<trans-unit id="index.reset_configuration" xml:space="preserve">
+			<source>Reset Configuration</source>
+		</trans-unit>
+		<trans-unit id="index.summary_button" xml:space="preserve">
+			<source>Summary</source>
+		</trans-unit>
+		<trans-unit id="index.summary_button_title" xml:space="preserve">
+			<source>Review your Configuration</source>
+		</trans-unit>
+		<trans-unit id="index.x_percent_done" xml:space="preserve">
+			<source>% done</source>
+		</trans-unit>
+		<trans-unit id="index.your_configuration_code" xml:space="preserve">
+			<source>Your Configuration Code</source>
+		</trans-unit>
+		<trans-unit id="labels.code" xml:space="preserve">
+			<source>Configuration Code / SKU</source>
+		</trans-unit>
+		<trans-unit id="labels.configuration" xml:space="preserve">
+			<source>Configuration</source>
+		</trans-unit>
+		<trans-unit id="labels.configuration_price" xml:space="preserve">
+			<source>Configuration Price</source>
+		</trans-unit>
+		<trans-unit id="labels.currency" xml:space="preserve">
+			<source>Currency</source>
+		</trans-unit>
+		<trans-unit id="labels.date" xml:space="preserve">
+			<source><![CDATA[Date
+(when request has been initialized)]]></source>
+		</trans-unit>
+		<trans-unit id="labels.date_short" xml:space="preserve">
+			<source>Date</source>
+		</trans-unit>
+		<trans-unit id="labels.ip_address" xml:space="preserve">
+			<source>IP-Address (masked for privacy)</source>
+		</trans-unit>
+		<trans-unit id="labels.product" xml:space="preserve">
+			<source>Product</source>
+		</trans-unit>
+		<trans-unit id="labels.user" xml:space="preserve">
+			<source>User</source>
+		</trans-unit>
+		<trans-unit id="link.list" xml:space="preserve">
+			<source>List view</source>
+		</trans-unit>
+		<trans-unit id="link.show" xml:space="preserve">
+			<source>Show</source>
+		</trans-unit>
+		<trans-unit id="optionlist.confirm_selection" xml:space="preserve">
+			<source>Confirm Selection</source>
+		</trans-unit>
+		<trans-unit id="optionlist.more_info" xml:space="preserve">
+			<source>More Info</source>
+		</trans-unit>
+		<trans-unit id="optionlist.reset_selection" xml:space="preserve">
+			<source>Reset Selection</source>
+		</trans-unit>
+		<trans-unit id="optionlist.setlink.0.0" xml:space="preserve">
+			<source>Select option</source>
+		</trans-unit>
+		<trans-unit id="optionlist.setlink.0.1" xml:space="preserve">
+			<source>Unselect option</source>
+		</trans-unit>
+		<trans-unit id="optionlist.setlink.1.0" xml:space="preserve">
+			<source>Add this option</source>
+		</trans-unit>
+		<trans-unit id="optionlist.setlink.1.1" xml:space="preserve">
+			<source>Remove this option</source>
+		</trans-unit>
+		<trans-unit id="optionlist.unit_price" xml:space="preserve">
+			<source>Unit Price</source>
+		</trans-unit>
+		<trans-unit id="optionlist.unit_price.abbr" xml:space="preserve">
+			<source>UP</source>
+		</trans-unit>
+		<trans-unit id="price.inclusive" xml:space="preserve">
+			<source>incl.</source>
+		</trans-unit>
+		<trans-unit id="selectregion.choose_text" xml:space="preserve">
+			<source>Please choose a region/currency</source>
+		</trans-unit>
+		<trans-unit id="selectregion.warning_onetime_text" xml:space="preserve">
+			<source>This is a one time selection! You won´t be able to return and switch currency.</source>
+		</trans-unit>
+		<trans-unit id="title.closeIB" xml:space="preserve">
+			<source>Close Info Box</source>
+		</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -6,6 +6,6 @@
 		<td>{log.tstamp -> f:format.date(format : dateFormat)}</td>
 	</f:security.ifHasRole>
 	<f:if condition="{action} == 'list'">
-		<td><f:link.action action="show" arguments="{logger : log}" class="action-button-default">Show</f:link.action></td>
+		<td><f:link.action action="show" arguments="{logger : log}" class="action-button-default"><f:translate id="link.show" /></f:link.action></td>
 	</f:if>
 </tr>

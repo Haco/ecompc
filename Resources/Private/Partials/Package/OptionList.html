@@ -1,7 +1,7 @@
 <div id="ecom-configurator-select-options-ajax-update">
 	<f:if condition="{options}">
 		<f:for each="{options}" as="option" iteration="optionIterator">
-			<a data-option="{option.uid}" data-option-state="{option.active -> f:format.number(decimals : 0)}" class="ecom-configurator-select-package-option-wrap {f:if(condition : '{option.inConflictWithSelectedOptions}', then : 'disabled', else : 'enabled')}" tabindex="{optionIterator.cycle}" title="{f:translate(id:'optionlist.setlink.{package.multipleSelect -> f:format.number(decimals : 0)}.{option.active -> f:format.number(decimals : 0)}')}">
+			<a data-option="{option.uid}" data-option-state="{option.active -> f:format.number(decimals : 0)}" class="ecom-configurator-select-package-option-wrap {f:if(condition : '{option.inConflictWithSelectedOptions}', then : 'disabled', else : 'enabled')}" tabindex="{optionIterator.cycle}">
 				<f:render partial="Misc/OptionLinkInnerHTML" arguments="{_all}" />
 			</a>
 			<div class="clearfix"></div>

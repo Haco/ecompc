@@ -6,19 +6,19 @@
 
 	<table class="ecom-configurator-resolve-table">
 		<tbody>
-			<tr><td>Product : </td><td>{log.configuration.frontendLabel}</td></tr>
-			<tr><td>Configuration Code / SKU : </td><td>{log.configurationCode}</td></tr>
-			<tr><td>Configuration : </td><td style="padding-left: 0; padding-right: 0"><f:render partial="Misc/OptionList" arguments="{options : options}" /></td></tr>
+			<tr><td><f:translate id="labels.product" /> : </td><td>{log.configuration.frontendLabel}</td></tr>
+			<tr><td><f:translate id="labels.code" /> : </td><td>{log.configurationCode}</td></tr>
+			<tr><td><f:translate id="labels.configuration" /> : </td><td style="padding-left: 0; padding-right: 0"><f:render partial="Misc/OptionList" arguments="{options : options}" /></td></tr>
 			<f:security.ifHasRole role="{settings.resolverUserGroup}">
-				<tr><td>Currency : </td><td><f:if condition="{log.feUser}"><f:then>{log.currency.label} [{log.currency.symbol}]</f:then><f:else>-</f:else></f:if></td></tr>
-				<tr><td>Configuration Price : </td><td><f:if condition="{log.feUser}"><f:then><f:s3b0.financial.currency currency="{log.currency}" signed="0" usFormat="{settings.usFormat}">{log.price}</f:s3b0.financial.currency></f:then><f:else>-</f:else></f:if></td></tr>
-				<tr><td>User : </td><td><f:if condition="{log.feUser}"><f:then><f:link.action action="showUserInformation" arguments="{frontendUser : log.feUser}">{log.feUser.name} [{log.feUser.username}]</f:link.action></f:then><f:else>-</f:else></f:if></td></tr>
-				<tr><td>Date : </td><td>{log.tstamp -> f:format.date(format : dateFormat)}</td></tr>
-				<tr><td>IP-Address (masked for privacy) : </td><td>{log.ip}</td></tr>
+				<tr><td><f:translate id="labels.currency" /> : </td><td><f:if condition="{log.feUser}"><f:then>{log.currency.label} [{log.currency.symbol}]</f:then><f:else>-</f:else></f:if></td></tr>
+				<tr><td><f:translate id="labels.configuration_price" /> : </td><td><f:if condition="{log.feUser}"><f:then><f:s3b0.financial.currency currency="{log.currency}" signed="0" usFormat="{settings.usFormat}">{log.price}</f:s3b0.financial.currency></f:then><f:else>-</f:else></f:if></td></tr>
+				<tr><td><f:translate id="labels.user" /> : </td><td><f:if condition="{log.feUser}"><f:then><f:link.action action="showUserInformation" arguments="{frontendUser : log.feUser}">{log.feUser.name} [{log.feUser.username}]</f:link.action></f:then><f:else>-</f:else></f:if></td></tr>
+				<tr><td><f:translate id="labels.date_short" /> : </td><td>{log.tstamp -> f:format.date(format : dateFormat)}</td></tr>
+				<tr><td><f:translate id="labels.ip_address" /> : </td><td>{log.ip}</td></tr>
 			</f:security.ifHasRole>
 		</tbody>
 	</table>
 
-	<f:security.ifHasRole role="{settings.resolverUserGroup}"><div class="divider"></div><f:link.action action="list" target="_blank" class="action-button-default arrow-left"> Show List</f:link.action><br /><br /></f:security.ifHasRole>
+	<f:security.ifHasRole role="{settings.resolverUserGroup}"><div class="divider"></div><f:link.action action="list" target="_blank" class="action-button-default arrow-left"> <f:translate id="link.list" /></f:link.action><br /><br /></f:security.ifHasRole>
 
 </f:section>
