@@ -513,7 +513,7 @@ body {
 	text-indent: -9999px;
 }
 
-#ecom-configurator-canvas .ui-tooltip {
+.ui-tooltip {
 	padding: 8px;
 	position: absolute;
 	z-index: 9999;
@@ -522,13 +522,13 @@ body {
 	box-shadow: 0 0 5px #aaa;
 	background-color: #fff;
 }
-body #ecom-configurator-canvas .ui-tooltip {
+body .ui-tooltip {
 	border-width: 2px;
 }
-#ecom-configurator-canvas .ui-helper-hidden {
+.ui-helper-hidden {
 	display: none;
 }
-#ecom-configurator-canvas .ui-helper-hidden-accessible {
+.ui-helper-hidden-accessible {
 	border: 0;
 	clip: rect(0 0 0 0);
 	height: 1px;
