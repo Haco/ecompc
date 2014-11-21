@@ -84,13 +84,21 @@
 			$table = 'tt_content';
 			$title = 'Moving ' . $table . ':tx_ecompc_type definition to ' . $table . ':list_type : ';
 
-			if ( $this->databaseConnection->exec_UPDATEquery($table, 'list_type="ecompc_configurator" AND tx_ecompc_type=1', array('list_type' => 'ecompc_configurator_dynamic')) === FALSE &&
-				$this->databaseConnection->exec_UPDATEquery($table, 'list_type="ecompc_configurator" AND tx_ecompc_type=0', array('list_type' => 'ecompc_configurator_sku')) === FALSE) {
+			if ( $this->databaseConnection->exec_UPDATEquery($table, 'list_type="ecompc_configurator" AND tx_ecompc_type=1', array('list_type' => 'ecompc_configurator_dynamic')) === FALSE ) {
 				$message = ' SQL ERROR: ' . $this->databaseConnection->sql_error();
 				$status = FlashMessage::ERROR;
 			} else {
 				$message = 'OK!';
 				$status = FlashMessage::OK;
+			}
+			if ( $status !== FlashMessage::ERROR ) {
+				if ( $this->databaseConnection->exec_UPDATEquery($table, 'list_type="ecompc_configurator" AND tx_ecompc_type=0', array('list_type' => 'ecompc_configurator_sku')) === FALSE ) {
+					$message = ' SQL ERROR: ' . $this->databaseConnection->sql_error();
+					$status = FlashMessage::ERROR;
+				} else {
+					$message = 'OK!';
+					$status = FlashMessage::OK;
+				}
 			}
 
 			$this->messageArray[] = array($status, $title, $message);
