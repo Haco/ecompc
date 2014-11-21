@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2014-09-11T10:03:16Z">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-11-20T12:34:13Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -14,11 +14,20 @@
 		<trans-unit id="404.no_unique_sku_found" xml:space="preserve">
 			<source>Something went wrong! Please contact your system administrator for assistance. [@mSKU]</source>
 		</trans-unit>
-		<trans-unit id="csh.configCodePrefix" xml:space="preserve">
-			<source></source>
+		<trans-unit id="currency.chf.region" xml:space="preserve">
+			<source>Switzerland</source>
 		</trans-unit>
-		<trans-unit id="csh.configCodeSuffix" xml:space="preserve">
-			<source></source>
+		<trans-unit id="currency.eur.region" xml:space="preserve">
+			<source>Europe</source>
+		</trans-unit>
+		<trans-unit id="currency.gbp.region" xml:space="preserve">
+			<source>United Kingdom</source>
+		</trans-unit>
+		<trans-unit id="currency.usd.region" xml:space="preserve">
+			<source>North, Middle and South America</source>
+		</trans-unit>
+		<trans-unit id="incompatible_options" xml:space="preserve">
+			<source>This option is not available in current selection!</source>
 		</trans-unit>
 		<trans-unit id="index.header.back_to_selection" xml:space="preserve">
 			<source>Back to Module Selection</source>
@@ -39,7 +48,7 @@
 			<source>Request your device</source>
 		</trans-unit>
 		<trans-unit id="index.reset_configuration" xml:space="preserve">
-			<source>» Reset Configuration</source>
+			<source>Reset Configuration</source>
 		</trans-unit>
 		<trans-unit id="index.summary_button" xml:space="preserve">
 			<source>Summary</source>
@@ -53,6 +62,40 @@
 		<trans-unit id="index.your_configuration_code" xml:space="preserve">
 			<source>Your Configuration Code</source>
 		</trans-unit>
+		<trans-unit id="labels.code" xml:space="preserve">
+			<source>Configuration Code / SKU</source>
+		</trans-unit>
+		<trans-unit id="labels.configuration" xml:space="preserve">
+			<source>Configuration</source>
+		</trans-unit>
+		<trans-unit id="labels.configuration_price" xml:space="preserve">
+			<source>Configuration Price</source>
+		</trans-unit>
+		<trans-unit id="labels.currency" xml:space="preserve">
+			<source>Currency</source>
+		</trans-unit>
+		<trans-unit id="labels.date" xml:space="preserve">
+			<source><![CDATA[Date
+(when request has been initialized)]]></source>
+		</trans-unit>
+		<trans-unit id="labels.date_short" xml:space="preserve">
+			<source>Date</source>
+		</trans-unit>
+		<trans-unit id="labels.ip_address" xml:space="preserve">
+			<source>IP-Address (masked for privacy)</source>
+		</trans-unit>
+		<trans-unit id="labels.product" xml:space="preserve">
+			<source>Product</source>
+		</trans-unit>
+		<trans-unit id="labels.user" xml:space="preserve">
+			<source>User</source>
+		</trans-unit>
+		<trans-unit id="link.list" xml:space="preserve">
+			<source>List view</source>
+		</trans-unit>
+		<trans-unit id="link.show" xml:space="preserve">
+			<source>Show</source>
+		</trans-unit>
 		<trans-unit id="optionlist.confirm_selection" xml:space="preserve">
 			<source>Confirm Selection</source>
 		</trans-unit>
@@ -60,7 +103,7 @@
 			<source>More Info</source>
 		</trans-unit>
 		<trans-unit id="optionlist.reset_selection" xml:space="preserve">
-			<source>» Reset Selection</source>
+			<source>Reset Selection</source>
 		</trans-unit>
 		<trans-unit id="optionlist.setlink.0.0" xml:space="preserve">
 			<source>Select option</source>
@@ -88,6 +131,9 @@
 		</trans-unit>
 		<trans-unit id="selectregion.warning_onetime_text" xml:space="preserve">
 			<source>This is a one time selection! You won´t be able to return and switch currency.</source>
+		</trans-unit>
+		<trans-unit id="title.closeIB" xml:space="preserve">
+			<source>Close Info Box</source>
 		</trans-unit>
 		</body>
 	</file>

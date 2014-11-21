@@ -1,0 +1,26 @@
+<f:layout name="Blank" />
+
+<f:section name="main">
+
+	<f:flashMessages renderMode="div" />
+
+	<f:security.ifHasRole role="{settings.resolverUserGroup}">
+		<table class="ecom-configurator-resolve-list">
+			<thead>
+				<tr>
+					<td><f:translate id="labels.product" /></td>
+					<td><f:translate id="labels.code" /></td>
+					<td><f:translate id="labels.user" /></td>
+					<td><f:format.nl2br><f:translate id="labels.date" /></f:format.nl2br></td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<f:for each="{logs}" as="log">
+					<f:render partial="Logger/Properties" arguments="{log : log, options : options, action : 'list', dateFormat : dateFormat}" />
+				</f:for>
+			</tbody>
+		</table>
+	</f:security.ifHasRole>
+
+</f:section>

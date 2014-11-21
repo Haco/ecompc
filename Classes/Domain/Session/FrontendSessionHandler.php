@@ -19,6 +19,6 @@ class FrontendSessionHandler extends \S3b0\Ecompc\Domain\Session\SessionHandler 
 	/**
 	 * @var string
 	 */
-	protected $mode = "FE";
+	protected $mode = 'FE';
 
 }

@@ -1,0 +1,16 @@
+<f:layout name="Default" />
+
+<f:section name="main">
+
+	<f:flashMessages renderMode="div" />
+
+	<f:render partial="Misc/Index" arguments="{_all}" />
+
+	<script language="JavaScript" type="text/javascript">
+		var djs = document.createElement("script");
+		djs.type = "text/javascript";
+		djs.src = "{f:s3b0.getFileName(path:settings.js.skuConfig)}";
+		document.body.appendChild(djs);
+	</script>
+
+</f:section>

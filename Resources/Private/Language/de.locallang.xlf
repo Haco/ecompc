@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2014-09-11T10:03:16Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2014-11-20T12:34:13Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -16,6 +16,26 @@
 		<trans-unit id="404.no_unique_sku_found" approved="yes" xml:space="preserve">
 			<source>Something went wrong! Please contact your system administrator for assistance. [@mSKU]</source>
 			<target>Das ist etwas schief gelaufen!&lt;br /&gt;Bitte kontaktieren Sie Ihren System-Administrator zur Hilfestellung. [@mSKU] </target>
+		</trans-unit>
+		<trans-unit id="currency.chf.region" approved="yes" xml:space="preserve">
+			<source>Switzerland</source>
+			<target>Schweiz</target>
+		</trans-unit>
+		<trans-unit id="currency.eur.region" approved="yes" xml:space="preserve">
+			<source>Europe</source>
+			<target>Europa</target>
+		</trans-unit>
+		<trans-unit id="currency.gbp.region" approved="yes" xml:space="preserve">
+			<source>United Kingdom</source>
+			<target>Vereinigtes Königreich</target>
+		</trans-unit>
+		<trans-unit id="currency.usd.region" approved="yes" xml:space="preserve">
+			<source>North, Middle and South America</source>
+			<target>Nord-, Mittel- und Südamerika</target>
+		</trans-unit>
+		<trans-unit id="incompatible_options" approved="yes" xml:space="preserve">
+			<source>This option is not available in current selection!</source>
+			<target>Diese Option ist in der aktuellen Auswahl nicht verfügbar!</target>
 		</trans-unit>
 		<trans-unit id="index.header.back_to_selection" approved="yes" xml:space="preserve">
 			<source>Back to Module Selection</source>
@@ -42,8 +62,8 @@
 			<target>Jetzt Anfragen</target>
 		</trans-unit>
 		<trans-unit id="index.reset_configuration" approved="yes" xml:space="preserve">
-			<source>» Reset Configuration</source>
-			<target>» Konfiguration zurücksetzen</target>
+			<source>Reset Configuration</source>
+			<target>Konfiguration zurücksetzen</target>
 		</trans-unit>
 		<trans-unit id="index.summary_button" approved="yes" xml:space="preserve">
 			<source>Summary</source>
@@ -61,6 +81,56 @@
 			<source>Your Configuration Code</source>
 			<target>Ihr Konfigurations-Code</target>
 		</trans-unit>
+		<trans-unit id="labels.code" approved="yes" xml:space="preserve">
+			<source>Configuration Code / SKU</source>
+			<target>Konfigurationscode / SKU</target>
+		</trans-unit>
+		<trans-unit id="labels.configuration" approved="yes" xml:space="preserve">
+			<source>Configuration</source>
+			<target>Konfiguration</target>
+		</trans-unit>
+		<trans-unit id="labels.configuration_price" approved="yes" xml:space="preserve">
+			<source>Configuration Price</source>
+			<target>Konfigurationspreis</target>
+		</trans-unit>
+		<trans-unit id="labels.currency" approved="yes" xml:space="preserve">
+			<source>Currency</source>
+			<target>Währung</target>
+		</trans-unit>
+		<trans-unit id="labels.date" xml:space="preserve">
+			<source><![CDATA[Date
+(when request has been initialized)]]></source>
+			<target><![CDATA[Datum
+(Zeitpunkt des Absendens der Anfrage)]]></target>
+		</trans-unit>
+		<trans-unit id="labels.date_short" approved="yes" xml:space="preserve">
+			<source>Date</source>
+			<target>Datum</target>
+		</trans-unit>
+		<trans-unit id="labels.ip_address" approved="yes" xml:space="preserve">
+			<source>IP-Address (masked for privacy)</source>
+			<target>ID-Adresse (aus Datenschutzgründen gekürzt)</target>
+		</trans-unit>
+		<trans-unit id="labels.product" approved="yes" xml:space="preserve">
+			<source>Product</source>
+			<target>Produkt</target>
+		</trans-unit>
+		<trans-unit id="labels.user" approved="yes" xml:space="preserve">
+			<source>User</source>
+			<target>Benutzer</target>
+		</trans-unit>
+		<trans-unit id="link.list" approved="yes" xml:space="preserve">
+			<source>List view</source>
+			<target>Listenansicht</target>
+		</trans-unit>
+		<trans-unit id="link.show" approved="yes" xml:space="preserve">
+			<source>Show</source>
+			<target>Anzeigen</target>
+		</trans-unit>
+		<trans-unit id="mark_incompatible_options" approved="yes" xml:space="preserve">
+			<source></source>
+			<target>ungültige Auswahl</target>
+		</trans-unit>
 		<trans-unit id="optionlist.confirm_selection" approved="yes" xml:space="preserve">
 			<source>Confirm Selection</source>
 			<target>Auswahl bestätigen</target>
@@ -70,8 +140,8 @@
 			<target>Weitere Infos</target>
 		</trans-unit>
 		<trans-unit id="optionlist.reset_selection" approved="yes" xml:space="preserve">
-			<source>» Reset Selection</source>
-			<target>» Auswahl zurücksetzen</target>
+			<source>Reset Selection</source>
+			<target>Auswahl zurücksetzen</target>
 		</trans-unit>
 		<trans-unit id="optionlist.setlink.0.0" approved="yes" xml:space="preserve">
 			<source>Select option</source>
@@ -108,6 +178,10 @@
 		<trans-unit id="selectregion.warning_onetime_text" approved="yes" xml:space="preserve">
 			<source>This is a one time selection! You won´t be able to return and switch currency.</source>
 			<target>Dies ist eine Einmal-Auswahl! Sie werden keine weitere Möglichkeit haben, die Währung zu wechseln.</target>
+		</trans-unit>
+		<trans-unit id="title.closeIB" approved="yes" xml:space="preserve">
+			<source>Close Info Box</source>
+			<target>Infobox schliessen</target>
 		</trans-unit>
 		</body>
 	</file>

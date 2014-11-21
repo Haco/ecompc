@@ -50,15 +50,30 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 *
 	 * @return void
 	 * @api
+	 *
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
 	public function initializeAction() {
-		if ($this->request->hasArgument('cObj')) {
+		global $TYPO3_CONF_VARS;
+		/** !!! IMPORTANT TO MAKE JSON WORK !!! */
+		$TYPO3_CONF_VARS['FE']['debug'] = '0';
+		/** define type used! */
+		if ( $this->request->hasArgument('cObj') ) {
 			$this->cObj = $this->contentRepository->findByUid($this->request->getArgument('cObj'));
 		} else {
 			$this->throwStatus(404, \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('404.no_cObj', $this->extensionName));
 		}
-		self::updateStorage($this);
-		parent::initializeAction();
+		self::setStoragePid($this);
+		$this->getFeSession()->setStorageKey('ext-' . $this->request->getControllerExtensionKey());
+		\S3b0\Ecompc\Utility\Div::setPriceHandling($this);
+		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
+		$this->configurationSessionStorageKey .= $this->cObj->getPid();
+		// Get current configuration (Array: options=array(options)|packages=array(package => option(s)))
+		$this->selectedConfiguration = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: array(
+			'options' => array(),
+			'packages' => array()
+		);
 	}
 
 	/**
@@ -73,130 +88,73 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	public function initializeView() {
 		/**
 		 * cfgp   -> configuration price
-		 * selcps -> indicator for selected packages used at JS calculation of progress
+		 * selcps -> indicator for active packages used at JS calculation of progress
 		 */
-		$this->view->setVariablesToRender(array(
-			'action', 'pid', 'L', 'cObj', 'showPriceLabels', 'currency', 'pricing', 'cfgp', 'cfgres', 'content', 'package', 'packagesLinksInnerHTML', 'selcps', 'proceed'
+		$variablesToRender = array(
+			'controller', 'currentPackage', 'packages', 'options', 'hint', 'progress', 'showResult', 'configurationData', 'pricingEnabled', 'pricing'
+		);
+		if ( \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment() ) {
+			$variablesToRender[] = 'debug';
+		}
+		$this->view->setVariablesToRender($variablesToRender);
+		// parent::initializeView();
+		$this->view->assignMultiple(array(
+			'controller' => $this->request->getControllerName(),
+			'pricingEnabled' => $this->isPricingEnabled()
 		));
-		parent::initializeView();
-		$this->view->assign('L', (int) $GLOBALS['TSFE']->sys_language_content);
 	}
 
 	/**
-	 * action updatePackages
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\InvalidArgumentNameException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
 	 */
-	public function updatePackagesAction() {
-		$packageLinks = array();
-		// Fetch packages
-		if ($packages = $this->cObj->getEcompcPackagesFE()) {
-			$isActive = FALSE;
-			$prev = NULL;
-			/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-			foreach (array_reverse($packages->toArray()) as $package) {
-				if (!$isActive && array_key_exists($package->getUid(), $this->selectedConfiguration['packages'])) {
-					$isActive = TRUE;
-					if ($prev instanceof \S3b0\Ecompc\Domain\Model\Package) {
-						$prev->setActive(TRUE);
-						$packageLinks[$prev->getUid()] = array(
-							$prev->isActive(),
-							(bool) $prev->getSelectedOptions()->count(),
-							$this->renderTemplateView('GetPackageLinkInnerHTML', array('package' => $prev))
-						);
-					}
-				}
-				$package->setActive($isActive);
-				$packageLinks[$package->getUid()] = array(
-					$package->isActive(),
-					(bool) $package->getSelectedOptions()->count(),
-					$this->renderTemplateView('GetPackageLinkInnerHTML', array('package' => $package))
-				);
-				/** @var \S3b0\Ecompc\Domain\Model\Package $prev */
-				$prev = $package;
-			}
-		}
-
-		$this->view->assignMultiple(array(
-			'packagesLinksInnerHTML' => $packageLinks,
-			'selcps' => count((array) $this->selectedConfiguration['packages']),
-		));
-		if (count((array) $this->selectedConfiguration['packages']) == $this->cObj->getEcompcPackagesFE()->count()) {
-			$result = $this->getConfigurationResult(TRUE);
-			$this->view->assign('cfgres', $this->renderTemplateView(
-				'getResult',
-				array(
-					'configurationResult' => $result[0],
-					'configurationSummary' => $result[1],
-					'requestFormAdditionalParams' => $result[2]
-				)
-			));
+	public function initializeGetOptionHintAction() {
+		if ( $this->request->hasArgument('option') && !$this->request->getArgument('option') instanceof \S3b0\Ecompc\Domain\Model\Option ) {
+			$this->request->setArgument(
+				'option',
+				\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->request->getArgument('option')) ? $this->optionRepository->findByUid($this->request->getArgument('option')) : NULL
+			);
 		}
 	}
 
 	/**
-	 * action GetPackageLinkInnerHTML
+	 * action getOptionHint
 	 *
-	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 * @param \S3b0\Ecompc\Domain\Model\Option $option
 	 * @return void
 	 */
-	public function GetPackageLinkInnerHTMLAction(\S3b0\Ecompc\Domain\Model\Package $package) {
-		$this->view->assign('package', $package);
-	}
-
-	/**
-	 * action selectPackageOptions
-	 *
-	 * @param  integer $configurationPackage
-	 * @return void
-	 */
-	public function selectPackageOptionsAction($configurationPackage) {
-		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-		$package = $this->packageRepository->findByUid($configurationPackage);
-		$this->view->assignMultiple(array(
-			'content' => $this->renderTemplateView('', array('package' => $package, 'options' => $this->getPackageOptions($package), 'sys_language_uid' => $GLOBALS['TSFE']->sys_language_content)),
-			'selcps' => count((array) $this->selectedConfiguration['packages'])
-		));
+	public function getOptionHintAction(\S3b0\Ecompc\Domain\Model\Option $option = NULL) {
+		$this->view->assign('hint', $this->configurationManager->getContentObject()->parseFunc($option->getHintText(), array(), '< lib.parseFunc_RTE'));
 	}
 
 	/**
 	 * action setOption
 	 *
-	 * @param integer $opt Option uid
-	 * @param integer $uns set/Unset indicator
-	 * @param integer $vpn Visible Packages Number
+	 * @param integer $option Option uid
+	 * @param integer $unset  set/Unset indicator
+	 * @param integer $vpn    Visible Packages Number
 	 * @return void
 	 */
-	public function setOptionAction($opt, $uns = 0, $vpn = 0) {
+	public function setOptionAction($option, $unset = 0, $vpn = 0) {
 		/** @var \S3b0\Ecompc\Domain\Model\Option $option */
-		$option = $this->optionRepository->findByUid($opt);
-		parent::setOptionAction($option, $uns);
+		$option = $this->optionRepository->findByUid($option);
+		parent::setOptionAction($option, $unset);
 
-		// Redirect; depends on multipleSelect or unset flag
-		if ($option->getConfigurationPackage()->isMultipleSelect() || $uns) {
-			$this->view->assignMultiple(array(
-				'proceed' => 'selectPackageOptions',
-				'package' => $option->getConfigurationPackage()->getUid()
-			));
-		} else {
-			$this->view->assign('proceed', 'index');
-		}
-		// Fetch updated configuration
-		$this->selectedConfiguration = $this->feSession->get($this->configurationSessionStorageKey);
-		$this->view->assignMultiple(array(
-			'cfgp' => $this->getUpdatedConfigurationPrice(),
-			'selcps' => count((array) $this->selectedConfiguration['packages'])
-		));
+		$this->forward('index');
 	}
 
 	/**
 	 * action resetPackage
 	 *
 	 * @param int $package
+	 *
+	 * @deprecated May apply on multiple selects, once fully supported
 	 * @return void
 	 */
 	public function resetPackageAction($package = 0) {
-		$this->selectedConfiguration['options'] = array_diff((array) $this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionsUids($this->packageRepository->findByUid($package)));
+		$this->selectedConfiguration['options'] = array_diff((array) $this->selectedConfiguration['options'], $this->optionRepository->getPackageOptionUidList($this->packageRepository->findByUid($package)));
 		unset($this->selectedConfiguration['packages'][$package]);
-		$this->feSession->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
+		$this->getFeSession()->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
 
 		$this->view->assignMultiple(array(
 			'package' => $package,
@@ -206,48 +164,37 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	}
 
 	/**
-	 * @return string
-	 */
-	protected function getUpdatedConfigurationPrice() {
-		$this->initializeOptions();
-		$floatToFormat = array_pop($this->getConfigurationPrice());
-		if (empty($floatToFormat)) {
-			$floatToFormat = 0.0;
-		} else {
-			$floatToFormat = floatval($floatToFormat);
-		}
-		return $this->formatCurrency($floatToFormat);
-	}
-
-	/**
 	 * @param float   $floatToFormat
 	 * @param boolean $signed
 	 *
 	 * @return string
 	 */
 	protected function formatCurrency($floatToFormat = 0.0, $signed = FALSE) {
-		$output = number_format($floatToFormat, 2, $this->currency['decimalSeparator'] ?: ',', $this->currency['thousandsSeparator'] ?: '.');
+		$output = number_format($floatToFormat, 2, $this->getCurrency()->isNumberSeparatorsInUSFormat() ? '.' : ',', $this->getCurrency()->isNumberSeparatorsInUSFormat() ? ',' : '.');
 		// Add algebraic sign if positive
-		if ($floatToFormat > 0 && $signed) {
+		if ( $floatToFormat > 0 && $signed ) {
 			$output = '+' . $output;
-		} elseif (number_format($floatToFormat, 2) == 0.00 && $signed) {
+		} elseif ( number_format($floatToFormat, 2) == 0.00 && $signed ) {
 			$output = '+' . $output;
 			/*return ExtbaseUtility\LocalizationUtility::translate('price.inclusive', 'ecompc');*/
 		}
-		if ($this->currency['symbol'] !== '') {
-			$currencySeparator = $this->currency['separateCurrency'] ?: ' ';
-			if ($this->currency['prependCurrency']) {
-				$output = $this->currency['symbol'] . $currencySeparator . $output;
+		if ( $this->getCurrency()->getSymbol() !== '' ) {
+			$currencySeparator = $this->getCurrency()->isWhitespaceBetweenCurrencyAndValue()  ?: ' ';
+			if ( $this->getCurrency()->isSymbolPrepended() ) {
+				$output = $this->getCurrency()->getSymbol() . $currencySeparator . $output;
 			} else {
-				$output .= $currencySeparator . $this->currency['symbol'];
+				$output .= $currencySeparator . $this->getCurrency()->getSymbol();
 			}
 		}
 		return $output;
 	}
 
 	/**
-	 * @param string                                     $controllerActionName
-	 * @param array                                      $arguments
+	 * renderTemplateView
+	 * render a view in default template (TemplateView), no JSONView
+	 *
+	 * @param string $controllerActionName
+	 * @param array  $arguments
 	 *
 	 * @return string
 	 */
@@ -261,15 +208,14 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		/** imitate initializeView() from \S3b0\Ecompc\Controller\StandardController and assign global templateContainerVariables */
 		$view->assignMultiple(array(
 			'action' => $controllerActionName ?: $this->request->getControllerActionName(), // current action
-			'instructions' => $this->cObj->getBodytext(), // short instructions for user
 			'pid' => $GLOBALS['TSFE']->id,
 			'cObj' => $this->cObj->getUid()
 		));
-		if ($this->showPriceLabels) {
+		if ( $this->isPricingEnabled() ) {
 			$view->assignMultiple(array(
-				'showPriceLabels' => $this->showPriceLabels, // checks whether price labels are displayed or not!
-				'currency' => $this->currency, // fetch currency TS
-				'pricing' => $this->selectedConfigurationPrice // current configuration price
+				'pricingEnabled' => $this->isPricingEnabled(), // checks whether price labels are displayed or not!
+				'currency' => $this->getCurrency(), // fetch currency TS
+				'pricing' => $this->getConfigurationPrice() // current configuration price
 			));
 		}
 		/** Assign Action specific templateContainerVariables committed as first method argument [ func_get_arg(0) ] */
@@ -280,7 +226,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	/**
 	 * @param \S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController
 	 */
-	protected static function updateStorage(\S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
+	protected static function setStoragePid(\S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
 		$ajaxRequestController::setRepositoryStoragePidSettings($ajaxRequestController->packageRepository, $ajaxRequestController);
 		$ajaxRequestController::setRepositoryStoragePidSettings($ajaxRequestController->optionRepository, $ajaxRequestController);
 	}
@@ -291,14 +237,14 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 *
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
 	 */
-	private static function setRepositoryStoragePidSettings(\TYPO3\CMS\Extbase\Persistence\Repository $repository, \S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
+	protected static function setRepositoryStoragePidSettings(\TYPO3\CMS\Extbase\Persistence\Repository $repository, \S3b0\Ecompc\Controller\AjaxRequestController $ajaxRequestController) {
 		// Set Query settings
 		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
 		$querySettings = $ajaxRequestController->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
 		$querySettings->setRespectStoragePage($ajaxRequestController->request->hasArgument('storagePid') || $ajaxRequestController->cObj->getStoragePidArray());
-		if ($ajaxRequestController->request->hasArgument('storagePid')) {
+		if ( $ajaxRequestController->request->hasArgument('storagePid') ) {
 			$querySettings->setStoragePageIds(array($ajaxRequestController->request->getArgument('storagePid')));
-		} elseif ($ajaxRequestController->cObj->getStoragePidArray()) {
+		} elseif ( $ajaxRequestController->cObj->getStoragePidArray() ) {
 			$querySettings->setStoragePageIds($ajaxRequestController->cObj->getStoragePidArray());
 		}
 		$repository->setDefaultQuerySettings($querySettings);

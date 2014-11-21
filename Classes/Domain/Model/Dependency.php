@@ -181,12 +181,12 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
 	 */
 	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
-		if (!$this->getOptions()->count()) return $this->getOptions();
+		if ( !$this->getOptions()->count() ) return $this->getOptions();
 
 		$temp = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 
-		foreach ($this->getOptions() as $option) {
-			if ($option->getConfigurationPackage() === $package) {
+		foreach ( $this->getOptions() as $option ) {
+			if ( $option->getConfigurationPackage() === $package ) {
 				$temp->attach($option);
 			}
 		}

@@ -37,22 +37,68 @@ use TYPO3\CMS\Extbase\Utility as ExtbaseUtility;
 class ResolverController extends \S3b0\Ecompc\Controller\StandardController {
 
 	/**
-	 * action index
+	 * Initializes the controller before invoking an action method.
 	 *
-	 * @param  \S3b0\Ecompc\Domain\Model\Logger $logger
+	 * Override this method to solve tasks which all actions have in
+	 * common.
+	 *
+	 * @return void
+	 * @api
+	 *
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+	 */
+	public function initializeAction() {
+		if ( CoreUtility\GeneralUtility::_GP('log') && CoreUtility\MathUtility::canBeInterpretedAsInteger(CoreUtility\GeneralUtility::_GP('log')) && ($log = $this->loggerRepository->findByUid(CoreUtility\MathUtility::convertToPositiveInteger(CoreUtility\GeneralUtility::_GP('log')))) ) {
+			$this->redirectToPage(NULL, array(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored('Tx' . $this->request->getControllerExtensionName() . $this->request->getPluginName()) => array('action' => 'show', 'logger' => $log)), FALSE, FALSE);
+		} elseif ( CoreUtility\GeneralUtility::_GP('log') ) {
+			$this->throwStatus(404);
+		}
+		if ( $this->request->getControllerActionName() != 'show' && !($GLOBALS['TSFE']->fe_user->groupData['uid'] && in_array($this->settings['resolverUserGroup'], $GLOBALS['TSFE']->fe_user->groupData['uid'])) ) {
+			$this->redirect('show');
+		}
+	}
+
+	/**
+	 * Initializes the view before invoking an action method.
+	 *
+	 * Override this method to solve assign variables common for all actions
+	 * or prepare the view in another way before the action is called.
+	 *
+	 * @return void
+	 * @api
+	 */
+	public function initializeView() {
+		$this->view->assign('dateFormat', $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] . ' ' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm']);
+	}
+
+	/**
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\InvalidArgumentNameException
+	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
+	 */
+	public function initializeShowAction() {
+		if ( $this->request->hasArgument('logger') && !$this->request->getArgument('logger') instanceof \S3b0\Ecompc\Domain\Model\Logger && CoreUtility\MathUtility::canBeInterpretedAsInteger($this->request->getArgument('logger')) ) {
+			$this->request->setArgument(
+				'logger',
+				$this->loggerRepository->findByUid(CoreUtility\MathUtility::convertToPositiveInteger($this->request->getArgument('logger')))
+			);
+		}
+	}
+
+	/**
+	 * action show
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Logger $logger
 	 * @return void
 	 */
-	public function indexAction(\S3b0\Ecompc\Domain\Model\Logger $logger = NULL) {
-		if (!$logger instanceof \S3b0\Ecompc\Domain\Model\Logger && CoreUtility\MathUtility::canBeInterpretedAsInteger($logger)) {
-			$logger = $this->loggerRepository->findByUid(CoreUtility\MathUtility::convertToPositiveInteger($logger));
+	public function showAction(\S3b0\Ecompc\Domain\Model\Logger $logger = NULL) {
+		if ( !$logger instanceof \S3b0\Ecompc\Domain\Model\Logger ) {
+			$this->throwStatus(404, 'Log not found!');
 		}
-		if (!$logger instanceof \S3b0\Ecompc\Domain\Model\Logger) {
-			$this->throwStatus(404, 'f41l');
-		}
-
+		/** @var \S3b0\Ecompc\Domain\Model\Configuration $configuration */
 		$configuration = $logger->getConfiguration();
 		$configurationArray = $logger->getSelectedConfiguration();
-		if ($configuration->getOptions()->count()) {
+		if ( $configuration->getOptions()->count() ) {
 			$options = $logger->getConfiguration()->getOptions();
 		} else {
 			$options = $this->optionRepository->findOptionsByUidList($configurationArray['options']);
@@ -60,6 +106,15 @@ class ResolverController extends \S3b0\Ecompc\Controller\StandardController {
 
 		$this->view->assign('log', $logger);
 		$this->view->assign('options', $options);
+	}
+
+	/**
+	 * action list
+	 *
+	 * @return void
+	 */
+	public function listAction() {
+		$this->view->assign('logs', $this->loggerRepository->findAll());
 	}
 
 	/**

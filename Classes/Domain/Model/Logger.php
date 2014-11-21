@@ -48,6 +48,11 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @var string
 	 */
+	protected $configurationCode = '';
+
+	/**
+	 * @var string
+	 */
 	protected $selectedConfiguration = '';
 
 	/**
@@ -56,9 +61,9 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $configuration = NULL;
 
 	/**
-	 * @var string
+	 * @var \S3b0\Ecompc\Domain\Model\Currency
 	 */
-	protected $currency = 'Euro';
+	protected $currency = NULL;
 
 	/**
 	 * @var float
@@ -130,6 +135,22 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getConfigurationCode() {
+		return $this->configurationCode;
+	}
+
+	/**
+	 * @param string $configurationCode
+	 * @return \S3b0\Ecompc\Domain\Model\Logger
+	 */
+	public function setConfigurationCode($configurationCode) {
+		$this->configurationCode = $configurationCode;
+		return $this;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getSelectedConfiguration() {
@@ -162,17 +183,17 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return string
+	 * @return \S3b0\Ecompc\Domain\Model\Currency
 	 */
 	public function getCurrency() {
 		return $this->currency;
 	}
 
 	/**
-	 * @param string $currency
+	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
 	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
-	public function setCurrency($currency) {
+	public function setCurrency(\S3b0\Ecompc\Domain\Model\Currency $currency = NULL) {
 		$this->currency = $currency;
 		return $this;
 	}
@@ -181,7 +202,7 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return float
 	 */
 	public function getPrice() {
-		return number_format($this->price, 2);
+		return $this->price;
 	}
 
 	/**

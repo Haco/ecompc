@@ -1,5 +1,5 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
+if ( !defined ('TYPO3_MODE') ) {
 	die ('Access denied.');
 }
 
@@ -14,7 +14,6 @@ return array(
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'dividers2tabs' => TRUE,
-		'default_sortby' => 'ORDER BY backend_label,frontend_label',
 		'versioningWS' => 2,
 		'versioning_followPages' => TRUE,
 		'sortby' => 'sorting',
@@ -22,7 +21,8 @@ return array(
 		'transOrigPointerField' => 'l10n_parent',
 		'transOrigDiffSourceField' => 'l10n_diffsource',
 		'delete' => 'deleted',
-		'requestUpdate' => 'frontend_label, visible_in_frontend',
+		'requestUpdate' => 'frontend_label',
+		'type' => 'visible_in_frontend',
 		'typeicon_column' => 'visible_in_frontend',
 		'typeicon_classes' => array(
 			'default' => 'extensions-ecompc-package-default',
@@ -35,19 +35,21 @@ return array(
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group'
 		),
-		'searchFields' => 'backend_label,frontend_label,prompt,hint_text,image,visible_in_frontend,multiple_select,default_option,',
+		'searchFields' => 'backend_label,frontend_label,prompt,hint_text,icon,visible_in_frontend,multiple_select,default_option,',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_package.png'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, image, visible_in_frontend, multiple_select, default_option',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, icon, visible_in_frontend, multiple_select, default_option',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;3, prompt, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, image, --palette--;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
+		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, --palette--;;3, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, prompt, hint_text;;;wizards[t3editorHtml], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, icon, --palette--;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
-		'2' => array('showitem' => 'default_option, visible_in_frontend, multiple_select, percent_pricing', 'canNotCollapse' => 1),
-		'3' => array('showitem' => 'backend_label')
+		'2' => array('showitem' => 'visible_in_frontend, multiple_select, percent_pricing', 'canNotCollapse' => 1),
+		'3' => array('showitem' => 'default_option, visible_in_frontend, percent_pricing', 'canNotCollapse' => 1),
+		'4' => array('showitem' => 'backend_label')
 	),
 	'columns' => array(
 
@@ -78,6 +80,12 @@ return array(
 			),
 		),
 		'l10n_diffsource' => array(
+			'config' => array(
+				'type' => 'passthrough',
+			),
+		),
+		'sorting' => array(
+			'l10n_mode' => 'exclude',
 			'config' => array(
 				'type' => 'passthrough',
 			),
@@ -197,30 +205,28 @@ return array(
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.hint_text',
 			'config' => array(
 				'type' => 'text',
-				'cols' => 40,
-				'rows' => 15,
+				'cols' => 100,
+				'rows' => 10,
 				'eval' => 'trim',
-				'softref' => 'rtehtmlarea_images,typolink_tag,email[subst],url',
 				'wizards' => array(
-					'RTE' => array(
-						'icon' => 'wizard_rte2.gif',
-						'notNewRecords'=> 1,
-						'RTEonly' => 1,
-						'module' => array(
-							'name' => 'wizard_rte'
+					't3editorHtml' => array(
+						'enableByTypeConfig' => 1,
+						'type' => 'userFunc',
+						'userFunc' => 'TYPO3\\CMS\\T3editor\\FormWizard->main',
+						'params' => array(
+							'format' => 'html',
 						),
-						'title' => 'LLL:EXT:cms/locallang_ttc.xlf:bodytext.W.RTE',
-						'type' => 'script'
-					)
+					),
 				)
 			),
 		),
-		'image' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
+		'icon' => array(
+			'displayCond' => 'FIELD:visible_in_frontend:REQ:TRUE',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.image',
+			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.icon',
 			'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-					'image',
+					'icon',
 					array(
 						'maxitems' => 1,
 						'appearance' => array(
@@ -249,7 +255,7 @@ return array(
 				),
 		),
 		'visible_in_frontend' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.visible_in_frontend',
 			'config' => array(
@@ -258,7 +264,7 @@ return array(
 			)
 		),
 		'multiple_select' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
+			'l10n_mode' => 'exclude',
 			'displayCond' => 'FIELD:percent_pricing:REQ:false',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.multiple_select',
@@ -268,8 +274,8 @@ return array(
 			)
 		),
 		'percent_pricing' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
 			'displayCond' => 'FIELD:multiple_select:REQ:false',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.percent_pricing',
 			'config' => array(
@@ -278,8 +284,7 @@ return array(
 			)
 		),
 		'default_option' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'displayCond' => 'FIELD:visible_in_frontend:REQ:false',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.default_option',
 			'config' => array(

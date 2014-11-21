@@ -80,6 +80,11 @@
 		protected $arguments = array();
 
 		/**
+		 * @var array
+		 */
+		protected $allowedRequestArguments = array('vendorName','extensionName','pluginName','controllerName','actionName','arguments');
+
+		/**
 		 * @var integer
 		 */
 		protected $pageUid = 1;
@@ -117,6 +122,7 @@
 			$bootstrap = CoreUtility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Core\\Bootstrap');
 			$bootstrap->initialize($configuration);
 
+			/** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
 			$this->objectManager = CoreUtility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 
 			$request = $this->buildRequest();
@@ -126,7 +132,6 @@
 			/** @var \TYPO3\CMS\Extbase\Mvc\Dispatcher $dispatcher */
 			$dispatcher =  $this->objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Dispatcher');
 			$dispatcher->dispatch($request, $response);
-
 			$response->sendHeaders();
 			return $response->getContent();
 		}
@@ -137,7 +142,6 @@
 		 */
 		public function init($TYPO3_CONF_VARS) {
 			//define('TYPO3_MODE','FE');
-
 			$this->initCallArguments();
 
 			/** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $GLOBALS['TSFE'] */
@@ -145,7 +149,7 @@
 			$GLOBALS['TSFE']->fe_user = \TYPO3\CMS\Frontend\Utility\EidUtility::initFeUser();
 			$GLOBALS['TSFE']->id = $this->pageUid;
 			$GLOBALS['TSFE']->sys_language_content = $this->language;
-//          ATTENTION CAUSING 500 INTERNAL ERROR
+//			ATTENTION CAUSING 500 INTERNAL ERROR @TYPO3 CMS 6.2.x
 //			/** @var \TYPO3\CMS\Frontend\Page\PageRepository sys_page */
 //			$GLOBALS['TSFE']->sys_page = CoreUtility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 //			$GLOBALS['TSFE']->sys_page->init($GLOBALS['TSFE']->showHiddenPage);
@@ -200,8 +204,8 @@
 				->setPageType(CoreUtility\GeneralUtility::_GP('type') ?: 1)
 				->setVendorName($this->requestArguments['vendorName'] ?: 'S3b0')
 				->setExtensionName($this->requestArguments['extensionName'] ?: 'Ecompc')
-				->setPluginName($this->requestArguments['pluginName'] ?: 'Configurator')
-				->setControllerName($this->requestArguments['controllerName'] ?: 'AjaxRequest')
+				->setPluginName($this->requestArguments['pluginName'] ?: 'configurator_dynamic')
+				->setControllerName($this->requestArguments['controllerName'] ?: 'DynamicConfiguratorAjaxRequest')
 				->setActionName($this->requestArguments['actionName'] ?: 'index')
 				->setArguments($this->requestArguments['arguments']);
 
@@ -224,8 +228,7 @@
 		 * Set the request array from the getPost array
 		 */
 		protected function setRequestArgumentsFromGPvar() {
-			$validArguments = array('vendorName','extensionName','pluginName','controllerName','actionName','arguments');
-			foreach($validArguments as $argument) {
+			foreach($this->allowedRequestArguments as $argument) {
 				if(CoreUtility\GeneralUtility::_GP($argument)) $this->requestArguments[$argument] = CoreUtility\GeneralUtility::_GP($argument);
 			}
 		}
@@ -234,8 +237,7 @@
 		 * @param array $requestArguments
 		 */
 		public function setRequestArguments(array $requestArguments) {
-			$validArguments = array('vendorName','extensionName','pluginName','controllerName','actionName','arguments');
-			foreach($validArguments as $argument) {
+			foreach($this->allowedRequestArguments as $argument) {
 				if($requestArguments[$argument]) $this->requestArguments[$argument] = $requestArguments[$argument];
 			}
 		}
@@ -336,6 +338,8 @@
 	$dispatcher = CoreUtility\GeneralUtility::makeInstance('S3b0\\Ecompc\\Utility\\AjaxDispatcher');
 
 	// ATTENTION! Dispatcher first needs to be initialized here!!!
-	echo $dispatcher->init($TYPO3_CONF_VARS)->dispatch();
+	echo $dispatcher
+		->init($TYPO3_CONF_VARS)
+		->dispatch();
 
 ?>

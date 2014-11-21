@@ -1,7 +1,7 @@
 <?php
 namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
 
-/*                                                                        *
+/**                                                                       *
  * This script belongs to the FLOW3 package "Fluid".                      *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
@@ -42,10 +42,13 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
  * @version $Id:
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
  * @scope prototype
- * @todo refine documentation
  */
 class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
+	/**
+	 * Point before dashes setup
+	 * @var array $operatorsWithPrecedenceValue
+	 */
 	protected $operatorsWithPrecedenceValue = array(
 		'+' => 10,
 		'-' => 10,
@@ -55,10 +58,12 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	);
 
 	/**
+	 * Function render
 	 *
 	 * @param string $expressionString The math expression to evaluate
 	 * @param boolean $output should the result be returned?
 	 * @param string $aliasToCreate name of new alias to be set with result
+	 *
 	 * @return string
 	 */
 	public function render($expressionString, $output = TRUE, $aliasToCreate = NULL) {
@@ -66,7 +71,7 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 		preg_match_all('([0-9.]*|[\D]?)', $expressionString, $splitArray);
 		$expressionArray = $this->buildExpressionArray($splitArray[0]);
 		$result = $this->evaluateExpressionArray($expressionArray);
-		if ($aliasToCreate) {
+		if ( $aliasToCreate ) {
 			$this->templateVariableContainer->add($aliasToCreate, $result);
 		}
 
@@ -74,21 +79,23 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	}
 
 	/**
-	*	later on responsible for presplitting the array by parenthesis to have nested calculations
-	*	@param array $splitArray The array with splitted formula
-	*	@param integer $nestingLevel used for the recursion of nested parenthesis
-	*	@return array multidimensional array with numbers, operators and subarrays (nested)
-	*/
+	 * Later on responsible for pre-splitting the array by parenthesis to have nested calculations
+	 *
+	 * @param array $splitArray The array with splitted formula
+	 * @param integer $nestingLevel used for the recursion of nested parenthesis
+	 *
+	 * @return array multidimensional array with numbers, operators and sub-arrays (nested)
+	 */
 	function buildExpressionArray($splitArray, $nestingLevel = 0){
 		$expressionArray = array();
 
-		foreach($splitArray as $key => $splitPart){
+		foreach ( $splitArray as $key => $splitPart ) {
 			$splitPart = trim($splitPart);
-			if ($splitPart == '(') {
+			if ( $splitPart == '(' ) {
 				$nestingLevel ++;
-			} elseif ($splitPart == ')') {
+			} elseif ( $splitPart == ')' ) {
 				$nestingLevel --;
-			} elseif (strlen($splitPart)) {
+			} elseif ( strlen($splitPart) ) {
 				$expressionArray[] = $splitPart;
 			}
 		}
@@ -98,16 +105,18 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	}
 
 	/**
-	*	will try to evaluate the calculation and return a final value
-	*	@param array $expressionArray array to be calculated
+	 * Will try to evaluate the calculation and return a final value
+	 *
+	 * @param array $expressionArray array to be calculated
+	 *
 	 * @return mixed
-	*/
+	 */
 	function evaluateExpressionArray($expressionArray = array()){
 		$subExpressionsEliminated = FALSE;
 		// eliminate sub expressions, this is recursive, so after first run, all sub expressions should be eliminated
-		if($subExpressionsEliminated === FALSE){
-			foreach($expressionArray as $key => $mathData){
-				if(is_array($mathData)){
+		if ( $subExpressionsEliminated === FALSE ) {
+			foreach ( $expressionArray as $key => $mathData ) {
+				if ( is_array($mathData) ) {
 					$expressionArray[$key] = $this->evaluateExpressionArray($mathData);
 				}
 			}
@@ -115,18 +124,18 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 		}
 		$i = 0;
 		// we loop a maximum of 99 times over the expression before Exception
-		while(count($expressionArray) > 1 && $i < 99){
+		while ( count($expressionArray) > 1 && $i < 99 ) {
 			$prev = NULL;
 			$i ++;
-			foreach ($expressionArray as $key => $mathData) {
+			foreach ( $expressionArray as $key => $mathData ) {
 				// lets see if we have an operator
-				if (array_key_exists($mathData, $this->operatorsWithPrecedenceValue)) {
+				if ( array_key_exists($mathData, $this->operatorsWithPrecedenceValue) ) {
 					// check next
 					$next_key = $this->findNextValidKey($expressionArray, $key);
 					$next = is_numeric($next_key) ? $expressionArray[$next_key] : NULL;
 
-					if (is_numeric($prev) && is_numeric($next)) {
-						switch($mathData) {
+					if ( is_numeric($prev) && is_numeric($next) ) {
+						switch ( $mathData ) {
 							case '-':
 								$eval = $prev - $next;
 								break;
@@ -147,7 +156,7 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 						unset($expressionArray[$next_key]);
 						$expressionArray[$key] = $eval;
 						break;
-					} elseif ($prev !== NULL && array_key_exists($prev, $this->operatorsWithPrecedenceValue) && is_numeric($next) && $mathData === '-') {
+					} elseif ( $prev !== NULL && array_key_exists($prev, $this->operatorsWithPrecedenceValue) && is_numeric($next) && $mathData === '-' ) {
 						$expressionArray[$key] = 0 - $next;
 						unset($expressionArray[$next_key]);
 						break;
@@ -159,25 +168,27 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 			}
 
 		}
-		if ($i >= 99) {
-			// TODO: exception
+		if ( $i >= 99 ) {
+			throw new \TYPO3\CMS\Fluid\Core\ViewHelper\Exception('Too many calculations passed to S3b0\\CalculationViewhelper', 1415258817);
 		}
 
 		return count($expressionArray) == 1 ? reset($expressionArray) : '';
 	}
 
 	/**
-	* find next valid key of (calculation) array (not easy as values get deleted)
-	* @param array $array the array to find a next key
-	* @param integer $keyFrom the key for which you want the next
-	* @return integer
-	*/
+	 * Find next valid key of (calculation) array (not easy as values get deleted)
+	 *
+	 * @param array $array the array to find a next key
+	 * @param integer $keyFrom the key for which you want the next
+	 *
+	 * @return integer
+	 */
 	function findNextValidKey(array $array, $keyFrom){
 		$i = 0;
 		$key = NULL;
-		while($key == NULL && $i < 99) {
+		while ( $key == NULL && $i < 99 ) {
 			$i++;
-			if ($array[$keyFrom + $i]) {
+			if ( $array[$keyFrom + $i] ) {
 				$key = $keyFrom + $i;
 			}
 		}
@@ -185,8 +196,6 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 		return $key;
 	}
 
-
 }
-
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
+if ( !defined ('TYPO3_MODE') ) {
 	die ('Access denied.');
 }
 
@@ -15,7 +15,6 @@ return array(
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'dividers2tabs' => TRUE,
-		'default_sortby' => 'ORDER BY backend_label,frontend_label',
 		'versioningWS' => 2,
 		'versioning_followPages' => TRUE,
 		'sortby' => 'sorting',
@@ -30,19 +29,18 @@ return array(
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group'
 		),
-		'searchFields' => 'backend_label,frontend_label,configuration_code_segment,image,hint_text,price,price_percental,configuration_package,dependency,',
+		'searchFields' => 'backend_label,frontend_label,configuration_code_segment,image,hint_text,pricing,price_percental,configuration_package,dependency,',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_option.png'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, configuration_code_segment, image, hint_text, price, price_percental, configuration_package, dependency',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, configuration_code_segment, image, hint_text, pricing, price_percental, configuration_package, dependency',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;2, configuration_package, configuration_code_segment, --div--;' . $extTranslationPath . 'tabs.referral, image, dependency, --div--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tabs.pricing, --palette--;;3, price_list, --div--;LLL:EXT:cms/locallang_tca.xlf:pages.tabs.extended, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;2, configuration_package, configuration_code_segment, --div--;' . $extTranslationPath . 'tabs.referral, image, dependency, --div--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tabs.pricing, pricing, price_percental, price, --div--;LLL:EXT:cms/locallang_tca.xlf:pages.tabs.extended, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
-		'2' => array('showitem' => 'backend_label'),
-		'3' => array('showitem' => 'price, price_percental', 'canNotCollapse' => 1)
+		'2' => array('showitem' => 'backend_label')
 	),
 	'columns' => array(
 
@@ -73,6 +71,12 @@ return array(
 			),
 		),
 		'l10n_diffsource' => array(
+			'config' => array(
+				'type' => 'passthrough',
+			),
+		),
+		'sorting' => array(
+			'l10n_mode' => 'exclude',
 			'config' => array(
 				'type' => 'passthrough',
 			),
@@ -241,15 +245,19 @@ return array(
 				)
 			),
 		),
+		/**
+		 * @deprecated hold for compatibility
+		 */
 		'price' => array(
 			'l10n_mode' => 'mergeIfNotBlank',
 			'l10n_display' => 'hideDiff',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.price',
+			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.price_old_basic',
 			'config' => array(
 				'type' => 'input',
 				'size' => 22,
-				'eval' => 'double2'
+				'eval' => 'double2',
+				'readOnly' => 1
 			)
 		),
 		'price_percental' => array(
@@ -259,6 +267,8 @@ return array(
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.price_percental',
 			'config' => array(
 				'type' => 'input',
+				'form_type' => 'user',
+				'userFunc' => 'S3b0\\Ecompc\\User\\TCAMod\\ModifyTCA->userFuncTxEcompcDomainModelOptionPricePercental',
 				'size' => 22,
 				'range' => array(
 					'lower' => 0,
@@ -267,13 +277,15 @@ return array(
 				'eval' => 'double2'
 			)
 		),
-		'price_list' => array(
+		'pricing' => array(
 			'l10n_mode' => 'mergeIfNotBlank',
 			'l10n_display' => 'hideDiff',
 			'exclude' => 1,
-			'label' => '',
+			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.pricing',
 			'config' => array(
 				'type' => 'flex',
+				'form_type' => 'user',
+				'userFunc' => 'S3b0\\Ecompc\\User\\TCAMod\\ModifyTCA->userFuncTxEcompcOptionPricing',
 				'ds' => array(
 					'default' => 'FILE:EXT:ecompc/Configuration/FlexForms/price_list.xml'
 				)

@@ -1,7 +1,7 @@
 <?php
 namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial;
 
-/*                                                                        *
+/**                                                                       *
  * This script is backported from the TYPO3 Flow package "TYPO3.Fluid".   *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
@@ -43,42 +43,44 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial;
 class CurrencyViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @param string $currencySign (optional) The currency sign, eg $ or €.
-	 * @param string $decimalSeparator (optional) The separator for the decimal point.
-	 * @param string $thousandsSeparator (optional) The thousands separator.
-	 * @param boolean $prependCurrency (optional) Select if the curreny sign should be prepended
-	 * @param boolean $separateCurrency (optional) Separate the currency sign from the number by a single space, defaults to true due to backwards compatibility
-	 * @param integer $decimals (optional) Set decimals places.
-	 * @param boolean $signed (optional) Select if algebraic sign should be added
-	 * @param boolean $zeroLabel (optional) If set a text like 'incl.' will be added instead of zero values
+	 * Function render
+	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency       The currency object
+	 * @param mixed                              $floatToFormat  (optional) The float, if any; If not set, renderChildren() will set the value
+	 * @param integer                            $decimals       (optional) Set decimals places.
+	 * @param boolean                            $signed         (optional) Select if algebraic sign should be added
+	 * @param boolean                            $zeroLabel      (optional) If set a text like 'incl.' will be added instead of zero values
+	 * @param boolean                            $usFormat       (optional) Indicator for US formats
+	 *
 	 * @return string the formatted amount.
 	 * @api
 	 */
-	public function render($currencySign = '', $decimalSeparator = ',', $thousandsSeparator = '.', $prependCurrency = FALSE, $separateCurrency = TRUE, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE) {
-		$floatToFormat = $this->renderChildren();
-		if (empty($floatToFormat)) {
+	public function render(\S3b0\Ecompc\Domain\Model\Currency $currency, $floatToFormat = NULL, $decimals = 2, $signed = TRUE, $zeroLabel = FALSE, $usFormat = FALSE) {
+		$decimalSeparator = $currency->isNumberSeparatorsInUSFormat() || $usFormat ? '.' : ',';
+		$thousandsSeparator = $currency->isNumberSeparatorsInUSFormat() || $usFormat ? ',' : '.';
+		$floatToFormat = $floatToFormat !== NULL ? $floatToFormat : $this->renderChildren();
+		if ( empty($floatToFormat) ) {
 			$floatToFormat = 0.0;
 		} else {
 			$floatToFormat = floatval($floatToFormat);
 		}
 		$output = number_format($floatToFormat, $decimals, $decimalSeparator, $thousandsSeparator);
 		// Add algebraic sign if positive
-		if ($floatToFormat > 0 && $signed) {
+		if ( $floatToFormat >= 0 && $signed ) {
 			$output = '+' . $output;
-		} elseif (number_format($floatToFormat, 2) == 0.00 && $zeroLabel) {
+		} elseif ( number_format($floatToFormat, 2) == 0.00 && $zeroLabel ) {
 			return \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('price.inclusive', 'ecompc');
-		} elseif (number_format($floatToFormat, 2) == 0.00 && $signed) {
-			$output = '+' . $output;
 		}
 
-		if ($currencySign !== '') {
-			$currencySeparator = $separateCurrency ? ' ' : '';
-			if ($prependCurrency === TRUE) {
-				$output = $currencySign . $currencySeparator . $output;
+		if ( $currency->getSymbol() !== '' ) {
+			$currencySeparator = $currency->isWhitespaceBetweenCurrencyAndValue() ? ' ' : '';
+			if ( $currency->isSymbolPrepended() === TRUE ) {
+				$output = $currency->getSymbol() . $currencySeparator . $output;
 			} else {
-				$output = $output . $currencySeparator . $currencySign;
+				$output = $output . $currencySeparator . $currency->getSymbol();
 			}
 		}
 		return $output;
 	}
+
 }

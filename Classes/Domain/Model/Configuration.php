@@ -148,6 +148,13 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function hasConfigurationCodeSuffix() {
+		return (bool) strlen($this->getConfigurationCodeSuffix());
+	}
+
+	/**
 	 * Returns the configurationCodePrefix
 	 *
 	 * @return string $configurationCodePrefix
@@ -164,6 +171,13 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setConfigurationCodePrefix($configurationCodePrefix) {
 		$this->configurationCodePrefix = $configurationCodePrefix;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function hasConfigurationCodePrefix() {
+		return (bool) strlen($this->getConfigurationCodePrefix());
 	}
 
 	/**
@@ -203,6 +217,25 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $options) {
 		$this->options = $options;
+	}
+
+	/**
+	 * @param Package $package
+	 *
+	 * @return null|\TYPO3\CMS\Extbase\Persistence\ObjectStorage
+	 */
+	public function getOptionsByPackage(\S3b0\Ecompc\Domain\Model\Package $package) {
+		if ( $options = $this->getOptions() ) {
+			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+			foreach ( $options as $option ) {
+				if ( $option->getConfigurationPackage() !== $package ) {
+					$options->detach($option);
+				}
+			}
+			return $options;
+		}
+
+		return NULL;
 	}
 
 }

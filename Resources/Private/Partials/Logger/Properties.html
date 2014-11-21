@@ -1,10 +1,11 @@
 <tr>
-	<td><f:render partial="Misc/OptionList" arguments="{options:options}" /></td>
-	<f:if condition="{log.feUser}">
-		<td>{log.currency}</td>
-		<td>{log.price}</td>
-		<td>{log.feUser.name} [{log.feUser.username}]</td>
+	<td>{log.configuration.frontendLabel}</td>
+	<td>{log.configurationCode}</td>
+	<f:security.ifHasRole role="{settings.resolverUserGroup}">
+		<td><f:if condition="{log.feUser}"><f:then><f:link.action action="showUserInformation" arguments="{frontendUser : log.feUser}">{log.feUser.name} [{log.feUser.username}]</f:link.action></f:then><f:else>-</f:else></f:if></td>
+		<td>{log.tstamp -> f:format.date(format : dateFormat)}</td>
+	</f:security.ifHasRole>
+	<f:if condition="{action} == 'list'">
+		<td><f:link.action action="show" arguments="{logger : log}" class="action-button-default"><f:translate id="link.show" /></f:link.action></td>
 	</f:if>
-	<td>{log.tstamp -> f:format.date(format:'r')}</td>
-	<td>{log.ip}</td>
 </tr>

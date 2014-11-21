@@ -34,13 +34,20 @@ namespace S3b0\Ecompc\Domain\Repository;
 class LoggerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 	/**
+	 * Sets the default orderings
+	 *
+	 * @var array $defaultOrderings
+	 */
+	protected $defaultOrderings = array(
+		'tstamp' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
+	);
+	/**
 	 * Repository wide settings
 	 */
 	public function initializeObject() {
 		/** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface */
 		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
 		$querySettings->setRespectStoragePage(FALSE);
-		// $querySettings->setStoragePageIds(array(0));
 		$this->setDefaultQuerySettings($querySettings);
 	}
 
@@ -52,7 +59,9 @@ class LoggerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @api
 	 */
 	public function update($modifiedObject) {
-		$modifiedObject->setTstamp(time());
+		if ( $modifiedObject instanceof \S3b0\Ecompc\Domain\Model\Logger ) {
+			$modifiedObject->setTstamp(time());
+		}
 		parent::update($modifiedObject);
 	}
 }

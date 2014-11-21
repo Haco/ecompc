@@ -1,33 +1,21 @@
 
 <f:layout name="Blank" />
 
-This Template is responsible for creating a table of domain objects.
-
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-  Resources:
-    Private:
-      Templates:
-        SelectPackageOptions.html: keep
-
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
-
 <f:section name="main">
 
 	<f:flashMessages renderMode="div" />
+
 	<div class="select-region-wrap">
 		<h2><f:translate id="selectregion.choose_text" /></h2>
 		<div class="select-region-currencies">
-			<f:for each="{currencies}" as="currencyTS">
-				<f:link.page additionalParams="{tx_ecompc_configurator:'{currency:currencyTS.key}'}" noCacheHash="1" class="selectregion-choose-flag">
-					<f:image src="{currencyTS.flagIcon}" alt="{currencyTS.region} - {currencyTS.long}" width="200" /><br />
-					<f:translate id="{currencyTS.llRef}" default="{currencyTS.region}" /> ( {currencyTS.symbol} )
+			<f:for each="{currencies}" as="currencyEntity">
+				<f:link.page additionalParams="{currency:currencyEntity}" noCacheHash="1" class="select-region-choose-flag">
+					<f:image src="{currencyEntity.flag.uid}" alt="{currencyEntity.region} - {currencyEntity.label}" width="200" treatIdAsReference="1" /><br />
+					{currencyEntity.localLang} ( {currencyEntity.symbol} )
 				</f:link.page>
 			</f:for>
 		</div>
 
-		<div class="clearfix"></div>
-		<aside><small><strong>Note:</strong> <f:translate id="selectregion.warning_onetime_text" /></small></aside>
 	</div>
 
 </f:section>

@@ -15,8 +15,8 @@
 			<trans-unit id="hint_text.description">
 				<source>Hint for the user.</source>
 			</trans-unit>
-			<trans-unit id="image.description">
-				<source>An image visualizing current package.</source>
+			<trans-unit id="icon.description">
+				<source>An icon visualizing current package. Will be scaled to 50px x 50px.</source>
 			</trans-unit>
 			<trans-unit id="visible_in_frontend.description">
 				<source>Enables the package to be displayed in frontend. Otherwise if a default option is set an input with type="hidden" will be rendered.</source>

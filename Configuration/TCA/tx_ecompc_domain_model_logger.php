@@ -1,5 +1,5 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
+if ( !defined ('TYPO3_MODE') ) {
 	die ('Access denied.');
 }
 
@@ -9,22 +9,23 @@ return array(
 	'ctrl' => array(
 		'title'	=> 'ecom Configurator Log',
 		'label' => 'tstamp',
-		'label_alt' => 'ses_id',
+		'label_alt' => 'configuration_code',
 		'label_alt_force' => TRUE,
 		'default_sortby' => 'ORDER BY tstamp',
 		'tstamp' => 'tstamp',
 		'dividers2tabs' => TRUE,
 		'rootLevel' => 1,
+		'readOnly' => TRUE,
 
 		//'hideTable' => 1,
-		'searchFields' => 'ses_id, tstamp, selected_configuration, configuration, currency, price, ip_address, fe_user',
+		'searchFields' => 'ses_id, tstamp, configuration_code, selected_configuration, configuration, currency, price, ip_address, fe_user',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('belog') . 'ext_icon.gif'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'ses_id, tstamp, selected_configuration, configuration, currency, price, ip_address, fe_user'
+		'showRecordFieldList' => 'ses_id, tstamp, configuration_code, selected_configuration, configuration, currency, price, ip_address, fe_user'
 	),
 	'types' => array(
-		'1' => array('showitem' => 'ses_id, tstamp, selected_configuration, configuration, currency, price, ip_address, fe_user')
+		'1' => array('showitem' => 'ses_id, tstamp, configuration_code, selected_configuration, configuration, currency, price, ip_address, fe_user')
 	),
 	'palettes' => array(
 		'1' => array('showitem' => '')
@@ -50,6 +51,15 @@ return array(
 				'default' => time()
 			),
 		),
+		'configuration_code' => array(
+			'exclude' => 1,
+			'label' => 'Configuration Code // SKU',
+			'config' => array(
+				'type' => 'input',
+				'size' => 41,
+				'eval' => 'trim,nospace,required'
+			),
+		),
 		'selected_configuration' => array(
 			'exclude' => 1,
 			'label' => 'Selected Configuration (serialized array)',
@@ -70,7 +80,9 @@ return array(
 			'exclude' => 1,
 			'label' => 'Currency',
 			'config' => array(
-				'type' => 'input'
+				'type' => 'select',
+				'foreign_table' => 'tx_ecompc_domain_model_currency',
+				'foreign_table_where' => ' ORDER BY tx_ecompc_domain_model_currency.label',
 			)
 		),
 		'price' => array(

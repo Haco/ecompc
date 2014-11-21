@@ -1,7 +1,6 @@
 <?php
 namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
 
-
 /***************************************************************
  *
  *  Copyright notice
@@ -33,6 +32,7 @@ class CObjUidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHel
 	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
 	 */
 	protected $configurationManager;
+
 	/**
 	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface An instance of the Configuration Manager
 	 * @return void
@@ -46,14 +46,14 @@ class CObjUidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHel
 	 * @return int $uid The uid of the content element
 	 */
 	public function render() {
-// fallback
+		// fallback
 		$uid = uniqid();
-		if ($this->templateVariableContainer->exists("contentObjectData")) {
-// this works for templates but not for partials
-			$contentObjectData = $this->templateVariableContainer->get("contentObjectData");
+		if ( $this->templateVariableContainer->exists('contentObjectData') ) {
+			// this works for templates but not for partials
+			$contentObjectData = $this->templateVariableContainer->get('contentObjectData');
 			$uid = $contentObjectData['uid'];
 		} else {
-// this should work in every circumstance
+			// this should work in every circumstance
 			$uid = $this->configurationManager->getContentObject()->data['uid'];
 		}
 		return $uid;

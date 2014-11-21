@@ -3,8 +3,11 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2014-07-01T14:36:00Z" product-name="ecompc">
 		<header/>
 		<body>
-			<trans-unit id="pi.title">
-				<source>Product Configurator</source>
+			<trans-unit id="pi0.title">
+				<source>Configurator: Dynamic Configuration</source>
+			</trans-unit>
+			<trans-unit id="pi1.title">
+				<source>Configurator: Static Configuration [SKU]</source>
 			</trans-unit>
 			<trans-unit id="pi2.title">
 				<source>Configuration Resolver</source>
@@ -51,8 +54,11 @@
 			<trans-unit id="tx_ecompc_domain_model_configuration.configuration_code_prefix">
 				<source>Config Code Prefix</source>
 			</trans-unit>
-			<trans-unit id="tx_ecompc_domain_model_configuration.price">
-				<source>Price [in default currency]</source>
+			<trans-unit id="tx_ecompc_domain_model_configuration.pricing">
+				<source>Pricing</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_configuration.price_old_basic">
+				<source>Price [old basic]</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_configuration.options">
 				<source>Options</source>
@@ -78,8 +84,11 @@
 			<trans-unit id="tx_ecompc_domain_model_option.hint_text">
 				<source>Hint Text</source>
 			</trans-unit>
-			<trans-unit id="tx_ecompc_domain_model_option.price">
-				<source>Price</source>
+			<trans-unit id="tx_ecompc_domain_model_option.pricing">
+				<source>Pricing</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_option.price_old_basic">
+				<source>Price [old basic]</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_option.price_percental">
 				<source>Percental Price</source>
@@ -108,8 +117,8 @@
 			<trans-unit id="tx_ecompc_domain_model_package.hint_text">
 				<source>Hint Text</source>
 			</trans-unit>
-			<trans-unit id="tx_ecompc_domain_model_package.image">
-				<source>Image</source>
+			<trans-unit id="tx_ecompc_domain_model_package.icon">
+				<source>Icon</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_package.visible_in_frontend">
 				<source>Visible In Frontend</source>
@@ -141,8 +150,53 @@
 			<trans-unit id="tx_ecompc_domain_model_dependency.options">
 				<source>Options</source>
 			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency">
+				<source>Currency</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.label">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.iso_4217">
+				<source>ISO 4217</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.symbol">
+				<source>Symbol</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.region">
+				<source>Region covered</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.local_lang">
+				<source>LLL for region label</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.exchange">
+				<source>Current exchange</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.flag">
+				<source>Flag</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.settings">
+				<source>Settings</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.currency_default">
+				<source>Use as default (calculation on exchange base on this)</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.currency_prepend_symbol">
+				<source>Prepend currency symbol</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.currency_separate">
+				<source>Separate cureency and symbol (whitespace will be added)</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.currency_format_us">
+				<source>Use US-Format for separators (decimals/thousands)</source>
+			</trans-unit>
 			<trans-unit id="tabs.pricing">
 				<source>Pricing</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.palettes.basic">
+				<source>Basic setup</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_currency.palettes.region">
+				<source>Region setup</source>
 			</trans-unit>
 
 			<!-- DEFAULT CURRENCY REGIONS -->
