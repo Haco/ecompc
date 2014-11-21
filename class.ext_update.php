@@ -84,12 +84,8 @@
 			$table = 'tt_content';
 			$title = 'Moving ' . $table . ':tx_ecompc_type definition to ' . $table . ':list_type : ';
 
-			$sql = ('
-				UPDATE ' . $table . ' SET ' . $table . '.list_type=\'ecompc_configurator_dynamic\' WHERE ' . $table . '.list_type=\'ecompc_configurator\' AND ' . $table . '.tx_ecompc_type=1;
-				UPDATE ' . $table . ' SET ' . $table . '.list_type=\'ecompc_configurator_sku\' WHERE ' . $table . '.list_type=\'ecompc_configurator\' AND ' . $table . '.tx_ecompc_type=0;
-			');
-
-			if ( $this->databaseConnection->admin_query($sql) === FALSE ) {
+			if ( $this->databaseConnection->exec_UPDATEquery($table, 'list_type="ecompc_configurator" AND tx_ecompc_type=1', array('list_type' => 'ecompc_configurator_dynamic')) === FALSE &&
+				$this->databaseConnection->exec_UPDATEquery($table, 'list_type="ecompc_configurator" AND tx_ecompc_type=0', array('list_type' => 'ecompc_configurator_sku')) === FALSE) {
 				$message = ' SQL ERROR: ' . $this->databaseConnection->sql_error();
 				$status = FlashMessage::ERROR;
 			} else {
