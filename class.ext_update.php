@@ -82,11 +82,11 @@
 
 		protected function moveTypeDefinition() {
 			$table = 'tt_content';
-			$title = 'Moving ' . $table . ':tx_ecompc_type definition to ' . $table . ':list_type": ';
+			$title = 'Moving ' . $table . ':tx_ecompc_type definition to ' . $table . ':list_type : ';
 
 			$sql = ('
-				UPDATE ' . $table . ' SET list_type="ecompc_configurator_dynamic" WHERE list_type="ecompc_configurator" AND tx_ecompc_type="1";
-				UPDATE ' . $table . ' SET list_type="ecompc_configurator_sku" WHERE list_type="ecompc_configurator" AND tx_ecompc_type="0";
+				UPDATE ' . $table . ' SET list_type=\'ecompc_configurator_dynamic\' WHERE list_type=\'ecompc_configurator\' AND tx_ecompc_type=1;
+				UPDATE ' . $table . ' SET list_type=\'ecompc_configurator_sku\' WHERE list_type=\'ecompc_configurator\' AND tx_ecompc_type=0;
 			');
 
 			if ( $this->databaseConnection->admin_query($sql) === FALSE ) {
