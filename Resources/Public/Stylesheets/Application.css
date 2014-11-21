@@ -161,9 +161,9 @@ body {
 	clear: both;
 }
 #ecom-configurator-canvas .ecom-configurator-configurator-head {
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
-	padding: 20px 10px;
+	/*border-top: 1px solid #ddd;*/
+	/*border-bottom: 1px solid #ddd;*/
+	padding: 20px 0;
 }
 #ecom-configurator-canvas .ecom-configurator-configurator-head .ecom-configurator-config-header-instructions {
 	float: left;
@@ -306,7 +306,8 @@ body {
 #ecom-configurator-canvas .ecom-configurator-resolve-list td {
 	padding: 2px 15px;
 }
-#ecom-configurator-canvas #ecom-configurator-summary-table > table tr:hover {
+#ecom-configurator-canvas #ecom-configurator-summary-table > table tr:hover,
+#ecom-configurator-canvas #ecom-configurator-summary-table > table tr:hover a {
 	background: #0083cb;
 	color: white;
 }
@@ -344,13 +345,14 @@ body {
 #ecom-configurator-canvas #ecom-configurator-progress-number {
 	color: #0083cb;
 	font-size: 1.2em;
+	margin-top: 1em;
 	text-align: center;
 }
 /**
  * @action selectPackageOptions
  */
 #ecom-configurator-canvas #ecom-configurator-optionSelection-package-info {
-	margin-bottom: 2em;
+	margin: 2em 0;
 }
 #ecom-configurator-canvas #ecom-configurator-optionSelection-package-info h2 {
 	color: #0083cb;
@@ -510,6 +512,33 @@ body {
 	display: block;
 	text-indent: -9999px;
 }
+
+#ecom-configurator-canvas .ui-tooltip {
+	padding: 8px;
+	position: absolute;
+	z-index: 9999;
+	max-width: 300px;
+	-webkit-box-shadow: 0 0 5px #aaa;
+	box-shadow: 0 0 5px #aaa;
+	background-color: #fff;
+}
+body #ecom-configurator-canvas .ui-tooltip {
+	border-width: 2px;
+}
+#ecom-configurator-canvas .ui-helper-hidden {
+	display: none;
+}
+#ecom-configurator-canvas .ui-helper-hidden-accessible {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+}
+
 
 @media (max-width: 1024px) {
 	#ecom-configurator-canvas #ecom-configurator-select-package-option-info-hint-box {
