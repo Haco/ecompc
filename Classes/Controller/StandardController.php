@@ -454,7 +454,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			->setCreateAbsoluteUri(TRUE)
 			->setAddQueryString($addQueryString)
 			->setArgumentsToBeExcludedFromQueryString(array(
-				CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored('Tx' . $this->request->getControllerExtensionName() . $this->request->getPluginName())
+				'tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName()
 			));
 
 		if ( CoreUtility\GeneralUtility::getIndpEnv('TYPO3_SSL') ) {
