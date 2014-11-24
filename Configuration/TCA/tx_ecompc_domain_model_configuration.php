@@ -169,8 +169,7 @@ return array(
 			),
 		),
 		'sku' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'defaultAsReadonly',
+			'l10n_mode' => 'exclude',
 			'displayCond' => 'REC:NEW:false',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_configuration.sku',
@@ -183,8 +182,7 @@ return array(
 			),
 		),
 		'configuration_code_suffix' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'defaultAsReadonly',
+			'l10n_mode' => 'exclude',
 			'displayCond' => 'REC:NEW:false',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_configuration.configuration_code_suffix',
@@ -197,8 +195,7 @@ return array(
 			),
 		),
 		'configuration_code_prefix' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'defaultAsReadonly',
+			'l10n_mode' => 'exclude',
 			'displayCond' => 'REC:NEW:false',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_configuration.configuration_code_prefix',
@@ -211,8 +208,7 @@ return array(
 			),
 		),
 		'options' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'defaultAsReadonly',
+			'l10n_mode' => 'exclude',
 			'displayCond' => 'REC:NEW:false',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_configuration.options',

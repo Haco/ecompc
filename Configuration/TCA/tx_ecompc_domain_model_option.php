@@ -182,7 +182,6 @@ return array(
 		),
 		'configuration_code_segment' => array(
 			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'defaultAsReadonly',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.configuration_code_segment',
 			'config' => array(
@@ -192,7 +191,7 @@ return array(
 			),
 		),
 		'image' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.image',
 			'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
@@ -249,8 +248,7 @@ return array(
 		 * @deprecated hold for compatibility
 		 */
 		'price' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'hideDiff',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.price_old_basic',
 			'config' => array(
@@ -261,8 +259,7 @@ return array(
 			)
 		),
 		'price_percental' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'hideDiff',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.price_percental',
 			'config' => array(
@@ -278,8 +275,7 @@ return array(
 			)
 		),
 		'pricing' => array(
-			'l10n_mode' => 'mergeIfNotBlank',
-			'l10n_display' => 'hideDiff',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.pricing',
 			'config' => array(
@@ -292,7 +288,7 @@ return array(
 			)
 		),
 		'configuration_package' => array(
-			'l10n_display' => 'defaultAsReadonly',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => $extTranslationPath . 'tx_ecompc_domain_model_option.configuration_package',
 			'config' => array(
@@ -307,7 +303,7 @@ return array(
 			),
 		),
 		'dependency' => array(
-			'l10n_display' => 'defaultAsReadonly',
+			'l10n_mode' => 'exclude',
 			'exclude' => 1,
 			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_option.dependency',
 			'config' => array(
