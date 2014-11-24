@@ -335,7 +335,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function resetAction() {
 		$this->getFeSession()->store($this->configurationSessionStorageKey, array());
-		$this->redirectToPage();
+		$this->forward('index');
 	}
 
 	/**
