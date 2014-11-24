@@ -222,7 +222,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			} elseif ( !$this->getFeSession()->get('currency') && $currency && ($record = $this->getCurrencyRepository()->findByUid($currency)) ) {
 				$this->getFeSession()->store('currency', $currency); // Store region selection
 				$this->setCurrency($record);
-				$this->redirectToPage();
+				$this->forward('index');
 			}
 		}
 		// Get configuration price
@@ -422,7 +422,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function selectRegionAction() {
 		if ( $this->getFeSession()->get('currency') )
-			$this->redirectToPage();
+			$this->forward('index');
 
 		$this->view->assign('currencies', $this->getCurrencyRepository()->findAll());
 	}
