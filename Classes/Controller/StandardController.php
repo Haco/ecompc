@@ -335,7 +335,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function resetAction() {
 		$this->getFeSession()->store($this->configurationSessionStorageKey, array());
-		$this->redirect('index');
+		$this->redirectToPage();
 	}
 
 	/**
@@ -454,7 +454,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			->setCreateAbsoluteUri(TRUE)
 			->setAddQueryString($addQueryString)
 			->setArgumentsToBeExcludedFromQueryString(array(
-				'tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName()
+				CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored('Tx' . $this->request->getControllerExtensionName() . $this->request->getPluginName())
 			));
 
 		if ( CoreUtility\GeneralUtility::getIndpEnv('TYPO3_SSL') ) {
@@ -554,7 +554,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
 		if ( $render && $this->isPricingEnabled() && ($tellMeWhatToRender >= 0 && $tellMeWhatToRender <= 4) ) {
 			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
-			$currencyVH = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
+			$currencyVH = CoreUtility\GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\ViewHelpers\\S3b0\\Financial\\CurrencyViewHelper');
 			return $currencyVH->render(
 				$this->getCurrency(),
 				$returnArray[$tellMeWhatToRender],
