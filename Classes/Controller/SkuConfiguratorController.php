@@ -53,6 +53,7 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$matchingConfiguration = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options'])->getFirst();
+				$this->logConfiguration = $matchingConfiguration;
 				$configurationData = self::getConfigurationData($matchingConfiguration, $this);
 				$this->view->assignMultiple(array(
 					'configurationLabel' => $configurationData[0],

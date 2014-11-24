@@ -53,6 +53,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $progress = 0.0;
 
 	/**
+	 * @var \S3b0\Ecompc\Domain\Model\Configuration
+	 */
+	protected $logConfiguration = NULL;
+
+	/**
 	 * @var array
 	 */
 	protected $selectedConfiguration = array();
@@ -376,7 +381,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$logger = $this->objectManager->get('S3b0\\Ecompc\\Domain\\Model\\Logger');
 		$logger->setSelectedConfiguration($this->selectedConfiguration)
 			->setIp(CoreUtility\GeneralUtility::getIndpEnv('REMOTE_ADDR'), $this->settings['log']['ipParts'])
-			->setConfiguration($this->cObj->getEcompcConfigurations()->toArray()[0])
+			->setConfiguration($this->logConfiguration ?: $this->cObj->getEcompcConfigurations()->toArray()[0])
 			->setConfigurationCode($configurationCode);
 		if ( $GLOBALS['TSFE']->loginUser ) {
 			$logger->setFeUser($this->frontendUserRepository->findByUid($GLOBALS['TSFE']->fe_user->user['uid']));
