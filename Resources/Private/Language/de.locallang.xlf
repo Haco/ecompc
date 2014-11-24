@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2014-11-20T12:34:13Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2014-11-24T08:54:44Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -42,12 +42,12 @@
 			<target>Zurück zur Modul-Auswahl</target>
 		</trans-unit>
 		<trans-unit id="index.header.base_price" approved="yes" xml:space="preserve">
-			<source>Base price</source>
-			<target>Basispreis</target>
+			<source>Basic</source>
+			<target>Basisgerät</target>
 		</trans-unit>
 		<trans-unit id="index.header.config_price" approved="yes" xml:space="preserve">
-			<source>Config price</source>
-			<target>Konfigurationspreis</target>
+			<source>Your Configuration</source>
+			<target>Ihre Konfiguration</target>
 		</trans-unit>
 		<trans-unit id="index.package.no_price_label" approved="yes" xml:space="preserve">
 			<source>+ additional costs</source>
@@ -109,7 +109,7 @@
 		</trans-unit>
 		<trans-unit id="labels.ip_address" approved="yes" xml:space="preserve">
 			<source>IP-Address (masked for privacy)</source>
-			<target>ID-Adresse (aus Datenschutzgründen gekürzt)</target>
+			<target>IP-Adresse (aus Datenschutzgründen gekürzt)</target>
 		</trans-unit>
 		<trans-unit id="labels.product" approved="yes" xml:space="preserve">
 			<source>Product</source>
@@ -126,17 +126,17 @@
 		<trans-unit id="link.show" approved="yes" xml:space="preserve">
 			<source>Show</source>
 			<target>Anzeigen</target>
-		<trans-unit id="link.show_result" xml:space="preserve">
-			<source>Show Result</source>
-			<target>Ergebnis anzeigen</target>
 		</trans-unit>
+		<trans-unit id="link.show_result" approved="yes" xml:space="preserve">
+			<source>Show result</source>
+			<target>Ergebnis anzeigen</target>
 		</trans-unit>
 		<trans-unit id="mark_incompatible_options" approved="yes" xml:space="preserve">
 			<source></source>
 			<target>ungültige Auswahl</target>
 		</trans-unit>
 		<trans-unit id="optionlist.confirm_selection" approved="yes" xml:space="preserve">
-			<source>Confirm Selection</source>
+			<source>Confirm selection</source>
 			<target>Auswahl bestätigen</target>
 		</trans-unit>
 		<trans-unit id="optionlist.more_info" approved="yes" xml:space="preserve">
@@ -156,12 +156,12 @@
 			<target>Auswahl der Option aufheben</target>
 		</trans-unit>
 		<trans-unit id="optionlist.setlink.1.0" approved="yes" xml:space="preserve">
-			<source>Add this option</source>
-			<target>Diese Option hinzufügen</target>
+			<source>Select</source>
+			<target>Auswählen</target>
 		</trans-unit>
 		<trans-unit id="optionlist.setlink.1.1" approved="yes" xml:space="preserve">
-			<source>Remove this option</source>
-			<target>Diese Option entfernen</target>
+			<source>Remove selection</source>
+			<target>Auswahl entfernen</target>
 		</trans-unit>
 		<trans-unit id="optionlist.unit_price" approved="yes" xml:space="preserve">
 			<source>Unit Price</source>
@@ -178,10 +178,6 @@
 		<trans-unit id="selectregion.choose_text" approved="yes" xml:space="preserve">
 			<source>Please choose a region/currency</source>
 			<target>Bitte wählen Sie eine Region/Währung</target>
-		</trans-unit>
-		<trans-unit id="selectregion.warning_onetime_text" approved="yes" xml:space="preserve">
-			<source>This is a one time selection! You won´t be able to return and switch currency.</source>
-			<target>Dies ist eine Einmal-Auswahl! Sie werden keine weitere Möglichkeit haben, die Währung zu wechseln.</target>
 		</trans-unit>
 		<trans-unit id="title.closeIB" approved="yes" xml:space="preserve">
 			<source>Close Info Box</source>

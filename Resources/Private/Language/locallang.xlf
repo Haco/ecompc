@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2014-11-20T12:34:13Z">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-11-24T08:54:44Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -97,10 +97,10 @@
 			<source>Show</source>
 		</trans-unit>
 		<trans-unit id="link.show_result" xml:space="preserve">
-			<source>Show Result</source>
+			<source>Show result</source>
 		</trans-unit>
 		<trans-unit id="optionlist.confirm_selection" xml:space="preserve">
-			<source>Confirm Selection</source>
+			<source>Confirm selection</source>
 		</trans-unit>
 		<trans-unit id="optionlist.more_info" xml:space="preserve">
 			<source>More Info</source>
@@ -115,10 +115,10 @@
 			<source>Unselect option</source>
 		</trans-unit>
 		<trans-unit id="optionlist.setlink.1.0" xml:space="preserve">
-			<source>Add this option</source>
+			<source>Select</source>
 		</trans-unit>
 		<trans-unit id="optionlist.setlink.1.1" xml:space="preserve">
-			<source>Remove this option</source>
+			<source>Remove selection</source>
 		</trans-unit>
 		<trans-unit id="optionlist.unit_price" xml:space="preserve">
 			<source>Unit Price</source>
@@ -131,9 +131,6 @@
 		</trans-unit>
 		<trans-unit id="selectregion.choose_text" xml:space="preserve">
 			<source>Please choose a region/currency</source>
-		</trans-unit>
-		<trans-unit id="selectregion.warning_onetime_text" xml:space="preserve">
-			<source>This is a one time selection! You won´t be able to return and switch currency.</source>
 		</trans-unit>
 		<trans-unit id="title.closeIB" xml:space="preserve">
 			<source>Close Info Box</source>
