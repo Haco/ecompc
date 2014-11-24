@@ -45,7 +45,7 @@
 	<div class="clearfix">
 		<p></p>
 		<f:link.action action="reset" class="action-button-default no-arrow" noCacheHash="1" id="ecom-configurator-reset-configuration-button"><f:translate id="index.reset_configuration" /> &nbsp; <i class="fa fa-undo"></i></f:link.action>
-		<f:link.action action="index" class="action-button-default" noCacheHash="1" id="ecom-configurator-show-result-button">Show result</f:link.action>
+		<f:link.action action="index" class="action-button-default" noCacheHash="1" id="ecom-configurator-show-result-button"><f:translate id="link.show_result" /></f:link.action>
 	</div>
 </div>
 
@@ -59,7 +59,7 @@
 			<f:translate id="index.your_configuration_code" /><br />
 			<small class="ecom-configurator-result-code"><f:render partial="Misc/ConfigurationCode" arguments="{result : configurationCode, type : '{controller -> f:s3b0.substring(endAt:3)}'}" /></small>
 		</h2>
-		<f:link.action action="reset" noCacheHash="1" class="action-button-default no-arrow">Reconfigure &nbsp; <i class="fa fa-undo"></i></f:link.action>
+		<f:link.action action="reset" class="action-button-default no-arrow" noCacheHash="1"><f:translate id="index.reset_configuration" /> &nbsp; <i class="fa fa-undo"></i></f:link.action>
 		<a class="action-button-default ecom-configurator-result-review-config dropdown" title="{f:translate(id : 'index.summary_button_title')}"><i class="fa fa-list"></i> <f:translate id="index.summary_button" /></a>
 		<f:link.action action="request" noCacheHash="1" additionalParams="{L : sys_language_uid}" class="action-button-default" target="{settings.requestForm.target}"><i class="fa fa-envelope-alt"></i> <f:translate id="index.request_your_device" /></f:link.action>
 	</div>

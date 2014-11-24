@@ -126,6 +126,10 @@
 		<trans-unit id="link.show" approved="yes" xml:space="preserve">
 			<source>Show</source>
 			<target>Anzeigen</target>
+		<trans-unit id="link.show_result" xml:space="preserve">
+			<source>Show Result</source>
+			<target>Ergebnis anzeigen</target>
+		</trans-unit>
 		</trans-unit>
 		<trans-unit id="mark_incompatible_options" approved="yes" xml:space="preserve">
 			<source></source>

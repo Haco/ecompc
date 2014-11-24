@@ -33,10 +33,10 @@
 			<source>Back to Module Selection</source>
 		</trans-unit>
 		<trans-unit id="index.header.base_price" xml:space="preserve">
-			<source>Base price</source>
+			<source>Basic</source>
 		</trans-unit>
 		<trans-unit id="index.header.config_price" xml:space="preserve">
-			<source>Config price</source>
+			<source>Your Configuration</source>
 		</trans-unit>
 		<trans-unit id="index.package.no_price_label" xml:space="preserve">
 			<source>+ additional costs</source>
@@ -95,6 +95,9 @@
 		</trans-unit>
 		<trans-unit id="link.show" xml:space="preserve">
 			<source>Show</source>
+		</trans-unit>
+		<trans-unit id="link.show_result" xml:space="preserve">
+			<source>Show Result</source>
 		</trans-unit>
 		<trans-unit id="optionlist.confirm_selection" xml:space="preserve">
 			<source>Confirm Selection</source>
