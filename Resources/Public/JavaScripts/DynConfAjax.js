@@ -238,7 +238,7 @@ function buildSelector(result) {
 					content += "<span class=\"ecom-configurator-select-package-option-price\">" + options[prop].price + "</span>";
 				}
 				if ( options[prop].hint ) {
-					content += "<div class=\"ecom-configurator-select-package-option-info-wrapper\"><span class=\"ecom-configurator-select-package-option-info\">More Info</span></div>";
+					content += "<div class=\"ecom-configurator-select-package-option-info-wrapper\"><span class=\"ecom-configurator-select-package-option-info\">" + moreInfoLinkTitle + "</span></div>";
 				}
 				content += "<div class=\"ecom-configurator-checkbox " + (options[prop].active ? '' : 'un') + "checked\"><span class=\"ecom-configurator-option-checkbox-image\"></span></div>";
 				content += "<span class=\"ecom-configurator-select-package-option option\">" + options[prop].title + "</span></a>";

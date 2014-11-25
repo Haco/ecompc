@@ -70,10 +70,11 @@
 
 
 <script language="JavaScript" type="text/javascript">
-	var t3pid={pid},
-		t3lang={sys_language_uid -> f:format.number(decimals : 0)},
-		t3cobj={cObj},
-		showResult = {f:if(condition : '{configurationData -> f:count()}', then : 'true', else : 'null')};
+	var t3pid = {pid},
+		t3lang = {sys_language_uid -> f:format.number(decimals : 0)},
+		t3cobj = {cObj},
+		showResult = {f:if(condition : '{configurationData -> f:count()}', then : 'true', else : 'null')},
+		moreInfoLinkTitle = "{f:translate(id : 'optionlist.more_info')}";
 </script>
 <script language="JavaScript" type="text/javascript">
 	var js = document.createElement("script");
