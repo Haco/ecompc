@@ -14,7 +14,7 @@
 	<!-- package navigation -->
 	<div id="ecom-configurator-package-select-index">
 		<f:for each="{packages}" as="package" iteration="packageIterator">
-			<a data-package="{package.uid}" id="ecom-configurator-package-{package.uid}-link" class="ecom-configurator-package-select ecom-configurator-package-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}{f:if(condition : package.visibleInFrontend, then : '', else : ' ecom-configurator-package-invisible" title="{package.frontendLabel}">
+			<a data-package="{package.uid}" id="ecom-configurator-package-{package.uid}-link" class="ecom-configurator-package-select ecom-configurator-package-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}{f:if(condition : package.visibleInFrontend, then : '', else : ' ecom-configurator-package-invisible')}" title="{package.frontendLabel}">
 				<div>
 					<f:if condition="{package.icon}">
 						<f:then><f:image src="{package.icon.uid}" id="ecom-configurator-package-{package.uid}-icon" class="ecom-configurator-package-icon icon-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}" width="32" height="32" treatIdAsReference="1" /></f:then>
