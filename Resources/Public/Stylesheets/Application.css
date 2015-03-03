@@ -217,8 +217,8 @@ body {
 	border-color: #808080;
 	color: #808080;
 }
-#ecom-configurator-canvas a.ecom-configurator-package-select.invisible > div span.ecompc-package-number,
-#ecom-configurator-canvas a.ecom-configurator-package-select.invisible > div i {
+#ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-invisible > div span.ecompc-package-number,
+#ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-invisible > div i {
 	border-color: #ccc;
 	color: #ccc;
 }

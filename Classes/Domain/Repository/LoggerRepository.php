@@ -41,6 +41,7 @@ class LoggerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	protected $defaultOrderings = array(
 		'tstamp' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
 	);
+
 	/**
 	 * Repository wide settings
 	 */
