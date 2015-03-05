@@ -206,11 +206,10 @@ body {
 	margin-right: 0;
 }
 #ecom-configurator-canvas a.ecom-configurator-package-select > div span.ecompc-package-number {
-	border: 2px solid #000;
-	border-radius: 28px;
+	border: 1px solid #000;
 	display: block;
 	height: 28px;
-	line-height: 28px;
+	line-height: 26px !important;
 	width: 28px;
 }
 #ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-state-0 > div span.ecompc-package-number {
@@ -223,14 +222,14 @@ body {
 	color: #ccc;
 }
 #ecom-configurator-canvas a.ecom-configurator-package-select.current > div span.ecompc-package-number {
-	border: 3px solid #0083cb;
+	border: 2px solid #0083cb;
 }
 #ecom-configurator-canvas a.ecom-configurator-package-select > div > i {
 	background-color: #fff;
-	bottom: 0;
+	bottom: 2px;
 	padding: 1px;
 	position: absolute;
-	right: 0;
+	right: 6px;
 }
 #ecom-configurator-canvas a.ecom-configurator-package-select.ecom-configurator-package-state-1 > div > i.fa-check-square-o {
 	color: #060;

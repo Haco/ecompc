@@ -41,6 +41,11 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $sorting = 0;
 
 	/**
+	 * @var integer
+	 */
+	protected $sortingInCode = 0;
+
+	/**
 	 * @var string
 	 */
 	protected $backendLabel = '';
@@ -147,6 +152,20 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setSorting($sorting) {
 		$this->sorting = $sorting;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getSortingInCode() {
+		return $this->sortingInCode;
+	}
+
+	/**
+	 * @param integer $sortingInCode
+	 */
+	public function setSortingInCode($sortingInCode) {
+		$this->sortingInCode = $sortingInCode;
 	}
 
 	/**

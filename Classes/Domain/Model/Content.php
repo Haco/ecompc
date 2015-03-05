@@ -349,4 +349,19 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		return array_unique($pidArray);
 	}
 
+	/**
+	 * Returns an array of package uid's used for 'in'-queries
+	 *
+	 * @return array
+	 */
+	public function getEcompcPackagesList() {
+		$list = array();
+		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+		foreach ( $this->ecompcPackages as $package ) {
+			$list[] = $package->getUid();
+		}
+
+		return $list;
+	}
+
 }

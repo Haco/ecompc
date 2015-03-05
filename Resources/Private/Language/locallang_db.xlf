@@ -120,6 +120,9 @@
 			<trans-unit id="tx_ecompc_domain_model_package.icon">
 				<source>Icon</source>
 			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.sorting_in_code">
+				<source>Sorting in code</source>
+			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_package.visible_in_frontend">
 				<source>Visible In Frontend</source>
 			</trans-unit>

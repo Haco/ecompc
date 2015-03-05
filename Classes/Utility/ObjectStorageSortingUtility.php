@@ -77,7 +77,17 @@ class ObjectStorageSortingUtility {
 	 * @return boolean
 	 */
 	public static function usortBySorting($a, $b) {
-		return $a->getSorting() > $b->getSorting();
+		return (int) $a->getSorting() > (int) $b->getSorting();
+	}
+
+	/**
+	 * @param $a
+	 * @param $b
+	 *
+	 * @return boolean
+	 */
+	public static function usortBySortingInCode($a, $b) {
+		return (int) $a->getSortingInCode() > (int) $b->getSortingInCode();
 	}
 
 }

@@ -57,7 +57,12 @@ class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$db = $GLOBALS['TYPO3_DB'];
 		$query = $this->createQuery();
 
-		return $query->matching($query->in('uid', $db->cleanIntArray($uidList)))->execute();
+		return $query->matching(
+			$query->in('uid', $db->cleanIntArray($uidList))
+		)->setOrderings(array(
+			'sorting_in_code' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
+			'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+		))->execute();
 	}
 
 	/**
@@ -73,7 +78,12 @@ class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$db = $GLOBALS['TYPO3_DB'];
 		$query = $this->createQuery();
 
-		return $query->matching($query->logicalAnd($query->in('uid', $db->cleanIntArray($uidList)), $query->equals('visible_in_frontend', 1)))->execute();
+		return $query->matching(
+			$query->logicalAnd(
+				$query->in('uid', $db->cleanIntArray($uidList)),
+				$query->equals('visible_in_frontend', 1)
+			)
+		)->execute();
 	}
 
 }

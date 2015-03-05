@@ -117,6 +117,7 @@ CREATE TABLE tx_ecompc_domain_model_package (
 	prompt varchar(255) DEFAULT '' NOT NULL,
 	hint_text text NOT NULL,
 	icon int(11) unsigned NOT NULL default '0',
+	sorting_in_code int(10) DEFAULT '0' NOT NULL,
 	visible_in_frontend tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	multiple_select tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	default_option int(11) unsigned DEFAULT '0',

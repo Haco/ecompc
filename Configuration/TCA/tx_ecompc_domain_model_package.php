@@ -39,7 +39,7 @@ return array(
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_package.png'
 	),
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, icon, visible_in_frontend, multiple_select, default_option',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, icon, sorting_in_code, visible_in_frontend, multiple_select, default_option',
 	),
 	'types' => array(
 		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, --palette--;;3, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
@@ -47,8 +47,8 @@ return array(
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
-		'2' => array('showitem' => 'visible_in_frontend, multiple_select, percent_pricing', 'canNotCollapse' => 1),
-		'3' => array('showitem' => 'default_option, visible_in_frontend, percent_pricing', 'canNotCollapse' => 1),
+		'2' => array('showitem' => 'sorting_in_code, --linebreak--, visible_in_frontend, multiple_select, percent_pricing', 'canNotCollapse' => 1),
+		'3' => array('showitem' => 'default_option, sorting_in_code, --linebreak--, visible_in_frontend, percent_pricing', 'canNotCollapse' => 1),
 		'4' => array('showitem' => 'backend_label')
 	),
 	'columns' => array(
@@ -253,6 +253,28 @@ return array(
 					),
 					$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
 				),
+		),
+		'sorting_in_code' => array(
+			'l10n_mode' => 'exclude',
+			'exclude' => 1,
+			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.sorting_in_code',
+			'config' => array(
+				'type' => 'input',
+				'size' => 5,
+				'eval' => 'trim,int',
+				'range' => array(
+					'lower' => 0,
+					'upper' => 999
+				),
+				'default' => 0,
+				'wizards' => array(
+					'angle' => array(
+						'type' => 'slider',
+						'step' => 1,
+						'width' => 999
+					)
+				)
+			)
 		),
 		'visible_in_frontend' => array(
 			'l10n_mode' => 'exclude',

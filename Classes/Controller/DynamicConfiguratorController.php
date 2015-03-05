@@ -138,7 +138,7 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 
 		$price = !$controller->pricingEnabled ?: $controller->cObj->getPrice($controller->currency);
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
-		foreach ( $controller->cObj->getEcompcPackages() as $package ) {
+		foreach ( $controller->packageRepository->findPackagesByUidList($controller->cObj->getEcompcPackagesList()) as $package ) {
 			/** NO multipleSelect allowed for dynamic configurators, accordingly skip 'em */
 			if ( $package->isMultipleSelect() ) {
 				continue;
