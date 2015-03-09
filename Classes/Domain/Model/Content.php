@@ -349,6 +349,19 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		return array_unique($pidArray);
 	}
 
+	public function getEcompcPackagesSorted() {
+		$list = array();
+		$i = 0;
+		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+		foreach ( $this->ecompcPackages as $package ) {
+			$list[$package->getSortingInCode() ?: ($package->getSorting() ?: $i)] = $package;
+			$i++;
+		}
+		ksort($list);
+
+		return $list;
+	}
+
 	/**
 	 * Returns an array of package uid's used for 'in'-queries
 	 *
