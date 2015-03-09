@@ -349,6 +349,11 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		return array_unique($pidArray);
 	}
 
+	/**
+	 * Returns an array of packages sorted by either inCode or default TYPO3 sorting
+	 *
+	 * @return array
+	 */
 	public function getEcompcPackagesSorted() {
 		$list = array();
 		$i = 0;
