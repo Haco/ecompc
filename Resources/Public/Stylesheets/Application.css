@@ -49,9 +49,11 @@ body {
 	z-index: 1000;
 }
 
+#ecom-configurator-canvas .btn { margin-right: 5px; }
+
 #ecom-configurator-canvas .btn.btn-default.dropdown:after {
 	display: inline-block;
-	font: normal normal normal 18px/1 FontAwesome;
+	font: normal normal normal 14px/1 FontAwesome;
 	content: "\f107";
 	padding-left: 5px;
 	text-align: center;
