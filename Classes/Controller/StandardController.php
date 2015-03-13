@@ -267,6 +267,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->view->assignMultiple(array(
 			'instructions' => $this->cObj->getBodytext(),
 			'packages' => $packages,
+			'packagesNav' => $this->cObj->getEcompcPackagesNavigation(),
 			'progress' => $this->progress
 		));
 	}

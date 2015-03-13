@@ -209,6 +209,28 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $ecompcPackages
+	 */
+	public function getEcompcPackagesNavigation() {
+		if ( $this->ecompcPackages === NULL ) {
+			$this->ecompcPackages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		}
+		if ( $this->ecompcPackages->count() === 0 ) {
+			return NULL;
+		}
+
+		$return = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
+		foreach ( $this->ecompcPackages as $package ) {
+			if ( $package->isVisibleInNavigation() ) {
+				$return->attach($package);
+			}
+		}
+
+		return $return;
+	}
+
+	/**
 	 * Adds a Configuration
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration

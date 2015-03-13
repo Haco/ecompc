@@ -13,22 +13,20 @@
 
 	<!-- package navigation -->
 	<div id="ecom-configurator-package-select-index">
-		<f:for each="{packages}" as="package" iteration="packageIterator">
-			<f:if condition="{package.visibleInNavigation}">
-				<a data-package="{package.uid}" id="ecom-configurator-package-{package.uid}-link" class="ecom-configurator-package-select ecom-configurator-package-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}{f:if(condition : package.visibleInFrontend, then : '', else : ' ecom-configurator-package-invisible')}" title="{package.frontendLabel}">
-					<div>
-						<f:if condition="{package.icon}">
-							<f:then><f:image src="{package.icon.uid}" id="ecom-configurator-package-{package.uid}-icon" class="ecom-configurator-package-icon icon-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}" width="32" height="32" treatIdAsReference="1" /></f:then>
-							<f:else><span class="ecompc-package-number align-center">{packageIterator.cycle}</span></f:else>
-						</f:if>
-						<f:if condition="{package.visibleInFrontend}">
-							<f:then><i class="fa fa-{f:if(condition : package.activeOptions, then : 'check-', else : '')}square-o"></i></f:then>
-							<f:else><i class="fa fa-lock"></i></f:else>
-						</f:if>
-					</div>
-					<div class="hidden-xs hidden-sm ecom-configurator-package-select-index-label">{package.frontendLabel}</div>
-				</a>
-			</f:if>
+		<f:for each="{packagesNav}" as="package" iteration="packageIterator">
+			<a data-package="{package.uid}" id="ecom-configurator-package-{package.uid}-link" class="ecom-configurator-package-select ecom-configurator-package-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}{f:if(condition : package.visibleInFrontend, then : '', else : ' ecom-configurator-package-invisible')}" title="{package.frontendLabel}">
+				<div>
+					<f:if condition="{package.icon}">
+						<f:then><f:image src="{package.icon.uid}" id="ecom-configurator-package-{package.uid}-icon" class="ecom-configurator-package-icon icon-state-{package.active -> f:format.number(decimals : 0)}{f:if(condition : package.current, then : ' current')}" width="32" height="32" treatIdAsReference="1" /></f:then>
+						<f:else><span class="ecompc-package-number align-center">{packageIterator.cycle}</span></f:else>
+					</f:if>
+					<f:if condition="{package.visibleInFrontend}">
+						<f:then><i class="fa fa-{f:if(condition : package.activeOptions, then : 'check-', else : '')}square-o"></i></f:then>
+						<f:else><i class="fa fa-lock"></i></f:else>
+					</f:if>
+				</div>
+				<div class="hidden-xs hidden-sm ecom-configurator-package-select-index-label">{package.frontendLabel}</div>
+			</a>
 		</f:for>
 		<div class="clearfix"></div>
 	</div>
