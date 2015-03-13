@@ -55,7 +55,8 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 				$this->view->assignMultiple(array(
 					'configurationLabel' => $configurationData[0],
 					'configurationData' => $configurationData[1],
-					'configurationCode' => $configurationData[1]
+					'configurationCode' => $configurationData[1],
+					'configurationSummary' => $configurationData[2]
 				));
 			}
 		}
@@ -128,6 +129,7 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 
 		$configurationLabel = $configuration->getFrontendLabel();
 		$configurationCode = new \ArrayObject();
+		$configurationSummary = new \ArrayObject();
 		if ( $configuration->hasConfigurationCodePrefix() ) {
 			$configurationCode->append(array(
 				'Prefix',
@@ -143,29 +145,53 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 			if ( $package->isMultipleSelect() ) {
 				continue;
 			}
-			/**  */
+			/**
+			 * @array(1 => Option Label, 1 => Option Code segment, 'pkg' => Package Label)
+			 */
 			if ( !$package->isVisibleInFrontend() ) {
+				if ( $package->isVisibleInSummary() ) {
+					$configurationSummary->offsetSet($package->getSorting(), array(
+						$package->getDefaultOption()->getFrontendLabel(),
+						$package->getDefaultOption()->getConfigurationCodeSegment(),
+						'pkg' => $package->getDefaultOption()->getConfigurationPackage()->getFrontendLabel(),
+						'pricing' => !$controller->pricingEnabled ?: $currencyVH->render(
+							$controller->currency,
+							$package->getDefaultOption()->getPricing($controller->currency, $price),
+							2,
+							TRUE,
+							FALSE,
+							$controller->settings['usFormat']
+						)
+					));
+				}
 				$configurationCode->append(array(
 					$package->getDefaultOption()->getFrontendLabel(),
 					$package->getDefaultOption()->getConfigurationCodeSegment(),
-					'pkg' => $package->getDefaultOption()->getConfigurationPackage()->getFrontendLabel(),
+					'pkg' => $package->isVisibleInNavigation() ? $package->getDefaultOption()->getConfigurationPackage()->getFrontendLabel() : NULL,
 					TRUE
 				));
 			} elseif ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
 				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
+				if ( $option->getConfigurationPackage()->isVisibleInSummary() ) {
+					$configurationSummary->offsetSet($package->getSorting(), array(
+						$option->getFrontendLabel(),
+						$option->getConfigurationCodeSegment(),
+						'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
+						'pkgUid' => $option->getConfigurationPackage()->getUid(),
+						'pricing' => !$controller->pricingEnabled ?: $currencyVH->render(
+							$controller->currency,
+							$option->getPricing($controller->currency, $price),
+							2,
+							TRUE,
+							FALSE,
+							$controller->settings['usFormat']
+						)
+					));
+				}
 				$configurationCode->append(array(
 					$option->getFrontendLabel(),
 					$option->getConfigurationCodeSegment(),
-					'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
-					'pkgUid' => $option->getConfigurationPackage()->getUid(),
-					'pricing' => !$controller->pricingEnabled ?: $currencyVH->render(
-						$controller->currency,
-						$option->getPricing($controller->currency, $price),
-						2,
-						TRUE,
-						FALSE,
-						$controller->settings['usFormat']
-					)
+					'pkg' => $option->getConfigurationPackage()->isVisibleInNavigation() ? $option->getConfigurationPackage()->getFrontendLabel() : NULL,
 				));
 				$price += $option->getPricing($controller->currency, $price);
 			}
@@ -179,9 +205,12 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 			));
 		}
 
+		$configurationSummary->ksort();
+
 		return array(
 			$configurationLabel,
-			$configurationCode
+			$configurationCode,
+			$configurationSummary
 		);
 	}
 

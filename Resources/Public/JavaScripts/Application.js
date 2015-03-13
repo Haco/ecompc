@@ -38,17 +38,17 @@
 
 // Review/Summary Configuration Button
 (function($) {
-	var $summaryTable = $('#ecom-configurator-canvas #ecom-configurator-summary-table');
+	var summaryTable = $('#ecom-configurator-canvas #ecom-configurator-summary-table');
 	$('#ecom-configurator-canvas .ecom-configurator-result-review-config').on('click', function(e) {
 		// Prevent default anchor action
 		e.preventDefault();
 		$(this).stop().toggleClass('active');
-		$summaryTable.stop().slideToggle('slow').toggleClass('active');
+		summaryTable.stop().slideToggle('slow').toggleClass('active');
 
 		// Scroll in position if the table is not currently hidden
-		if ( $summaryTable.hasClass('active') ) {
+		if ( summaryTable.hasClass('active') ) {
 			$('html, body').stop().animate({
-				scrollTop: $summaryTable.offset().top
+				scrollTop: summaryTable.offset().top
 			}, 'slow');
 		}
 	});

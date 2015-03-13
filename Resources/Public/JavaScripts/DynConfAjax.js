@@ -46,7 +46,7 @@ function txEcompcSetOption() {
 				pkgInfoDiv.hide();
 				$('#ecom-configurator-result-canvas .ecom-configurator-result h3.ecom-configurator-result-label').first().html(result.configurationData[0]);
 				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').first().html(getConfigurationCode(result.configurationData[1]));
-				$('#ecom-configurator-summary-table').html(getConfigurationSummary(result.configurationData[1], result.pricingEnabled));
+				$('#ecom-configurator-summary-table').html(getConfigurationSummary(result.configurationData[2], result.pricingEnabled));
 				$('.ecompc-syntax-help').tooltip({
 					tooltipClass: "ecompc-custom-tooltip-styling",
 					track: true
@@ -243,8 +243,8 @@ function buildSelector(result) {
 				content += "<div class=\"ecom-configurator-checkbox " + (options[prop].active ? '' : 'un') + "checked\"><span class=\"ecom-configurator-option-checkbox-image\"></span></div>";
 				content += "<span class=\"ecom-configurator-select-package-option option\">" + options[prop].title + "</span></a>";
 				/*if ( options[prop].hint ) {
-					content += "<span class=\"ecom-configurator-select-package-option-info-hint-box\"><span class=\"close-popover-x\" title=\"Close Info Box\">×</span>###CONTENT###</span>";
-				}*/
+				 content += "<span class=\"ecom-configurator-select-package-option-info-hint-box\"><span class=\"close-popover-x\" title=\"Close Info Box\">×</span>###CONTENT###</span>";
+				 }*/
 				content += "<div class=\"clearfix\"></div>";
 				html.push(content);
 				tabIndex++;
@@ -271,11 +271,11 @@ function getConfigurationCode(config) {
 			addTitle = '';
 		}
 		/** Variant with lock icon for fixed packages (!visibleInFrontend) */
-/*
-		if ( config[i][2] ) {
-			prependInnerHTML = '<i class="fa fa-lock"></i>';
-		}
-*/
+		/*
+		 if ( config[i][2] ) {
+		 prependInnerHTML = '<i class="fa fa-lock"></i>';
+		 }
+		 */
 		spans += '<span' + addClass + addTitle + '>' + prependInnerHTML + config[i][1] + '</span>';
 	}
 
@@ -284,13 +284,13 @@ function getConfigurationCode(config) {
 
 function getConfigurationSummary(config, pricingEnabled) {
 	var table = "<table>";
-	for ( var i=0; i<config.length; i++ ) {
-		if ( !config[i].pkg ) {
+	for ( var key in config ) {
+		if ( !config[key].pkg ) {
 			continue;
 		}
-		table += "<tr><td>" + config[i].pkg + "</td><td>" + config[i][0] + (config[i][1] != "" ? " [" + config[i][1] + "]" : "") + "</td><td>" + (config[i].pkgUid ? "<a data-package=\"" + config[i].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td>";
+		table += "<tr><td>" + config[key].pkg + "</td><td>" + config[key][0] + (config[key][1] != "" ? " [" + config[key][1] + "]" : "") + "</td><td>" + (config[key].pkgUid ? "<a data-package=\"" + config[key].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td>";
 		if ( pricingEnabled ) {
-			table += "<td class=\"align-right\">" + (config[i].pricing ? config[i].pricing : "") + "</td>";
+			table += "<td class=\"align-right\">" + (config[key].pricing ? config[key].pricing : "") + "</td>";
 		}
 		table += "</tr>";
 	}
@@ -346,4 +346,3 @@ function addInfoTrigger() {
 	txEcompcIndex();
 	addInfoTrigger();
 })(jQuery);
-

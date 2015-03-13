@@ -76,6 +76,11 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $visibleInFrontend = FALSE;
 
 	/**
+	 * @var integer
+	 */
+	protected $visibility = 3;
+
+	/**
 	 * @var boolean
 	 */
 	protected $percentPricing = FALSE;
@@ -259,6 +264,35 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @param integer $visibility
+	 * @return void
+	 */
+	public function setVisibility($visibility) {
+		$this->visibility = $visibility;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getVisibility() {
+		return $this->visibility;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isVisibleInSummary() {
+		return version_compare(PHP_VERSION, '5.5', '>=') ? boolval($this->getVisibility() & 1) : (bool) ($this->getVisibility() & 1);
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isVisibleInNavigation() {
+		return version_compare(PHP_VERSION, '5.5', '>=') ? boolval($this->getVisibility() & 2) : (bool) ($this->getVisibility() & 2);
+	}
+
+	/**
 	 * @param boolean $percentPricing
 	 * @return void
 	 */
@@ -416,11 +450,17 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		}
 	}
 
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Option $option
+	 */
 	public function addActiveOption(\S3b0\Ecompc\Domain\Model\Option $option) {
 		$this->activeOptions = array_merge($this->getActiveOptions(), array($option->getUid()));
 		$this->setAnyOptionActive(TRUE);
 	}
 
+	/**
+	 * @param \S3b0\Ecompc\Domain\Model\Option $option
+	 */
 	public function removeActiveOption(\S3b0\Ecompc\Domain\Model\Option $option) {
 		$this->activeOptions = array_diff($this->getActiveOptions(), array($option->getUid()));
 	}

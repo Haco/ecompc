@@ -124,7 +124,16 @@
 				<source>Sorting in code</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_package.visible_in_frontend">
-				<source>Visible In Frontend</source>
+				<source>Visible in Frontend</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.visibility">
+				<source>Visibility Setup</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.visible_in_summary">
+				<source>Visible in Summary</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.visible_in_navigation">
+				<source>Visible in Navigation</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_package.multiple_select">
 				<source>Multiple Select</source>

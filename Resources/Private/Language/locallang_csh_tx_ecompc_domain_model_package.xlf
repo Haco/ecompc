@@ -24,6 +24,9 @@
 			<trans-unit id="visible_in_frontend.description">
 				<source>Enables the package to be displayed in frontend. Otherwise if a default option is set an input with type="hidden" will be rendered.</source>
 			</trans-unit>
+			<trans-unit id="visibility.description">
+				<source>Additional visibility settings.</source>
+			</trans-unit>
 			<trans-unit id="multiple_select.description">
 				<source>Enable multiple select.</source>
 			</trans-unit>
