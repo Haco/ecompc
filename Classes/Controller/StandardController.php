@@ -390,21 +390,20 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$persistenceManager->persistAll();
 		$additionalParams = sprintf($this->settings['requestForm']['additionalParamsQueryString'], $configurationCode, $data[0], $logger->getUid());
 
-		// Build link & redirect
-		$linkConfiguration = array(
-			'returnLast' => 'url',
-			'parameter' => $this->settings['requestForm']['pid'],
-			'additionalParams' => $additionalParams . '&L=' . $GLOBALS['TSFE']->sys_language_content,
-			'useCacheHash' => FALSE,
-			'addQueryString' => TRUE,
-			'addQueryString.' => array(
-				'method' => 'GET,POST',
-				'exclude' => 'tx_ecompc_configurator'
-			)
-		);
-
 		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
-		$this->redirectToUri($this->configurationManager->getContentObject()->typoLink('', $linkConfiguration));
+
+		// Build link & redirect
+		$arguments = CoreUtility\GeneralUtility::explodeUrl2Array($additionalParams);
+		$this->redirectToUri(
+			$this->uriBuilder
+				->setTargetPageUid((int) $this->settings['requestForm']['pid'])
+				->setArguments(array(
+					'L' => $GLOBALS['TSFE']->sys_language_content,
+					$arguments
+				))
+				->setUseCacheHash(FALSE)
+				->build()
+			);
 	}
 
 	/**
