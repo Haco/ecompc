@@ -402,6 +402,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$arguments
 				))
 				->setUseCacheHash(FALSE)
+				->setCreateAbsoluteUri(TRUE)
 				->build()
 			);
 	}
