@@ -7,5 +7,5 @@
 
 <f:comment>
 	<!-- Variant with lock icon for fixed packages (!visibleInFrontend) -->
-	<f:for each="{result}" as="codeSegment"><span{f:if(condition : codeSegment.pkg, then : ' class="ecompc-syntax-help" title="{codeSegment.pkg}"')}>{f:if(condition : codeSegment.2, then : '<i class="fa fa-lock"></i>')}{codeSegment.1}</span></f:for>
+	<f:for each="{result}" as="codeSegment"><span{f:if(condition : codeSegment.pkg, then : ' class="ecompc-syntax-help" title="{codeSegment.pkg}"')}>{f:if(condition : codeSegment.2, then : '<i class="fa fa-lock fa-fw"></i>')}{codeSegment.1}</span></f:for>
 </f:comment>

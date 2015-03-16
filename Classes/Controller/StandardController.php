@@ -368,7 +368,6 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		 * @var array $data
 		 */
 		$data = $this->getConfigurationData($configuration, $this);
-		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
 		$configurationCode = '';
 		if ( $data[1] instanceof \ArrayObject ) {
 			foreach ( $data[1] as $codeSegmentData ) {
@@ -413,6 +412,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			)
 		);
 
+		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
 		$this->redirectToUri($this->configurationManager->getContentObject()->typoLink('', $linkConfiguration));
 	}
 
