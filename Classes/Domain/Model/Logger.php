@@ -222,11 +222,12 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @param string $ip
+	 * @param integer $parts
+	 *
 	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
-	public function setIp($ip, $parts = 4) {
-		$tokens = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode('.', $ip, TRUE, 4);
+	public function setIp($parts = 4) {
+		$tokens = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode('.', \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REMOTE_ADDR'), TRUE, 4);
 
 		$ipParts = array_slice($tokens, 0, $parts);
 		$ipParts = array_pad($ipParts, 4, '*');

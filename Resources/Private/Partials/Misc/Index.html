@@ -62,7 +62,7 @@
 		</h2>
 		<f:link.action action="reset" class="btn btn-default" noCacheHash="1"><f:translate id="index.reset_configuration" /> <i class="fa fa-undo fa-fw"></i></f:link.action>
 		<a class="btn btn-default ecom-configurator-result-review-config dropdown active" title="{f:translate(id : 'index.summary_button_title')}"><i class="fa fa-bars fa-fw"></i> <f:translate id="index.summary_button" /></a>
-		<f:link.action action="request" noCacheHash="1" additionalParams="{L : sys_language_uid}" class="btn btn-default" target="{settings.requestForm.target}"><i class="fa fa-envelope fa-fw"></i> <f:translate id="index.request_your_device" /></f:link.action>
+		<f:link.action action="request" arguments="{configuration: resultingConfiguration}" id="ecom-configurator-request" noCacheHash="1" additionalParams="{L : sys_language_uid}" class="btn btn-default" target="{settings.requestForm.target}"><i class="fa fa-envelope fa-fw"></i> <f:translate id="index.request_your_device" /></f:link.action>
 	</div>
 	<div id="ecom-configurator-summary-table">
 		<f:render partial="Misc/ConfigurationSummary" arguments="{result : configurationSummary, pricingEnabled: pricingEnabled}" />

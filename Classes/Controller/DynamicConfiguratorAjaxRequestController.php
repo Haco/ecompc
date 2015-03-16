@@ -47,7 +47,18 @@ class DynamicConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\A
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$this->view->assignMultiple(array(
 					'configurationData' => \S3b0\Ecompc\Controller\DynamicConfiguratorController::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this), // Get configuration code
-					'showResult' => TRUE
+					'showResult' => TRUE,
+					'requestLink' => $this->uriBuilder
+						->setArguments(array(
+							'tx_' . $this->request->getControllerExtensionKey() . '_configurator_dynamic' => array(
+								'configuration' => $this->cObj->getEcompcConfigurations()->toArray()[0],
+								'action' => 'request',
+								'controller' => 'DynamicConfigurator'
+							)
+						))
+						->setUseCacheHash(FALSE)
+						->setCreateAbsoluteUri(TRUE)
+						->build()
 				));
 			}
 		}

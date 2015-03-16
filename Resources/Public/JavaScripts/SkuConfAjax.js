@@ -44,6 +44,7 @@ function txEcompcSetOption() {
 			}
 			if ( result.showResult ) {
 				pkgInfoDiv.hide();
+				$('#ecom-configurator-request').attr('href', result.requestLink);
 				$('#ecom-configurator-result-canvas .ecom-configurator-result h3.ecom-configurator-result-label').first().html(result.configurationData[0]);
 				$('#ecom-configurator-result-canvas .ecom-configurator-result small.ecom-configurator-result-code').first().html(result.configurationData[1]);
 				$('#ecom-configurator-summary-table').html(getConfigurationSummary(result.configurationData[2], result.pricingEnabled));

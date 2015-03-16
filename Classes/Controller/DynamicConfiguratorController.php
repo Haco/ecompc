@@ -56,7 +56,8 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 					'configurationLabel' => $configurationData[0],
 					'configurationData' => $configurationData[1],
 					'configurationCode' => $configurationData[1],
-					'configurationSummary' => $configurationData[2]
+					'configurationSummary' => $configurationData[2],
+					'resultingConfiguration' => $this->cObj->getEcompcConfigurations()->toArray()[0]
 				));
 			}
 		}

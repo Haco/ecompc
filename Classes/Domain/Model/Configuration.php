@@ -224,8 +224,8 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @return null|\TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
-	public function getOptionsByPackage(\S3b0\Ecompc\Domain\Model\Package $package) {
-		if ( $options = $this->getOptions() ) {
+	public function getOptionsByPackage(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
+		if ( $package instanceof \S3b0\Ecompc\Domain\Model\Package && $options = $this->getOptions() ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 			foreach ( $options as $option ) {
 				if ( $option->getConfigurationPackage() !== $package ) {

@@ -48,7 +48,18 @@ class SkuConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxR
 				$matchingConfiguration = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options'])->getFirst();
 				$this->view->assignMultiple(array(
 					'configurationData' => \S3b0\Ecompc\Controller\SkuConfiguratorController::getConfigurationData($matchingConfiguration, $this), // Get configuration code
-					'showResult' => TRUE
+					'showResult' => TRUE,
+					'requestLink' => $this->uriBuilder
+						->setArguments(array(
+							'tx_' . $this->request->getControllerExtensionKey() . '_configurator_sku' => array(
+								'configuration' => $matchingConfiguration,
+								'action' => 'request',
+								'controller' => 'SkuConfigurator'
+							)
+						))
+						->setUseCacheHash(FALSE)
+						->setCreateAbsoluteUri(TRUE)
+						->build()
 				));
 			}
 		}

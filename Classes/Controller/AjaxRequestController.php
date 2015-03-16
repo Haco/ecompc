@@ -91,7 +91,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		 * selcps -> indicator for active packages used at JS calculation of progress
 		 */
 		$variablesToRender = array(
-			'controller', 'currentPackage', 'packages', 'options', 'hint', 'progress', 'showResult', 'configurationData', 'pricingEnabled', 'pricing'
+			'controller', 'currentPackage', 'packages', 'options', 'hint', 'progress', 'showResult', 'configurationData', 'pricingEnabled', 'pricing', 'requestLink'
 		);
 		if ( \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment() ) {
 			$variablesToRender[] = 'debug';

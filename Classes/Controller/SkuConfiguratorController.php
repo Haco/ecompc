@@ -61,7 +61,8 @@ class SkuConfiguratorController extends \S3b0\Ecompc\Controller\StandardControll
 				$this->view->assignMultiple(array(
 					'configurationLabel' => $configurationData[0],
 					'configurationData' => $configurationData[2],
-					'configurationCode' => $configurationData[1]
+					'configurationCode' => $configurationData[1],
+					'resultingConfiguration' => $matchingConfiguration
 				));
 			}
 		}

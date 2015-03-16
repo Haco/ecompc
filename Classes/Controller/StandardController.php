@@ -347,23 +347,14 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * action request
 	 *
+	 * @param \S3b0\Ecompc\Domain\Model\Configuration $configuration
+	 *
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
 	 * @return void
 	 */
-	public function requestAction() {
-		switch ( $this->request->getControllerName() ) {
-			case 'SkuConfigurator':
-				$configuration = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options'])->getFirst();
-				break;
-			case 'DynamicConfigurator':
-				$configuration = $this->cObj->getEcompcConfigurations()->toArray()[0];
-				break;
-			default:
-				/** @var \S3b0\Ecompc\Domain\Model\Configuration $configuration */
-				$configuration = $this->objectManager->get('S3b0\\Ecompc\\Domain\\Model\\Configuration');
-		}
+	public function requestAction(\S3b0\Ecompc\Domain\Model\Configuration $configuration) {
 		/**
 		 * @var array $data
 		 */
@@ -380,8 +371,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		/** @var \S3b0\Ecompc\Domain\Model\Logger $logger */
 		$logger = $this->objectManager->get('S3b0\\Ecompc\\Domain\\Model\\Logger');
 		$logger->setSelectedConfiguration($this->selectedConfiguration)
-			->setIp(CoreUtility\GeneralUtility::getIndpEnv('REMOTE_ADDR'), $this->settings['log']['ipParts'])
-			->setConfiguration($this->logConfiguration ?: $this->cObj->getEcompcConfigurations()->toArray()[0])
+			->setIp($this->settings['log']['ipParts'])
+			->setConfiguration($this->logConfiguration ?: $configuration)
 			->setConfigurationCode($configurationCode);
 		if ( $GLOBALS['TSFE']->loginUser ) {
 			$logger->setFeUser($this->frontendUserRepository->findByUid($GLOBALS['TSFE']->fe_user->user['uid']));
