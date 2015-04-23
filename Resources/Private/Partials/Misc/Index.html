@@ -69,7 +69,29 @@
 	</div>
 </div>
 
+<script type="text/javascript" language="JavaScript">
+	(function($) {
+		$(document).ready(function() {
+			var $RequestButton = $('#ecom-configurator-request');
+			var resetTimeout = 40000;
+			var defaultText = '<i class="fa fa-envelope fa-fw"></i> <f:translate id="index.request_your_device" />';
+			var loadingText = "{f:translate(id : 'index.request_your_device')}... <i class='fa fa-spinner fa-fw fa-pulse'></i>";
+			$RequestButton.attr('data-loading-text', loadingText);
 
+			function resetButton() {
+				$RequestButton.removeAttr('disabled').removeClass('disabled').html(defaultText);
+			}
+
+			if($RequestButton.hasClass('disabled')) { resetButton(); }
+			$RequestButton.on('click', function () {
+				$(this).button('loading');
+				setTimeout(function() {
+					resetButton();
+				}, resetTimeout);
+			})
+		});
+	})(jQuery);
+</script>
 <script language="JavaScript" type="text/javascript">
 	var t3pid = {pid},
 		t3lang = {sys_language_uid -> f:format.number(decimals : 0)},
