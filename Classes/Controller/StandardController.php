@@ -141,7 +141,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * feSession
 	 *
-	 * @var \S3b0\Ecompc\Domain\Session\FrontendSessionHandler
+	 * @var \Ecom\EcomToolbox\Domain\Session\FrontendSessionHandler
 	 * @inject
 	 */
 	protected $feSession;
@@ -753,7 +753,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**
-	 * @return \S3b0\Ecompc\Domain\Session\FrontendSessionHandler
+	 * @return \Ecom\EcomToolbox\Domain\Session\FrontendSessionHandler
 	 */
 	public function getFeSession() {
 		return $this->feSession;
