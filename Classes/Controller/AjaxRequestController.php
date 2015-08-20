@@ -66,14 +66,14 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		}
 		self::setStoragePid($this);
 		$this->getFeSession()->setStorageKey('ext-' . $this->request->getControllerExtensionKey());
-		\S3b0\Ecompc\Utility\Div::setPriceHandling($this);
+		\S3b0\Ecompc\Setup::setPriceHandling($this);
 		// Add cObj-uid to configurationSessionStorageKey to make it unique in sessionStorage
 		$this->configurationSessionStorageKey .= $this->cObj->getPid();
 		// Get current configuration (Array: options=array(options)|packages=array(package => option(s)))
-		$this->selectedConfiguration = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: array(
-			'options' => array(),
-			'packages' => array()
-		);
+		$this->selectedConfiguration = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: [
+			'options' => [ ],
+			'packages' => [ ]
+		];
 	}
 
 	/**
@@ -90,18 +90,16 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		 * cfgp   -> configuration price
 		 * selcps -> indicator for active packages used at JS calculation of progress
 		 */
-		$variablesToRender = array(
-			'controller', 'currentPackage', 'packages', 'options', 'hint', 'progress', 'showResult', 'configurationData', 'pricingEnabled', 'pricing', 'requestLink'
-		);
+		$variablesToRender = [ 'controller', 'currentPackage', 'packages', 'options', 'hint', 'progress', 'showResult', 'configurationData', 'pricingEnabled', 'pricing', 'requestLink' ];
 		if ( \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext()->isDevelopment() ) {
 			$variablesToRender[] = 'debug';
 		}
 		$this->view->setVariablesToRender($variablesToRender);
 		// parent::initializeView();
-		$this->view->assignMultiple(array(
+		$this->view->assignMultiple([
 			'controller' => $this->request->getControllerName(),
 			'pricingEnabled' => $this->isPricingEnabled()
-		));
+		]);
 	}
 
 	/**
@@ -124,15 +122,16 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 	 * @return void
 	 */
 	public function getOptionHintAction(\S3b0\Ecompc\Domain\Model\Option $option = NULL) {
-		$this->view->assign('hint', $this->configurationManager->getContentObject()->parseFunc($option->getHintText(), array(), '< lib.parseFunc_RTE'));
+		$this->view->assign('hint', $this->configurationManager->getContentObject()->parseFunc($option->getHintText(), [ ], '< lib.parseFunc_RTE'));
 	}
 
 	/**
 	 * action setOption
 	 *
-	 * @param integer $option Option uid
-	 * @param integer $unset  set/Unset indicator
-	 * @param integer $vpn    Visible Packages Number
+	 * @param int $option Option uid
+	 * @param int $unset  set/Unset indicator
+	 * @param int $vpn    Visible Packages Number
+	 *
 	 * @return void
 	 */
 	public function setOptionAction($option, $unset = 0, $vpn = 0) {
@@ -156,16 +155,16 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		unset($this->selectedConfiguration['packages'][$package]);
 		$this->getFeSession()->store($this->configurationSessionStorageKey, $this->selectedConfiguration);
 
-		$this->view->assignMultiple(array(
+		$this->view->assignMultiple([
 			'package' => $package,
 			'cfgp' => $this->getUpdatedConfigurationPrice(),
 			'selcps' => count((array) $this->selectedConfiguration['packages'])
-		));
+		]);
 	}
 
 	/**
-	 * @param float   $floatToFormat
-	 * @param boolean $signed
+	 * @param float $floatToFormat
+	 * @param bool  $signed
 	 *
 	 * @return string
 	 */
@@ -206,17 +205,17 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		$view->injectTemplateCompiler($templateCompiler);
 		$view->setControllerContext($this->controllerContext);
 		/** imitate initializeView() from \S3b0\Ecompc\Controller\StandardController and assign global templateContainerVariables */
-		$view->assignMultiple(array(
+		$view->assignMultiple([
 			'action' => $controllerActionName ?: $this->request->getControllerActionName(), // current action
 			'pid' => $GLOBALS['TSFE']->id,
 			'cObj' => $this->cObj->getUid()
-		));
+		]);
 		if ( $this->isPricingEnabled() ) {
-			$view->assignMultiple(array(
+			$view->assignMultiple([
 				'pricingEnabled' => $this->isPricingEnabled(), // checks whether price labels are displayed or not!
 				'currency' => $this->getCurrency(), // fetch currency TS
 				'pricing' => $this->getConfigurationPrice() // current configuration price
-			));
+			]);
 		}
 		/** Assign Action specific templateContainerVariables committed as first method argument [ func_get_arg(0) ] */
 		$view->assignMultiple($arguments);
@@ -243,7 +242,7 @@ class AjaxRequestController extends \S3b0\Ecompc\Controller\StandardController {
 		$querySettings = $ajaxRequestController->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
 		$querySettings->setRespectStoragePage($ajaxRequestController->request->hasArgument('storagePid') || $ajaxRequestController->cObj->getStoragePidArray());
 		if ( $ajaxRequestController->request->hasArgument('storagePid') ) {
-			$querySettings->setStoragePageIds(array($ajaxRequestController->request->getArgument('storagePid')));
+			$querySettings->setStoragePageIds([ $ajaxRequestController->request->getArgument('storagePid') ]);
 		} elseif ( $ajaxRequestController->cObj->getStoragePidArray() ) {
 			$querySettings->setStoragePageIds($ajaxRequestController->cObj->getStoragePidArray());
 		}

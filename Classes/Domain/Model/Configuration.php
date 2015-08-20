@@ -28,10 +28,8 @@ namespace S3b0\Ecompc\Domain\Model;
  ***************************************************************/
 
 /**
- * Configuration
- *
- * @package S3b0
- * @subpackage Ecompc
+ * Class Configuration
+ * @package S3b0\Ecompc\Domain\Model
  */
 class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
@@ -103,7 +101,6 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Sets the frontendLabel
 	 *
 	 * @param string $frontendLabel
-	 * @return void
 	 */
 	public function setFrontendLabel($frontendLabel) {
 		$this->frontendLabel = $frontendLabel;
@@ -122,7 +119,6 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Sets the sku
 	 *
 	 * @param string $sku
-	 * @return void
 	 */
 	public function setSku($sku) {
 		$this->sku = $sku;
@@ -141,14 +137,13 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Sets the configurationCodeSuffix
 	 *
 	 * @param string $configurationCodeSuffix
-	 * @return void
 	 */
 	public function setConfigurationCodeSuffix($configurationCodeSuffix) {
 		$this->configurationCodeSuffix = $configurationCodeSuffix;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasConfigurationCodeSuffix() {
 		return (bool) strlen($this->getConfigurationCodeSuffix());
@@ -167,14 +162,13 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Sets the configurationCodePrefix
 	 *
 	 * @param string $configurationCodePrefix
-	 * @return void
 	 */
 	public function setConfigurationCodePrefix($configurationCodePrefix) {
 		$this->configurationCodePrefix = $configurationCodePrefix;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasConfigurationCodePrefix() {
 		return (bool) strlen($this->getConfigurationCodePrefix());
@@ -213,7 +207,6 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Sets the options
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
-	 * @return void
 	 */
 	public function setOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $options) {
 		$this->options = $options;
@@ -222,7 +215,7 @@ class Configuration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @param Package $package
 	 *
-	 * @return null|\TYPO3\CMS\Extbase\Persistence\ObjectStorage
+	 * @return NULL|\TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
 	public function getOptionsByPackage(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		if ( $package instanceof \S3b0\Ecompc\Domain\Model\Package && $options = $this->getOptions() ) {

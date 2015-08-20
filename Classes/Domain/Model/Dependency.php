@@ -28,17 +28,15 @@ namespace S3b0\Ecompc\Domain\Model;
  ***************************************************************/
 
 /**
- * Dependency
- *
- * @package S3b0
- * @subpackage Ecompc
+ * Class Dependency
+ * @package S3b0\Ecompc\Domain\Model
  */
 class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * mode
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $mode = 0;
 
@@ -50,7 +48,7 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $packages = NULL;
 
 	/**
-	 * Options depending
+	 * options depending
 	 *
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
 	 */
@@ -80,7 +78,7 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Returns the mode
 	 *
-	 * @return integer $mode
+	 * @return int
 	 */
 	public function getMode() {
 		return $this->mode;
@@ -89,8 +87,7 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Sets the mode
 	 *
-	 * @param integer $mode
-	 * @return void
+	 * @param int $mode
 	 */
 	public function setMode($mode) {
 		$this->mode = $mode;
@@ -100,7 +97,6 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Adds a Package
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
-	 * @return void
 	 */
 	public function addPackage(\S3b0\Ecompc\Domain\Model\Package $package) {
 		$this->packages->attach($package);
@@ -110,7 +106,6 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Removes a Package
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Package $packageToRemove The Option to be removed
-	 * @return void
 	 */
 	public function removePackage(\S3b0\Ecompc\Domain\Model\Package $packageToRemove) {
 		$this->packages->detach($packageToRemove);
@@ -119,7 +114,7 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Returns the packages
 	 *
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $options
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package>
 	 */
 	public function getPackages() {
 		return $this->packages;
@@ -129,7 +124,6 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Sets the packages
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $packages
-	 * @return void
 	 */
 	public function setPackages(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $packages) {
 		$this->packages = $packages;
@@ -139,7 +133,6 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Adds a Option
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Option $option
-	 * @return void
 	 */
 	public function addOption(\S3b0\Ecompc\Domain\Model\Option $option) {
 		$this->options->attach($option);
@@ -149,7 +142,6 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Removes a Option
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Option $optionToRemove The Option to be removed
-	 * @return void
 	 */
 	public function removeOption(\S3b0\Ecompc\Domain\Model\Option $optionToRemove) {
 		$this->options->detach($optionToRemove);
@@ -158,7 +150,7 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Returns the options
 	 *
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
 	 */
 	public function getOptions() {
 		return $this->options;
@@ -168,7 +160,6 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Sets the options
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
-	 * @return void
 	 */
 	public function setOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $options) {
 		$this->options = $options;
@@ -178,20 +169,22 @@ class Dependency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Returns the options
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
+	 *
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
 	 */
 	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package) {
-		if ( !$this->getOptions()->count() ) return $this->getOptions();
+		if ( !$this->getOptions()->count() ) {
+			return $this->getOptions();
+		}
 
-		$temp = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-
+		$options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		foreach ( $this->getOptions() as $option ) {
 			if ( $option->getConfigurationPackage() === $package ) {
-				$temp->attach($option);
+				$options->attach($option);
 			}
 		}
 
-		return $temp;
+		return $options;
 	}
 
 }

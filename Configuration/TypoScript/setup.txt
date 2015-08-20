@@ -24,7 +24,6 @@ config.tx_extbase {
 						bodytext.mapOnProperty = bodytext
 						tx_ecompc_packages.mapOnProperty = ecompcPackages
 						tx_ecompc_configurations.mapOnProperty = ecompcConfigurations
-						tx_ecompc_base_price_default.mapOnProperty = ecompcBasePriceInDefaultCurrency
 						tx_ecompc_pricing.mapOnProperty = ecompcPricing
 						pages.mapOnProperty = storage
 						recursive.mapOnProperty = recursive

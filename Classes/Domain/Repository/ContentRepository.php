@@ -26,13 +26,10 @@ namespace S3b0\Ecompc\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\Cache\Backend\NullBackend;
+use S3b0\Ecompc\Setup;
 
 /**
  * The repository for Contents (extending tt_content repo)
- *
- * @package S3b0
- * @subpackage Ecompc
  */
 class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
@@ -41,9 +38,9 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @var array $defaultOrderings
 	 */
-	protected $defaultOrderings = array(
+	protected $defaultOrderings = [
 		'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
-	);
+	];
 
 	/**
 	 * Set repository wide settings
@@ -59,7 +56,7 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @param boolean $respectSysLanguage
 	 * @param boolean $respectStoragePage
 	 *
-	 * @return null|object
+	 * @return NULL|object
 	 */
 	public function findByUid($uid = NULL, $respectSysLanguage = FALSE, $respectStoragePage = FALSE) {
 		if ( !(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)) )
@@ -77,14 +74,14 @@ class ContentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @return boolean
 	 */
-	public function hasDuplicateContentElementsOfConfiguratorTypes($types = array('ecompc_configurator_dynamic', 'ecompc_configurator_sku')) {
+	public function hasDuplicateContentElementsOfConfiguratorTypes($types = [ Setup::CONFIGURATOR_DYN_SIGNATURE, Setup::CONFIGURATOR_SKU_SIGNATURE ]) {
 		$query = $this->createQuery();
 
 		return $query->matching(
-			$query->logicalAnd(
+			$query->logicalAnd([
 				$query->equals('pid', $GLOBALS['TSFE']->id),
 				$query->in('list_type', $types)
-			)
+			])
 		)->execute()->count() > 1;
 	}
 

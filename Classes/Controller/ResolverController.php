@@ -50,7 +50,7 @@ class ResolverController extends \S3b0\Ecompc\Controller\StandardController {
 	 */
 	public function initializeAction() {
 		if ( CoreUtility\GeneralUtility::_GP('log') && CoreUtility\MathUtility::canBeInterpretedAsInteger(CoreUtility\GeneralUtility::_GP('log')) && ($log = $this->loggerRepository->findByUid(CoreUtility\MathUtility::convertToPositiveInteger(CoreUtility\GeneralUtility::_GP('log')))) ) {
-			$this->redirectToPage(NULL, array(CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored('Tx' . $this->request->getControllerExtensionName() . $this->request->getPluginName()) => array('action' => 'show', 'logger' => $log)), FALSE, FALSE);
+			$this->redirectToPage(NULL, [ CoreUtility\GeneralUtility::camelCaseToLowerCaseUnderscored('Tx' . $this->request->getControllerExtensionName() . $this->request->getPluginName()) => [ 'action' => 'show', 'logger' => $log ] ], FALSE, FALSE);
 		} elseif ( CoreUtility\GeneralUtility::_GP('log') ) {
 			$this->throwStatus(404);
 		}

@@ -28,9 +28,6 @@ namespace S3b0\Ecompc\Domain\Repository;
 
 /**
  * The repository for Configurations
- *
- * @package S3b0
- * @subpackage Ecompc
  */
 class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
@@ -47,7 +44,7 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 	/**
 	 * @param array $uidList
 	 *
-	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 * @return array|NULL|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
 	public function findByUidList(array $uidList) {
 		if ( !count($uidList) )
@@ -75,7 +72,7 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 	 * @param int   $uid
 	 * @param array $selectedOptions
 	 *
-	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 * @return array|NULL|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
 	public function findByTtContentUidApplyingSelectedOptions($uid = 0, array $selectedOptions) {
 		if ( !(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)) )
@@ -83,9 +80,7 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 
 		$query = $this->createQuery();
 		if ( count($selectedOptions) ) {
-			$logicalAndConstraint = array(
-				$query->equals('tt_content_uid', $uid)
-			);
+			$logicalAndConstraint = [ $query->equals('tt_content_uid', $uid) ];
 			foreach ( $selectedOptions as $optionUid ) {
 				$logicalAndConstraint[] = $query->contains('options', $optionUid);
 			}
@@ -104,7 +99,7 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 	 * @param int                              $uid
 	 * @param array                            $selectedOptions
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function checkOptionForConflictsTtContentUidApplyingSelectedOptions(\S3b0\Ecompc\Domain\Model\Option $option, array $excludeUidList, $uid = 0, array $selectedOptions) {
 		if ( !(\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid) || \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($uid)) )
@@ -112,10 +107,10 @@ class ConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository 
 
 		$query = $this->createQuery();
 		if ( count($selectedOptions) ) {
-			$logicalAndConstraint = array(
+			$logicalAndConstraint = [
 				$query->equals('tt_content_uid', $uid),
 				$query->contains('options', $option->getUid())
-			);
+			];
 			foreach ( $selectedOptions as $optionUid ) {
 				if ( !in_array($optionUid, $excludeUidList) ) {
 					$logicalAndConstraint[] = $query->contains('options', $optionUid);

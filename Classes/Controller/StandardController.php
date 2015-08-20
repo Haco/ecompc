@@ -38,12 +38,12 @@ use TYPO3\CMS\Extbase\Utility as ExtbaseUtility;
 class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
 	/**
-	 * @var \S3b0\Ecompc\Domain\Model\Content|null
+	 * @var \S3b0\Ecompc\Domain\Model\Content|NULL
 	 */
 	protected $cObj = NULL;
 
 	/**
-	 * @var \S3b0\Ecompc\Domain\Model\Package|null
+	 * @var \S3b0\Ecompc\Domain\Model\Package|NULL
 	 */
 	protected $currentPackage = NULL;
 
@@ -60,12 +60,12 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * @var array
 	 */
-	protected $selectedConfiguration = array();
+	protected $selectedConfiguration = [ ];
 
 	/**
 	 * @var array (base price, configuration price, config price BEFORE breakpoint, config price AT breakpoint, config price AFTER breakpoint)
 	 */
-	protected $selectedConfigurationPrice = array(0.0, 0.0, 0.0, 0.0, 0.0);
+	protected $selectedConfigurationPrice = [ 0.0, 0.0, 0.0, 0.0, 0.0 ];
 
 	/**
 	 * @var string
@@ -73,7 +73,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $configurationSessionStorageKey = 'configurator-';
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $pricingEnabled = FALSE;
 
@@ -165,14 +165,14 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			$this->throwStatus(404, \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate('404.no_cObj', $this->extensionName));
 		// Frontend-Session
 		$this->getFeSession()->setStorageKey('ext-' . $this->request->getControllerExtensionKey());
-		\S3b0\Ecompc\Utility\Div::setPriceHandling($this);
+		\S3b0\Ecompc\Setup::setPriceHandling($this);
 		// Add cObj-pid to configurationSessionStorageKey to make it unique in sessionStorage
 		$this->configurationSessionStorageKey .= $this->cObj->getPid();
 		// Get current configuration (Array: options=array(options)|packages=array(package => option(s)))
-		$this->selectedConfiguration = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: array(
-			'options' => array(),
-			'packages' => array()
-		);
+		$this->selectedConfiguration = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: [
+			'options' => [ ],
+			'packages' => [ ]
+		];
 	}
 
 	/**
@@ -185,18 +185,18 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @api
 	 */
 	public function initializeView() {
-		$this->view->assignMultiple(array(
+		$this->view->assignMultiple([
 			'controller' => $this->request->getControllerName(),
 			'pid' => $GLOBALS['TSFE']->id,
 			'cObj' => $this->cObj->_getProperty('_localizedUid'),
 			'sys_language_uid' => (int) $GLOBALS['TSFE']->sys_language_content
-		));
+		]);
 		if ( $this->isPricingEnabled() ) {
-			$this->view->assignMultiple(array(
+			$this->view->assignMultiple([
 				'pricingEnabled' => $this->isPricingEnabled(), // checks whether price labels are displayed or not!
 				'currency' => $this->getCurrency(), // fetch currency TS
 				'pricing' => $this->selectedConfigurationPrice // current configuration price
-			));
+			]);
 		}
 	}
 
@@ -211,7 +211,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		 * Set environment variables on non Ajax actions
 		 */
 		if ( substr($this->request->getControllerName(), -11) !== 'AjaxRequest' )
-			\S3b0\Ecompc\Utility\Div::setEnvironment(CoreUtility\GeneralUtility::getApplicationContext()->isDevelopment());
+			\S3b0\Ecompc\Setup::setEnvironment(CoreUtility\GeneralUtility::getApplicationContext()->isDevelopment());
 		/**
 		 * Check for currency when distributor is logged in
 		 */
@@ -226,7 +226,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			}
 		}
 		// Get configuration price
-		$this->selectedConfigurationPrice = $this->isPricingEnabled() ? $this->getConfigurationPrice() : array(0.0, 0.0, 0.0, 0.0, 0.0);
+		$this->selectedConfigurationPrice = $this->isPricingEnabled() ? $this->getConfigurationPrice() : [ 0.0, 0.0, 0.0, 0.0, 0.0 ];
 		/**
 		 * Set required parameter if uid is transmitted only (AJAX requests)
 		 */
@@ -264,19 +264,19 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->currentPackage = $package;
 		$packages = $this->initializePackages(TRUE);
 
-		$this->view->assignMultiple(array(
+		$this->view->assignMultiple([
 			'instructions' => $this->cObj->getBodytext(),
 			'packages' => $packages,
 			'packagesNav' => $this->cObj->getEcompcPackagesNavigation(),
 			'progress' => $this->progress
-		));
+		]);
 	}
 
 	/**
 	 * action setOption
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Option $option
-	 * @param boolean                          $unset           Identifier to unset option!
+	 * @param bool                             $unset           Identifier to unset option!
 	 *
 	 * @return void
 	 */
@@ -289,11 +289,11 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			if ( !$option->getConfigurationPackage()->isMultipleSelect() ) {
 				// Remove all options + package from configuration array
 				$configuration['options'] = array_diff($configuration['options'], $this->optionRepository->getPackageOptionUidList($option->getConfigurationPackage()));
-				$configuration['packages'] = array_diff($configuration['packages'], array($option->getConfigurationPackage()->getUid()));
+				$configuration['packages'] = array_diff($configuration['packages'], [ $option->getConfigurationPackage()->getUid() ]);
 			}
 			// Remove single option from configuration array if 'unset'-flag is ON
 			if ( $unset ) {
-				$configuration['options'] = array_diff($configuration['options'], array($option->getUid()));
+				$configuration['options'] = array_diff($configuration['options'], [ $option->getUid() ]);
 				if ( !count(array_intersect($configuration['options'], $this->optionRepository->getPackageOptionUidList($option->getConfigurationPackage()))) ) {
 					unset($configuration['packages'][$option->getConfigurationPackage()->getUid()]);
 				}
@@ -316,13 +316,13 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$configuration['options'] = array_unique($configuration['options']);
 		$configuration['packages'] = array_unique($configuration['packages']);
 		// Run the dependency check if other packages next to current got options chosen
-		/** @var integer $uid */
+		/** @var int $uid */
 		foreach ( (array) $configuration['options'] as $uid ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Option $selectedOption */
 			$selectedOption = $this->optionRepository->findByUid($uid);
 			if ( !$this->checkOptionDependencies($selectedOption, $configuration) ) {
-				$configuration['options'] = array_diff($configuration['options'], $option->getConfigurationPackage()->isMultipleSelect() ? $this->optionRepository->getPackageOptionUidList($selectedOption->getConfigurationPackage()) : array($selectedOption->getUid()));
-				$configuration['packages'] = array_diff($configuration['packages'], array($selectedOption->getConfigurationPackage()->getUid()));
+				$configuration['options'] = array_diff($configuration['options'], $option->getConfigurationPackage()->isMultipleSelect() ? $this->optionRepository->getPackageOptionUidList($selectedOption->getConfigurationPackage()) : [ $selectedOption->getUid() ]);
+				$configuration['packages'] = array_diff($configuration['packages'], [ $selectedOption->getConfigurationPackage()->getUid() ]);
 			}
 		}
 
@@ -340,7 +340,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function resetAction() {
-		$this->getFeSession()->store($this->configurationSessionStorageKey, array());
+		$this->getFeSession()->store($this->configurationSessionStorageKey, [ ]);
 		$this->forward('index');
 	}
 
@@ -390,17 +390,17 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$persistenceManager->persistAll();
 		$additionalParams = sprintf($this->settings['requestForm']['additionalParamsQueryString'], $configurationCode, $data[0], $logger->getUid());
 
-		$this->getFeSession()->store($this->configurationSessionStorageKey, array()); // Unset configuration to avoid multiple submit provided by back button!
+		$this->getFeSession()->store($this->configurationSessionStorageKey, [ ]); // Unset configuration to avoid multiple submit provided by back button!
 
 		// Build link & redirect
 		$arguments = CoreUtility\GeneralUtility::explodeUrl2Array($additionalParams);
 		$this->redirectToUri(
 			$this->uriBuilder
 				->setTargetPageUid((int) $this->settings['requestForm']['pid'])
-				->setArguments(array(
+				->setArguments([
 					'L' => $GLOBALS['TSFE']->sys_language_content,
 					$arguments
-				))
+				])
 				->setUseCacheHash(FALSE)
 				->setCreateAbsoluteUri(TRUE)
 				->build()
@@ -413,8 +413,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	public function selectRegionAction() {
-		if ( $this->getFeSession()->get('currency') )
+		if ( $this->getFeSession()->get('currency') ) {
 			$this->forward('index');
+		}
 
 		$this->view->assign('currencies', $this->getCurrencyRepository()->findAll());
 	}
@@ -426,15 +427,15 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	/**
 	 * Redirects to current page without any params or CacheHash values!
 	 *
-	 * @param integer $pid
-	 * @param array   $arguments
-	 * @param boolean $useCacheHash
-	 * @param boolean $addQueryString
+	 * @param int   $pid
+	 * @param array $arguments
+	 * @param bool  $useCacheHash
+	 * @param bool  $addQueryString
 	 *
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
 	 * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
 	 */
-	public function redirectToPage($pid = NULL, $arguments = array(), $useCacheHash = FALSE, $addQueryString = TRUE) {
+	public function redirectToPage($pid = NULL, $arguments = [ ], $useCacheHash = FALSE, $addQueryString = TRUE) {
 		if ( !$this->request instanceof \TYPO3\CMS\Extbase\Mvc\Web\Request ) {
 			throw new \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException('redirect() only supports web requests.', 1220539734);
 		}
@@ -450,9 +451,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			->setArguments($arguments)
 			->setCreateAbsoluteUri(TRUE)
 			->setAddQueryString($addQueryString)
-			->setArgumentsToBeExcludedFromQueryString(array(
+			->setArgumentsToBeExcludedFromQueryString([
 				'tx_' . $this->request->getControllerExtensionKey() . '_' . $this->request->getPluginName()
-			));
+			]);
 
 		if ( CoreUtility\GeneralUtility::getIndpEnv('TYPO3_SSL') ) {
 			$this->uriBuilder->setAbsoluteUriScheme('https');
@@ -467,7 +468,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @param  \S3b0\Ecompc\Domain\Model\Option $option
 	 * @param  array                            $configuration
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function checkOptionDependencies(\S3b0\Ecompc\Domain\Model\Option $option, array $configuration) {
 		$check = TRUE;
@@ -476,7 +477,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
 		if ( $dependency = $option->getDependency() ) {
 			if ( $packages = $option->getDependency()->getPackages() ) {
-				$checkOptionAgainstDependencies = array();
+				$checkOptionAgainstDependencies = [ ];
 				/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 				foreach ( $packages as $package ) {
 					if ( !in_array($package->getUid(), $configuration['packages']) )
@@ -500,8 +501,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * Calculates the price for configurations already during configuration process
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Package $breakPoint
-	 * @param boolean                           $render
-	 * @param integer                           $tellMeWhatToRender Array pointer to enable rendering of several values calculated [0-4]
+	 * @param bool                              $render
+	 * @param int                               $tellMeWhatToRender Array pointer to enable rendering of several values calculated [0-4]
 	 *
 	 * @return array
 	 */
@@ -513,7 +514,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		 */
 		$cObj = $this->cObj->_hasProperty('_languageUid') && $this->cObj->_getProperty('_languageUid') ? $this->contentRepository->findByUid($this->cObj->getUid()) : $this->cObj;
 		$basePrice = $cObj->getPrice($this->getCurrency());
-		if ( !$basePrice ) return array(0.0, 0.0);
+		if ( !$basePrice ) {
+			return [ 0.0, 0.0 ];
+		}
 
 		// Get configuration price
 		$configPrice = $basePrice;
@@ -531,7 +534,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 					foreach ( $options as $option ) {
 						$configPrice += $option->getPricing($this->getCurrency(), $configPrice);
-						if ( substr($this->request->getControllerName(), 0, 7) === 'Dynamic' ) break;
+						if ( substr($this->request->getControllerName(), 0, 7) === 'Dynamic' ) {
+							break;
+						}
 					}
 				}
 				if ( $breakPoint && $breakPointReached ) {
@@ -547,7 +552,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			}
 		}
 
-		$returnArray = array($basePrice, $configPrice, $configPriceBeforeBreakpoint, $configPriceAtBreakpoint, $configPriceAfterBreakpoint);
+		$returnArray = [ $basePrice, $configPrice, $configPriceBeforeBreakpoint, $configPriceAtBreakpoint, $configPriceAfterBreakpoint ];
 
 		if ( $render && $this->isPricingEnabled() && ($tellMeWhatToRender >= 0 && $tellMeWhatToRender <= 4) ) {
 			/** @var \TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial\CurrencyViewHelper $currencyVH */
@@ -569,6 +574,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * Initialize Options
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
+	 *
+	 * @return void
 	 */
 	protected function initializeOptions(\S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		if ( $package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
@@ -582,7 +589,7 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		}
 		$activeOptions = $this->optionRepository->findOptionsByUidList($this->selectedConfiguration['options'], $package);
 		if ( $options instanceof \TYPO3\CMS\Extbase\Persistence\QueryResultInterface ) {
-			$parsedPackages = array();
+			$parsedPackages = [ ];
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 			foreach ( $options as $option ) {
 				/** @var \S3b0\Ecompc\Domain\Model\Package $package */
@@ -630,9 +637,9 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**
-	 * @param boolean $return
+	 * @param bool $return
 	 *
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage|null|void
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage|NULL|void
 	 */
 	public function initializePackages($return = FALSE) {
 		$packages = NULL;
@@ -718,14 +725,14 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isPricingEnabled() {
 		return $this->pricingEnabled;
 	}
 
 	/**
-	 * @param boolean $showPriceLabels
+	 * @param bool $showPriceLabels
 	 */
 	public function setPricingEnabled($showPriceLabels) {
 		$this->pricingEnabled = $showPriceLabels;

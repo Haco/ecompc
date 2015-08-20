@@ -6,45 +6,45 @@ if ( !defined('TYPO3_MODE') ) {
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 	'S3b0.' . $_EXTKEY,
 	'configurator_dynamic',
-	array(
-		'DynamicConfigurator' => 'index,reset,selectRegion,request',
-		'DynamicConfiguratorAjaxRequest' => 'index,setOption',
+	[
+		'DynamicConfigurator' => 'index, reset, selectRegion, request',
+		'DynamicConfiguratorAjaxRequest' => 'index, setOption',
 		'Standard' => 'request'
-	),
+	],
 	// non-cacheable actions
-	array(
-		'DynamicConfigurator' => 'index,reset,selectRegion,request',
-		'DynamicConfiguratorAjaxRequest' => 'index,setOption',
+	[
+		'DynamicConfigurator' => 'index, reset, selectRegion, request',
+		'DynamicConfiguratorAjaxRequest' => 'index, setOption',
 		'Standard' => 'request'
-	)
+	]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 	'S3b0.' . $_EXTKEY,
 	'configurator_sku',
-	array(
-		'SkuConfigurator' => 'index,reset,selectRegion,request',
-		'SkuConfiguratorAjaxRequest' => 'index,setOption',
+	[
+		'SkuConfigurator' => 'index, reset, selectRegion, request',
+		'SkuConfiguratorAjaxRequest' => 'index, setOption',
 		'Standard' => 'request'
-	),
+	],
 	// non-cacheable actions
-	array(
-		'SkuConfigurator' => 'index,reset,selectRegion,request',
-		'SkuConfiguratorAjaxRequest' => 'index,setOption',
+	[
+		'SkuConfigurator' => 'index, reset, selectRegion, request',
+		'SkuConfiguratorAjaxRequest' => 'index, setOption',
 		'Standard' => 'request'
-	)
+	]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 	'S3b0.' . $_EXTKEY,
-	'Resolver',
-	array(
-		'Resolver' => 'show,list,showUserInformation'
-	),
+	'resolver',
+	[
+		'Resolver' => 'show, list, showUserInformation'
+	],
 	// non-cacheable actions
-	array(
-		'Resolver' => 'show,list,showUserInformation'
-	)
+	[
+		'Resolver' => 'show, list, showUserInformation'
+	]
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['EcomProductConfigurator'] = 'EXT:ecompc/Classes/Utility/AjaxDispatcher.php';

@@ -6,14 +6,13 @@
  * Time: 07:06
  */
 
-namespace S3b0\Ecompc\Utility;
+namespace S3b0\Ecompc;
 
 /**
- * Class Div
- *
- * @package S3b0\Ecompc\Utility
+ * Class Setup
+ * @package S3b0\Ecompc
  */
-class Div {
+class Setup {
 
 	const BIT_CURRENCY_IS_DEFAULT = 1;
 	const BIT_CURRENCY_PREPEND_SYMBOL = 2;

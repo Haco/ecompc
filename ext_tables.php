@@ -3,8 +3,6 @@
 		die('Access denied.');
 	}
 
-	global $TYPO3_CONF_VARS;
-
 	$extKey = 'ecompc';
 
 	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -38,12 +36,12 @@
 
 	// Add Sprite Icons for different record types (visual distinction)
 	\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
-		array(
+		[
 			'dependency-default' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($extKey) . 'Resources/Public/Icons/tx_ecompc_domain_model_dependency.png',
 			'dependency-allow' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('t3skin') . 'images/icons/status/status-permission-granted.png',
 			'dependency-deny' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('t3skin') . 'images/icons/status/status-permission-denied.png',
 			'package-default' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($extKey) . 'Resources/Public/Icons/tx_ecompc_domain_model_package.png',
 			'package-not-visible-fe' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($extKey) . 'Resources/Public/Icons/tx_ecompc_domain_model_package_not_visible_fe.png'
-		),
+		],
 		$extKey
 	);

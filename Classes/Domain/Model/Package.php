@@ -28,20 +28,18 @@ namespace S3b0\Ecompc\Domain\Model;
  ***************************************************************/
 
 /**
- * Package
- *
- * @package S3b0
- * @subpackage Ecompc
+ * Class Package
+ * @package S3b0\Ecompc\Domain\Model
  */
 class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $sorting = 0;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $sortingInCode = 0;
 
@@ -71,32 +69,32 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $icon = NULL;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $visibleInFrontend = FALSE;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $visibility = 3;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $percentPricing = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $multipleSelect = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $active = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $current = FALSE;
 
@@ -116,7 +114,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $defaultOption = NULL;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $anyOptionActive = FALSE;
 
@@ -146,35 +144,35 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getSorting() {
 		return $this->sorting;
 	}
 
 	/**
-	 * @param integer $sorting
+	 * @param int $sorting
 	 */
 	public function setSorting($sorting) {
 		$this->sorting = $sorting;
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getSortingInCode() {
 		return $this->sortingInCode;
 	}
 
 	/**
-	 * @param integer $sortingInCode
+	 * @param int $sortingInCode
 	 */
 	public function setSortingInCode($sortingInCode) {
 		$this->sortingInCode = $sortingInCode;
 	}
 
 	/**
-	 * @return string $backendLabel
+	 * @return string
 	 */
 	public function getBackendLabel() {
 		return $this->backendLabel;
@@ -182,14 +180,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $backendLabel
-	 * @return void
 	 */
 	public function setBackendLabel($backendLabel) {
 		$this->backendLabel = $backendLabel;
 	}
 
 	/**
-	 * @return string $frontendLabel
+	 * @return string
 	 */
 	public function getFrontendLabel() {
 		return $this->frontendLabel;
@@ -197,14 +194,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $frontendLabel
-	 * @return void
 	 */
 	public function setFrontendLabel($frontendLabel) {
 		$this->frontendLabel = $frontendLabel;
 	}
 
 	/**
-	 * @return string $prompt
+	 * @return string
 	 */
 	public function getPrompt() {
 		return $this->prompt;
@@ -212,14 +208,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $prompt
-	 * @return void
 	 */
 	public function setPrompt($prompt) {
 		$this->prompt = $prompt;
 	}
 
 	/**
-	 * @return string $hintText
+	 * @return string
 	 */
 	public function getHintText() {
 		return $this->hintText;
@@ -227,14 +222,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $hintText
-	 * @return void
 	 */
 	public function setHintText($hintText) {
 		$this->hintText = $hintText;
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $icon
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
 	 */
 	public function getIcon() {
 		return $this->icon;
@@ -242,114 +236,107 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $icon
-	 * @return void
 	 */
 	public function setIcon(\TYPO3\CMS\Extbase\Domain\Model\FileReference $icon) {
 		$this->icon = $icon;
 	}
 
 	/**
-	 * @param boolean $visibleInFrontend
-	 * @return void
-	 */
-	public function setVisibleInFrontend($visibleInFrontend) {
-		$this->visibleInFrontend = $visibleInFrontend;
-	}
-
-	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isVisibleInFrontend() {
 		return $this->visibleInFrontend;
 	}
 
 	/**
-	 * @param integer $visibility
-	 * @return void
+	 * @param bool $visibleInFrontend
 	 */
-	public function setVisibility($visibility) {
-		$this->visibility = $visibility;
+	public function setVisibleInFrontend($visibleInFrontend) {
+		$this->visibleInFrontend = $visibleInFrontend;
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getVisibility() {
 		return $this->visibility;
 	}
 
 	/**
-	 * @return boolean
+	 * @param int $visibility
+	 */
+	public function setVisibility($visibility) {
+		$this->visibility = $visibility;
+	}
+
+	/**
+	 * @return bool
 	 */
 	public function isVisibleInSummary() {
-		return version_compare(PHP_VERSION, '5.5', '>=') ? boolval($this->getVisibility() & 1) : (bool) ($this->getVisibility() & 1);
+		return (bool) ($this->visibility & 1);
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isVisibleInNavigation() {
-		return version_compare(PHP_VERSION, '5.5', '>=') ? boolval($this->getVisibility() & 2) : (bool) ($this->getVisibility() & 2);
+		return (bool) ($this->visibility & 2);
 	}
 
 	/**
-	 * @param boolean $percentPricing
-	 * @return void
-	 */
-	public function setPercentPricing($percentPricing) {
-		$this->percentPricing = $this->isMultipleSelect() ? FALSE : $percentPricing;
-	}
-
-	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isPercentPricing() {
 		return $this->isMultipleSelect() ? FALSE : $this->percentPricing;
 	}
 
 	/**
-	 * @param boolean $multipleSelect
-	 * @return void
+	 * @param bool $percentPricing
 	 */
-	public function setMultipleSelect($multipleSelect) {
-		$this->multipleSelect = $multipleSelect;
+	public function setPercentPricing($percentPricing) {
+		$this->percentPricing = $this->multipleSelect ? FALSE : $percentPricing;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isMultipleSelect() {
 		return $this->multipleSelect;
 	}
 
 	/**
-	 * @param boolean $active
-	 * @return void
+	 * @param bool $multipleSelect
 	 */
-	public function setActive($active) {
-		$this->active = $active;
+	public function setMultipleSelect($multipleSelect) {
+		$this->multipleSelect = $multipleSelect;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isActive() {
 		return $this->active;
 	}
 
 	/**
-	 * @param boolean $current
-	 * @return void
+	 * @param bool $active
 	 */
-	public function setCurrent($current) {
-		$this->current = $current;
+	public function setActive($active) {
+		$this->active = $active;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isCurrent() {
 		return $this->current;
+	}
+
+	/**
+	 * @param bool $current
+	 */
+	public function setCurrent($current) {
+		$this->current = $current;
 	}
 
 	/**
@@ -362,7 +349,6 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $options
 	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
-	 * @return void
 	 */
 	public function setPriceOutput(\TYPO3\CMS\Extbase\Persistence\QueryResultInterface $options = NULL, \S3b0\Ecompc\Domain\Model\Currency $currency) {
 		$priceOutput = 0.0;
@@ -377,7 +363,7 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return \S3b0\Ecompc\Domain\Model\Option $defaultOption
+	 * @return \S3b0\Ecompc\Domain\Model\Option
 	 */
 	public function getDefaultOption() {
 		return $this->defaultOption;
@@ -385,7 +371,6 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Option $defaultOption
-	 * @return void
 	 */
 	public function setDefaultOption(\S3b0\Ecompc\Domain\Model\Option $defaultOption) {
 		$this->defaultOption = $defaultOption;
@@ -393,7 +378,6 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Option $option
-	 * @return void
 	 */
 	public function addOption(\S3b0\Ecompc\Domain\Model\Option $option) {
 		if ( $this->options === NULL ) {
@@ -401,19 +385,20 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		}
 
 		/** Avoid duplicates */
-		if ( !$this->options->contains($option) ) $this->options->attach($option);
+		if ( !$this->options->contains($option) ) {
+			$this->options->attach($option);
+		}
 	}
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Option $optionToRemove
-	 * @return void
 	 */
 	public function removeOption(\S3b0\Ecompc\Domain\Model\Option $optionToRemove) {
 		$this->options->detach($optionToRemove);
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $options
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
 	public function getOptions() {
 		if ( $this->options === NULL ) {
@@ -425,14 +410,13 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option> $options
-	 * @return void
 	 */
 	public function setOptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $options = NULL) {
 		$this->options = $options;
 	}
 
 	/**
-	 * @return array $activeOptions
+	 * @return array
 	 */
 	public function getActiveOptions() {
 		return $this->activeOptions;
@@ -440,7 +424,6 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param array $activeOptions
-	 * @return void
 	 */
 	public function setActiveOptions(array $activeOptions) {
 		$this->activeOptions = $activeOptions;
@@ -466,21 +449,21 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasActiveOptions() {
 		return (bool) count($this->activeOptions);
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isAnyOptionActive() {
 		return $this->anyOptionActive;
 	}
 
 	/**
-	 * @param boolean $anyOptionActive
+	 * @param bool $anyOptionActive
 	 */
 	public function setAnyOptionActive($anyOptionActive) {
 		$this->anyOptionActive = $anyOptionActive;
@@ -490,14 +473,14 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return array
 	 */
 	public function getSummaryForJSONView() {
-		return array(
+		return [
 			'uid' => $this->getUid(),
 			'state' => (bool) $this->hasActiveOptions(),
 			'multiple' => $this->isMultipleSelect(),
 			'title' => $this->getFrontendLabel(),
 			'icon' => $this->getIcon() ? $this->getIcon()->getOriginalResource()->getUid() : 0,
 			'hint' => $this->getHintText()
-		);
+		];
 	}
 
 }

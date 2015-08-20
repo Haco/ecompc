@@ -46,37 +46,37 @@ class SkuConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxR
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$matchingConfiguration = $this->configurationRepository->findByTtContentUidApplyingSelectedOptions($this->cObj->getUid(), $this->selectedConfiguration['options'])->getFirst();
-				$this->view->assignMultiple(array(
+				$this->view->assignMultiple([
 					'configurationData' => \S3b0\Ecompc\Controller\SkuConfiguratorController::getConfigurationData($matchingConfiguration, $this), // Get configuration code
 					'showResult' => TRUE,
 					'requestLink' => $this->uriBuilder
-						->setArguments(array(
-							'tx_' . $this->request->getControllerExtensionKey() . '_configurator_sku' => array(
+						->setArguments([
+							'tx_' . $this->request->getControllerExtensionKey() . '_configurator_sku' => [
 								'configuration' => $matchingConfiguration,
 								'action' => 'request',
 								'controller' => 'SkuConfigurator'
-							)
-						))
+							]
+						])
 						->setUseCacheHash(FALSE)
 						->setCreateAbsoluteUri(TRUE)
 						->build()
-				));
+				]);
 			}
 		}
 		if ( $this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 			$this->currentPackage->setCurrent(TRUE);
 			/** pre-parse hintText since not done by rendering process */
-			$this->currentPackage->setHintText($this->configurationManager->getContentObject()->parseFunc($this->currentPackage->getHintText(), array(), '< lib.parseFunc_RTE'));
-			$this->view->assignMultiple(array(
+			$this->currentPackage->setHintText($this->configurationManager->getContentObject()->parseFunc($this->currentPackage->getHintText(), [ ], '< lib.parseFunc_RTE'));
+			$this->view->assignMultiple([
 				'options' => $this->getPackageOptions($this->currentPackage),
 				'currentPackage' => $this->currentPackage
-			));
+			]);
 		}
 
-		$this->view->assignMultiple(array(
+		$this->view->assignMultiple([
 			'packages' => $packages,
 			'progress' => $this->progress
-		));
+		]);
 
 		if ( $this->isPricingEnabled() ) {
 			$this->view->assign('pricing', $this->getConfigurationPrice(NULL, TRUE));
@@ -85,17 +85,17 @@ class SkuConfiguratorAjaxRequestController extends \S3b0\Ecompc\Controller\AjaxR
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
-	 * @param boolean                           $availableOnly
-	 * @param boolean                           $includePricing
+	 * @param bool                              $availableOnly
+	 * @param bool                              $includePricing
 	 *
 	 * @return array
 	 */
 	public function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package, $availableOnly = FALSE, $includePricing = TRUE) {
-		$return = array();
-		$configurationArray = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: array(
-			'options' => array(),
-			'packages' => array()
-		);
+		$return = [ ];
+		$configurationArray = $this->getFeSession()->get($this->configurationSessionStorageKey) ?: [
+			'options' => [ ],
+			'packages' => [ ]
+		];
 		$pricing = $this->getConfigurationPrice($package);
 		if ( $options = \S3b0\Ecompc\Controller\SkuConfiguratorController::getPackageOptions($package, $this, $availableOnly, $includePricing) ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Option $option */

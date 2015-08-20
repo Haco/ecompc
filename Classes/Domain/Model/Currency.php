@@ -28,15 +28,13 @@ namespace S3b0\Ecompc\Domain\Model;
  ***************************************************************/
 
 /**
- * Page
- *
- * @package S3b0
- * @subpackage Ecompc
+ * Class Currency
+ * @package S3b0\Ecompc\Domain\Model
  */
 class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $sorting = 0;
 
@@ -71,44 +69,44 @@ class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $exchange = 0.0;
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference|null
+	 * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference|NULL
 	 */
 	protected $flag = NULL;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $settings = 0;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $defaultCurrency = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $symbolPrepended = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $whitespaceBetweenCurrencyAndValue = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $numberSeparatorsInUSFormat = FALSE;
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getSorting() {
 		return $this->sorting;
 	}
 
 	/**
-	 * @param integer $sorting
+	 * @param int $sorting
 	 */
 	public function setSorting($sorting) {
 		$this->sorting = $sorting;
@@ -199,84 +197,84 @@ class Currency extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return null|\TYPO3\CMS\Extbase\Domain\Model\FileReference
+	 * @return NULL|\TYPO3\CMS\Extbase\Domain\Model\FileReference
 	 */
 	public function getFlag() {
 		return $this->flag;
 	}
 
 	/**
-	 * @param null|\TYPO3\CMS\Extbase\Domain\Model\FileReference $flag
+	 * @param NULL|\TYPO3\CMS\Extbase\Domain\Model\FileReference $flag
 	 */
 	public function setFlag(\TYPO3\CMS\Extbase\Domain\Model\FileReference $flag) {
 		$this->flag = $flag;
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getSettings() {
 		return (int) $this->settings;
 	}
 
 	/**
-	 * @param integer $settings
+	 * @param int $settings
 	 */
 	public function setSettings($settings) {
 		$this->settings = $settings;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isDefaultCurrency() {
-		return ($this->getSettings() & \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT) == \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT;
+		return ($this->settings & \S3b0\Ecompc\Setup::BIT_CURRENCY_IS_DEFAULT) == \S3b0\Ecompc\Setup::BIT_CURRENCY_IS_DEFAULT;
 	}
 
 	/**
-	 * @param boolean $defaultCurrency
+	 * @param bool $defaultCurrency
 	 */
 	public function setDefaultCurrency($defaultCurrency) {
 		$this->defaultCurrency = $defaultCurrency;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isSymbolPrepended() {
-		return ($this->getSettings() & \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_PREPEND_SYMBOL) == \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_PREPEND_SYMBOL;
+		return ($this->settings & \S3b0\Ecompc\Setup::BIT_CURRENCY_PREPEND_SYMBOL) == \S3b0\Ecompc\Setup::BIT_CURRENCY_PREPEND_SYMBOL;
 	}
 
 	/**
-	 * @param boolean $prependSymbol
+	 * @param bool $prependSymbol
 	 */
 	public function setSymbolPrepended($prependSymbol) {
 		$this->symbolPrepended = $prependSymbol;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isWhitespaceBetweenCurrencyAndValue() {
-		return ($this->getSettings() & \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_ADD_WHITEPACE_BETWEEN_CURRENCY_AND_VALUE) == \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_ADD_WHITEPACE_BETWEEN_CURRENCY_AND_VALUE;
+		return ($this->settings & \S3b0\Ecompc\Setup::BIT_CURRENCY_ADD_WHITEPACE_BETWEEN_CURRENCY_AND_VALUE) == \S3b0\Ecompc\Setup::BIT_CURRENCY_ADD_WHITEPACE_BETWEEN_CURRENCY_AND_VALUE;
 	}
 
 	/**
-	 * @param boolean $whitespaceBetweenCurrencyAndValue
+	 * @param bool $whitespaceBetweenCurrencyAndValue
 	 */
 	public function setWhitespaceBetweenCurrencyAndValue($whitespaceBetweenCurrencyAndValue) {
 		$this->whitespaceBetweenCurrencyAndValue = $whitespaceBetweenCurrencyAndValue;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isNumberSeparatorsInUSFormat() {
-		return ($this->getSettings() & \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_NUMBER_SEPARATORS_IN_US_FORMAT) == \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_NUMBER_SEPARATORS_IN_US_FORMAT;
+		return $this->settings & 8;
 	}
 
 	/**
-	 * @param boolean $numberSeparatorsInUSFormat
+	 * @param bool $numberSeparatorsInUSFormat
 	 */
 	public function setNumberSeparatorsInUSFormat($numberSeparatorsInUSFormat) {
 		$this->numberSeparatorsInUSFormat = $numberSeparatorsInUSFormat;

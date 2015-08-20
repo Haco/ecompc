@@ -29,13 +29,12 @@ namespace S3b0\Ecompc\Domain\Model;
 
 /**
  * Class Option
- *
  * @package S3b0\Ecompc\Domain\Model
  */
 class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $sorting = 0;
 
@@ -55,7 +54,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $configurationCodeSegment = '';
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $configurationCodeSegmentSet = FALSE;
 
@@ -68,11 +67,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 */
 	protected $hintText = '';
-
-	/**
-	 * @var float
-	 */
-	protected $price = 0.0;
 
 	/**
 	 * @var float
@@ -105,36 +99,36 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $dependency = NULL;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $active = FALSE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $inConflictWithSelectedOptions = TRUE;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $disabled = FALSE;
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getSorting() {
 		return $this->sorting;
 	}
 
 	/**
-	 * @param integer $sorting
+	 * @param int $sorting
 	 */
 	public function setSorting($sorting) {
 		$this->sorting = $sorting;
 	}
 
 	/**
-	 * @return string $backendLabel
+	 * @return string
 	 */
 	public function getBackendLabel() {
 		return $this->backendLabel;
@@ -142,14 +136,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $backendLabel
-	 * @return void
 	 */
 	public function setBackendLabel($backendLabel) {
 		$this->backendLabel = $backendLabel;
 	}
 
 	/**
-	 * @return string $frontendLabel
+	 * @return string
 	 */
 	public function getFrontendLabel() {
 		return $this->frontendLabel;
@@ -157,14 +150,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $frontendLabel
-	 * @return void
 	 */
 	public function setFrontendLabel($frontendLabel) {
 		$this->frontendLabel = $frontendLabel;
 	}
 
 	/**
-	 * @return string $configurationCodeSegment
+	 * @return string
 	 */
 	public function getConfigurationCodeSegment() {
 		return $this->configurationCodeSegment;
@@ -172,21 +164,20 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $configurationCodeSegment
-	 * @return void
 	 */
 	public function setConfigurationCodeSegment($configurationCodeSegment) {
 		$this->configurationCodeSegment = $configurationCodeSegment;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isConfigurationCodeSegmentSet() {
 		return (bool) strlen($this->getConfigurationCodeSegment());
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
 	 */
 	public function getImage() {
 		return $this->image;
@@ -194,14 +185,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
-	 * @return void
 	 */
 	public function setImage(\TYPO3\CMS\Extbase\Domain\Model\FileReference $image) {
 		$this->image = $image;
 	}
 
 	/**
-	 * @return string $hintText
+	 * @return string
 	 */
 	public function getHintText() {
 		return $this->hintText;
@@ -209,32 +199,16 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $hintText
-	 * @return void
 	 */
 	public function setHintText($hintText) {
 		$this->hintText = $hintText;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasHintText() {
 		return (bool) strlen($this->hintText);
-	}
-
-	/**
-	 * @return float $price
-	 */
-	public function getPrice() {
-		return $this->price;
-	}
-
-	/**
-	 * @param float $price
-	 * @return void
-	 */
-	public function setPrice($price) {
-		$this->price = $price;
 	}
 
 	/**
@@ -246,14 +220,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param float $unitPrice
-	 * @return void
 	 */
 	public function setUnitPrice($unitPrice) {
 		$this->unitPrice = $unitPrice;
 	}
 
 	/**
-	 * @return float $pricePercental
+	 * @return float
 	 */
 	public function getPricePercental() {
 		return $this->pricePercental / 100;
@@ -261,7 +234,6 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param float $pricePercental
-	 * @return void
 	 */
 	public function setPricePercental($pricePercental) {
 		$this->pricePercental = $pricePercental;
@@ -291,14 +263,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$price = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($currency->getIso4217())];
 
 		/**
-		 * Return default currency value
-		 */
-		if ( $currency->isDefaultCurrency() ) {
-			return floatval($price) ?: $this->getPrice();
-		}
-
-		/**
-		 * Return other currency value, if set
+		 * Return price, if set
 		 */
 		if ( $price > 0 ) {
 			return floatval($price);
@@ -309,8 +274,8 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		 */
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
 		$db = $GLOBALS['TYPO3_DB'];
-		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
-		$defaultPrice = floatval($convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]) ?: $this->getPrice();
+		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Setup::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
+		$defaultPrice = floatval($convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])]);
 		if ( $defaultPrice && $currency->getExchange() ) {
 			return floatval($defaultPrice * $currency->getExchange());
 		}
@@ -321,14 +286,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param string $pricing
-	 * @return void
 	 */
 	public function setPricing($pricing) {
 		$this->pricing = $pricing;
 	}
 
 	/**
-	 * @return float $priceOutput
+	 * @return float
 	 */
 	public function getPriceOutput() {
 		return $this->priceOutput;
@@ -336,14 +300,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param float $priceOutput
-	 * @return void
 	 */
 	public function setPriceOutput($priceOutput) {
 		$this->priceOutput = $priceOutput;
 	}
 
 	/**
-	 * @return \S3b0\Ecompc\Domain\Model\Package $configurationPackage
+	 * @return \S3b0\Ecompc\Domain\Model\Package
 	 */
 	public function getConfigurationPackage() {
 		return $this->configurationPackage;
@@ -351,14 +314,13 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Package $configurationPackage
-	 * @return void
 	 */
 	public function setConfigurationPackage(\S3b0\Ecompc\Domain\Model\Package $configurationPackage) {
 		$this->configurationPackage = $configurationPackage;
 	}
 
 	/**
-	 * @return \S3b0\Ecompc\Domain\Model\Dependency $dependency
+	 * @return \S3b0\Ecompc\Domain\Model\Dependency
 	 */
 	public function getDependency() {
 		return $this->dependency;
@@ -366,52 +328,49 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param \S3b0\Ecompc\Domain\Model\Dependency $dependency
-	 * @return void
 	 */
 	public function setDependency(\S3b0\Ecompc\Domain\Model\Dependency $dependency) {
 		$this->dependency = $dependency;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isActive() {
 		return $this->active;
 	}
 
 	/**
-	 * @param boolean $active
-	 * @return void
+	 * @param bool $active
 	 */
 	public function setActive($active) {
 		$this->active = $active;
 	}
 
 	/**
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isDisabled() {
 		return $this->disabled;
 	}
 
 	/**
-	 * @param boolean $disabled
+	 * @param bool $disabled
 	 */
 	public function setDisabled($disabled) {
 		$this->disabled = $disabled;
 	}
 
 	/**
-	 * @return boolean $inConflictWithSelectedOptions
+	 * @return bool
 	 */
 	public function isInConflictWithSelectedOptions() {
 		return $this->inConflictWithSelectedOptions;
 	}
 
 	/**
-	 * @param boolean                           $inConflictWithSelectedOptions
+	 * @param bool                              $inConflictWithSelectedOptions
 	 * @param \S3b0\Ecompc\Domain\Model\Package $package
-	 * @return void
 	 */
 	public function setInConflictWithSelectedOptions($inConflictWithSelectedOptions, \S3b0\Ecompc\Domain\Model\Package $package = NULL) {
 		$this->inConflictWithSelectedOptions = $inConflictWithSelectedOptions;
@@ -424,15 +383,15 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param array                              $selectedOptions
-	 * @param boolean                            $includePricing
+	 * @param bool                               $includePricing
 	 * @param \S3b0\Ecompc\Domain\Model\Currency $currency
 	 * @param array                              $pricing
-	 * @param boolean                            $usFormat
+	 * @param bool                               $usFormat
 	 *
 	 * @return array
 	 */
-	public function getSummaryForJSONView(array $selectedOptions = array(), $includePricing = FALSE, \S3b0\Ecompc\Domain\Model\Currency $currency = NULL, array $pricing = array(), $usFormat = FALSE) {
-		$returnArray = array(
+	public function getSummaryForJSONView(array $selectedOptions = [ ], $includePricing = FALSE, \S3b0\Ecompc\Domain\Model\Currency $currency = NULL, array $pricing = [ ], $usFormat = FALSE) {
+		$returnArray = [
 			'uid' => $this->uid,
 			'sorting' => $this->sorting,
 			'active' => in_array($this->uid, $selectedOptions),
@@ -441,7 +400,7 @@ class Option extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 			'disabled' => $this->disabled,
 			'title' => $this->frontendLabel . ($this->isConfigurationCodeSegmentSet() ? ' [' . $this->configurationCodeSegment . ']' : ''),
 			'hint' => (bool) strlen($this->hasHintText())
-		);
+		];
 
 		if ( $includePricing ) {
 			$unitPrice = $this->getPricing($currency, $pricing[2]);

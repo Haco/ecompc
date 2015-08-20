@@ -28,10 +28,8 @@ namespace S3b0\Ecompc\Domain\Model;
  ***************************************************************/
 
 /**
- * Content
- *
- * @package S3b0
- * @subpackage Ecompc
+ * Class Content
+ * @package S3b0\Ecompc\Domain\Model
  */
 class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
@@ -46,7 +44,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $storage = NULL;
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $recursive = 0;
 
@@ -59,13 +57,6 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Configuration>
 	 */
 	protected $ecompcConfigurations = NULL;
-
-	/**
-	 * ecompcBasePriceInDefaultCurrency
-	 *
-	 * @var float
-	 */
-	protected $ecompcBasePriceInDefaultCurrency = 0.0;
 
 	/**
 	 * ecompcPricing
@@ -138,14 +129,14 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getRecursive() {
 		return $this->recursive;
 	}
 
 	/**
-	 * @param integer $recursive
+	 * @param int $recursive
 	 */
 	public function setRecursive($recursive) {
 		$this->recursive = $recursive;
@@ -180,7 +171,6 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 	/**
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Package> $ecompcPackages
-	 * @return void
 	 */
 	public function setEcompcPackages($ecompcPackages) {
 		$this->ecompcPackages = $ecompcPackages;
@@ -265,25 +255,6 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the ecompcBasePriceInDefaultCurrency
-	 *
-	 * @return float $ecompcBasePriceInDefaultCurrency
-	 */
-	public function getEcompcBasePriceInDefaultCurrency() {
-		return $this->ecompcBasePriceInDefaultCurrency;
-	}
-
-	/**
-	 * Sets the ecompcBasePriceInDefaultCurrency
-	 *
-	 * @param float $ecompcBasePriceInDefaultCurrency
-	 * @return void
-	 */
-	public function setEcompcBasePriceInDefaultCurrency($ecompcBasePriceInDefaultCurrency) {
-		$this->ecompcBasePriceInDefaultCurrency = $ecompcBasePriceInDefaultCurrency;
-	}
-
-	/**
 	 * Returns the ecompcPricing
 	 *
 	 * @return string $ecompcPricing
@@ -298,8 +269,6 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Sets the ecompcPricing
 	 *
 	 * @param string $ecompcPricing
-	 *
-*@return void
 	 */
 	public function setEcompcPricing($ecompcPricing) {
 		$this->ecompcPricing = $ecompcPricing;
@@ -318,14 +287,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$price = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($currency->getIso4217())];
 
 		/**
-		 * Return default currency value
-		 */
-		if ( $currency->isDefaultCurrency() ) {
-			return $price > 0 ? floatval($price) : $this->ecompcBasePriceInDefaultCurrency;
-		}
-
-		/**
-		 * Return other currency value, if set
+		 * Return price, if set
 		 */
 		if ( $price > 0 ) {
 			return floatval($price);
@@ -336,9 +298,9 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		 */
 		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
 		$db = $GLOBALS['TYPO3_DB'];
-		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Utility\Div::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
+		$default = $db->exec_SELECTgetSingleRow('iso_4217', 'tx_ecompc_domain_model_currency', 'tx_ecompc_domain_model_currency.settings & ' . \S3b0\Ecompc\Setup::BIT_CURRENCY_IS_DEFAULT . \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_ecompc_domain_model_currency'));
 		// Backwards compatibility
-		$defaultPrice = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])] > 0 ? $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])] : $this->ecompcBasePriceInDefaultCurrency;
+		$defaultPrice = $convertedArray[\TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($default['iso_4217'])];
 		if ( $defaultPrice && $currency->getExchange() ) {
 			return floatval($defaultPrice * $currency->getExchange());
 		}
@@ -350,7 +312,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return array
 	 */
 	public function getStoragePidArray() {
-		$pidArray = array();
+		$pidArray = [ ];
 
 		if ( $this->storage instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage && $this->storage->count() ) {
 			/** @var \S3b0\Ecompc\Domain\Model\Page $storage */
@@ -377,7 +339,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return array
 	 */
 	public function getEcompcPackagesSorted() {
-		$list = array();
+		$list = [ ];
 		$i = 0;
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ( $this->ecompcPackages as $package ) {
@@ -395,7 +357,7 @@ class Content extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return array
 	 */
 	public function getEcompcPackagesList() {
-		$list = array();
+		$list = [ ];
 		/** @var \S3b0\Ecompc\Domain\Model\Package $package */
 		foreach ( $this->ecompcPackages as $package ) {
 			$list[] = $package->getUid();

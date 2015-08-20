@@ -29,7 +29,7 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0;
 class NumViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	public function render() {
-		return \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger(intval($this->renderChildren()));
+		return \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($this->renderChildren());
 	}
 
 }

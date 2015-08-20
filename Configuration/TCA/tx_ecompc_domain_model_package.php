@@ -3,11 +3,11 @@ if ( !defined ('TYPO3_MODE') ) {
 	die ('Access denied.');
 }
 
-$extTranslationPath = 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:';
+$translate = 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:';
 
-return array(
-	'ctrl' => array(
-		'title'	=> $extTranslationPath . 'tx_ecompc_domain_model_package',
+return [
+	'ctrl' => [
+		'title'	=> $translate . 'tx_ecompc_domain_model_package',
 		'label' => 'backend_label',
 		'label_alt' => 'frontend_label',
 		'tstamp' => 'tstamp',
@@ -24,316 +24,315 @@ return array(
 		'requestUpdate' => 'frontend_label, visible_in_frontend',
 		'type' => 'visible_in_frontend',
 		'typeicon_column' => 'visible_in_frontend',
-		'typeicon_classes' => array(
+		'typeicon_classes' => [
 			'default' => 'extensions-ecompc-package-default',
 			'0' => 'extensions-ecompc-package-not-visible-fe',
-			'1' => 'extensions-ecompc-package-default',
-		),
-		'enablecolumns' => array(
+			'1' => 'extensions-ecompc-package-default'
+		],
+		'enablecolumns' => [
 			'disabled' => 'hidden',
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group'
-		),
+		],
 		'searchFields' => 'backend_label,frontend_label,prompt,hint_text,icon,visible_in_frontend,visibility,multiple_select,default_option,',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_package.png'
-	),
-	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, icon, sorting_in_code, visible_in_frontend, visibility, multiple_select, default_option',
-	),
-	'types' => array(
-		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, --palette--;;3, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, prompt, hint_text;;;wizards[t3editorHtml], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, icon, --palette--;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group'),
-	),
-	'palettes' => array(
-		'1' => array('showitem' => ''),
-		'2' => array('showitem' => 'sorting_in_code, --linebreak--, visible_in_frontend, visibility, multiple_select, percent_pricing', 'canNotCollapse' => 1),
-		'3' => array('showitem' => 'default_option, sorting_in_code, --linebreak--, visible_in_frontend, visibility, percent_pricing', 'canNotCollapse' => 1),
-		'4' => array('showitem' => 'backend_label')
-	),
-	'columns' => array(
+	],
+	'interface' => [
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, icon, sorting_in_code, visible_in_frontend, visibility, multiple_select, default_option'
+	],
+	'types' => [
+		'0' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, --palette--;;3, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group' ],
+		'1' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, prompt, hint_text;;;wizards[t3editorHtml], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, icon, --palette--;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group' ]
+	],
+	'palettes' => [
+		'1' => [ 'showitem' => '' ],
+		'2' => [ 'showitem' => 'sorting_in_code, --linebreak--, visible_in_frontend, visibility, multiple_select, percent_pricing', 'canNotCollapse' => 1 ],
+		'3' => [ 'showitem' => 'default_option, sorting_in_code, --linebreak--, visible_in_frontend, visibility, percent_pricing', 'canNotCollapse' => 1 ],
+		'4' => [ 'showitem' => 'backend_label' ]
+	],
+	'columns' => [
 
-		'sys_language_uid' => array(
+		'sys_language_uid' => [
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
-				'items' => array(
-					array('LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1),
-					array('LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0)
-				),
-			),
-		),
-		'l10n_parent' => array(
+				'items' => [
+					[ 'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1 ],
+					[ 'LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0 ]
+				]
+			]
+		],
+		'l10n_parent' => [
 			'displayCond' => 'FIELD:sys_language_uid:>:0',
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
-				'items' => array(
-					array('', 0),
-				),
+				'items' => [
+					[ '', 0 ],
+				],
 				'foreign_table' => 'tx_ecompc_domain_model_package',
-				'foreign_table_where' => 'AND tx_ecompc_domain_model_package.pid=###CURRENT_PID### AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)',
-			),
-		),
-		'l10n_diffsource' => array(
-			'config' => array(
-				'type' => 'passthrough',
-			),
-		),
-		'sorting' => array(
+				'foreign_table_where' => 'AND tx_ecompc_domain_model_package.pid=###CURRENT_PID### AND tx_ecompc_domain_model_package.sys_language_uid IN (-1,0)'
+			]
+		],
+		'l10n_diffsource' => [
+			'config' => [
+				'type' => 'passthrough'
+			]
+		],
+		'sorting' => [
 			'l10n_mode' => 'exclude',
-			'config' => array(
-				'type' => 'passthrough',
-			),
-		),
+			'config' => [
+				'type' => 'passthrough'
+			]
+		],
 
-		't3ver_label' => array(
+		't3ver_label' => [
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
-				'max' => 255,
-			)
-		),
+				'max' => 255
+			]
+		],
 
-		'hidden' => array(
+		'hidden' => [
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
-			'config' => array(
-				'type' => 'check',
-			),
-		),
-		'starttime' => array(
+			'config' => [
+				'type' => 'check'
+			]
+		],
+		'starttime' => [
 			'exclude' => 1,
 			'l10n_mode' => 'mergeIfNotBlank',
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 13,
 				'max' => 20,
 				'eval' => 'datetime',
 				'checkbox' => 0,
 				'default' => 0,
-				'range' => array(
+				'range' => [
 					'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
-				),
-			),
-		),
-		'endtime' => array(
+				]
+			]
+		],
+		'endtime' => [
 			'exclude' => 1,
 			'l10n_mode' => 'mergeIfNotBlank',
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 13,
 				'max' => 20,
 				'eval' => 'datetime',
 				'checkbox' => 0,
 				'default' => 0,
-				'range' => array(
+				'range' => [
 					'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
-				),
-			),
-		),
-		'fe_group' => array(
+				]
+			]
+		],
+		'fe_group' => [
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.fe_group',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'size' => 7,
 				'maxitems' => 20,
-				'items' => array(
-					array(
+				'items' => [
+					[
 						'LLL:EXT:lang/locallang_general.xlf:LGL.hide_at_login',
 						-1
-					),
-					array(
+					],
+					[
 						'LLL:EXT:lang/locallang_general.xlf:LGL.any_login',
 						-2
-					),
-					array(
+					],
+					[
 						'LLL:EXT:lang/locallang_general.xlf:LGL.usergroups',
 						'--div--'
-					)
-				),
+					]
+				],
 				'exclusiveKeys' => '-1,-2',
 				'foreign_table' => 'fe_groups',
 				'foreign_table_where' => 'ORDER BY fe_groups.title'
-			)
-		),
+			]
+		],
 
-		'backend_label' => array(
+		'backend_label' => [
 			'l10n_mode' => 'exclude',
 			'displayCond' => 'FIELD:frontend_label:REQ:true',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.backend_label',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.backend_label',
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'eval' => 'trim',
 				'placeholder' => '__row|frontend_label',
 				'mode' => 'useOrOverridePlaceholder'
-			),
-		),
-		'frontend_label' => array(
+			]
+		],
+		'frontend_label' => [
 			'l10n_mode' => 'prefixLangTitle',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.frontend_label',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.frontend_label',
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'eval' => 'trim,required'
-			),
-		),
-		'prompt' => array(
+			]
+		],
+		'prompt' => [
 			'l10n_mode' => 'prefixLangTitle',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.prompt',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.prompt',
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'eval' => 'trim'
-			),
-		),
-		'hint_text' => array(
+			]
+		],
+		'hint_text' => [
 			'l10n_mode' => 'mergeIfNotBlank',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.hint_text',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.hint_text',
+			'config' => [
 				'type' => 'text',
 				'cols' => 100,
 				'rows' => 10,
 				'eval' => 'trim',
-				'wizards' => array(
-					't3editorHtml' => array(
+				'wizards' => [
+					't3editorHtml' => [
 						'enableByTypeConfig' => 1,
 						'type' => 'userFunc',
 						'userFunc' => 'TYPO3\\CMS\\T3editor\\FormWizard->main',
-						'params' => array(
-							'format' => 'html',
-						),
-					),
-				)
-			),
-		),
-		'icon' => array(
+						'params' => [
+							'format' => 'html'
+						]
+					]
+				]
+			]
+		],
+		'icon' => [
 			'displayCond' => 'FIELD:visible_in_frontend:REQ:TRUE',
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.icon',
+			'label' => $translate . 'tx_ecompc_domain_model_package.icon',
 			'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
 					'icon',
-					array(
+					[
 						'maxitems' => 1,
-						'appearance' => array(
+						'appearance' => [
 							'createNewRelationLinkTitle' => 'LLL:EXT:cms/locallang_ttc.xlf:images.addFileReference',
-							'enabledControls' => array(
+							'enabledControls' => [
 								'localize' => 0
-							)
-						),
-						'behaviour' => array(
+							]
+						],
+						'behaviour' => [
 							'localizeChildrenAtParentLocalization' => 0
-						),
-						'foreign_types' => array(
-							\TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => array(
+						],
+						'foreign_types' => [
+							\TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
 								'showitem' => '--palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette'
-							),
-						),
-						'filter' => array(
-							'0' => array(
-								'parameters' => array(
+							],
+						],
+						'filter' => [
+							'0' => [
+								'parameters' => [
 									'allowedFileExtensions' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-								)
-							)
-						)
-					),
+								]
+							]
+						]
+					],
 					$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-				),
-		),
-		'sorting_in_code' => array(
+				)
+		],
+		'sorting_in_code' => [
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.sorting_in_code',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.sorting_in_code',
+			'config' => [
 				'type' => 'input',
 				'size' => 5,
 				'eval' => 'trim,int',
-				'range' => array(
+				'range' => [
 					'lower' => 0,
 					'upper' => 999
-				),
+				],
 				'default' => 0,
-				'wizards' => array(
-					'angle' => array(
+				'wizards' => [
+					'angle' => [
 						'type' => 'slider',
 						'step' => 1,
 						'width' => 999
-					)
-				)
-			)
-		),
-		'visible_in_frontend' => array(
+					]
+				]
+			]
+		],
+		'visible_in_frontend' => [
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.visible_in_frontend',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.visible_in_frontend',
+			'config' => [
 				'type' => 'check',
 				'default' => 1
-			)
-		),
-		'visibility' => array(
+			]
+		],
+		'visibility' => [
 			'displayCond' => 'FIELD:visible_in_frontend:REQ:false',
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.visibility',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.visibility',
+			'config' => [
 				'type' => 'check',
-				'items' => array(
-					array($extTranslationPath . 'tx_ecompc_domain_model_package.visible_in_summary'),
-					array($extTranslationPath . 'tx_ecompc_domain_model_package.visible_in_navigation')
-				),
+				'items' => [
+					[ $translate . 'tx_ecompc_domain_model_package.visible_in_summary' ],
+					[ $translate . 'tx_ecompc_domain_model_package.visible_in_navigation' ]
+				],
 				'default' => 3
-			)
-		),
-		'multiple_select' => array(
+			]
+		],
+		'multiple_select' => [
 			'l10n_mode' => 'exclude',
 			'displayCond' => 'FIELD:percent_pricing:REQ:false',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.multiple_select',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.multiple_select',
+			'config' => [
 				'type' => 'check',
 				'default' => 0
-			)
-		),
-		'percent_pricing' => array(
+			]
+		],
+		'percent_pricing' => [
 			'displayCond' => 'FIELD:multiple_select:REQ:false',
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.percent_pricing',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.percent_pricing',
+			'config' => [
 				'type' => 'check',
 				'default' => 0
-			)
-		),
-		'default_option' => array(
+			]
+		],
+		'default_option' => [
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => $extTranslationPath . 'tx_ecompc_domain_model_package.default_option',
-			'config' => array(
+			'label' => $translate . 'tx_ecompc_domain_model_package.default_option',
+			'config' => [
 				'type' => 'select',
 				'foreign_table' => 'tx_ecompc_domain_model_option',
 				'foreign_table_where' => 'AND tx_ecompc_domain_model_option.pid=###CURRENT_PID### AND NOT tx_ecompc_domain_model_option.deleted AND tx_ecompc_domain_model_option.sys_language_uid IN (-1,0) AND tx_ecompc_domain_model_option.configuration_package IN (###THIS_UID###,###REC_FIELD_l10n_parent###) ORDER BY tx_ecompc_domain_model_option.frontend_label, tx_ecompc_domain_model_option.backend_label',
-				'items' => array(
-					array($extTranslationPath . 'select.prompt', '')
-				),
+				'items' => [
+					[ $translate . 'select.prompt', '' ]
+				],
 				'minitems' => 1,
-				'maxitems' => 1,
-			),
-		),
-
-	),
-);
+				'maxitems' => 1
+			]
+		]
+	]
+];

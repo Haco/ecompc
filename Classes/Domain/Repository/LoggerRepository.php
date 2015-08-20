@@ -28,8 +28,7 @@ namespace S3b0\Ecompc\Domain\Repository;
  ***************************************************************/
 
 /**
- * @package S3b0
- * @subpackage Ecompc
+ * Class LoggerRepository
  */
 class LoggerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
@@ -38,9 +37,9 @@ class LoggerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @var array $defaultOrderings
 	 */
-	protected $defaultOrderings = array(
+	protected $defaultOrderings = [
 		'tstamp' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
-	);
+	];
 
 	/**
 	 * Repository wide settings

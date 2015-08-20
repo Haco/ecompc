@@ -29,9 +29,6 @@ namespace S3b0\Ecompc\Domain\Repository;
 
 /**
  * The repository for Currencies
- *
- * @package S3b0
- * @subpackage Ecompc
  */
 class CurrencyRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
@@ -40,14 +37,15 @@ class CurrencyRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @var array $defaultOrderings
 	 */
-	protected $defaultOrderings = array(
+	protected $defaultOrderings = [
 		'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
-	);
+	];
 
 	/**
 	 * Set repository wide settings
 	 */
 	public function initializeObject() {
+		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings */
 		$querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QuerySettingsInterface');
 		$querySettings->setRespectStoragePage(FALSE); // Disable storage pid
 		$this->setDefaultQuerySettings($querySettings);

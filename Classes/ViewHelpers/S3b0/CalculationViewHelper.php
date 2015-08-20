@@ -49,13 +49,13 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	 * Point before dashes setup
 	 * @var array $operatorsWithPrecedenceValue
 	 */
-	protected $operatorsWithPrecedenceValue = array(
+	protected $operatorsWithPrecedenceValue = [
 		'+' => 10,
 		'-' => 10,
 		'*' => 20,
 		'/' => 20,
 		'%' => 20
-	);
+	];
 
 	/**
 	 * Function render
@@ -67,7 +67,7 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	 * @return string
 	 */
 	public function render($expressionString, $output = TRUE, $aliasToCreate = NULL) {
-		$splitArray = array();
+		$splitArray = [ ];
 		preg_match_all('([0-9.]*|[\D]?)', $expressionString, $splitArray);
 		$expressionArray = $this->buildExpressionArray($splitArray[0]);
 		$result = $this->evaluateExpressionArray($expressionArray);
@@ -86,8 +86,8 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	 *
 	 * @return array multidimensional array with numbers, operators and sub-arrays (nested)
 	 */
-	function buildExpressionArray($splitArray, $nestingLevel = 0){
-		$expressionArray = array();
+	function buildExpressionArray($splitArray, $nestingLevel = 0) {
+		$expressionArray = [ ];
 
 		foreach ( $splitArray as $key => $splitPart ) {
 			$splitPart = trim($splitPart);
@@ -111,7 +111,7 @@ class CalculationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	 *
 	 * @return mixed
 	 */
-	function evaluateExpressionArray($expressionArray = array()){
+	function evaluateExpressionArray($expressionArray = [ ]) {
 		$subExpressionsEliminated = FALSE;
 		// eliminate sub expressions, this is recursive, so after first run, all sub expressions should be eliminated
 		if ( $subExpressionsEliminated === FALSE ) {

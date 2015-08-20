@@ -8,7 +8,9 @@
 
 namespace S3b0\Ecompc\Domain\Validator;
 
-
+/**
+ * Class ConfigurationValidator
+ */
 class ConfigurationValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator {
 
 	public function isValid($value) {

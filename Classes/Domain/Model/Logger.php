@@ -28,10 +28,8 @@ namespace S3b0\Ecompc\Domain\Model;
  ***************************************************************/
 
 /**
- * Logger
- *
- * @package S3b0
- * @subpackage Ecompc
+ * Class Logger
+ * @package S3b0\Ecompc\Domain\Model
  */
 class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
@@ -41,7 +39,7 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $sesId = '';
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	protected $tstamp;
 
@@ -119,14 +117,14 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @return integer
+	 * @return int
 	 */
 	public function getTstamp() {
 		return $this->tstamp;
 	}
 
 	/**
-	 * @param integer $tstamp
+	 * @param int $tstamp
 	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
 	public function setTstamp($tstamp) {
@@ -222,8 +220,7 @@ class Logger extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * @param integer $parts
-	 *
+	 * @param int $parts
 	 * @return \S3b0\Ecompc\Domain\Model\Logger
 	 */
 	public function setIp($parts = 4) {

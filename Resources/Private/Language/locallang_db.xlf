@@ -57,9 +57,6 @@
 			<trans-unit id="tx_ecompc_domain_model_configuration.pricing">
 				<source>Pricing</source>
 			</trans-unit>
-			<trans-unit id="tx_ecompc_domain_model_configuration.price_old_basic">
-				<source>Price [old basic]</source>
-			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_configuration.options">
 				<source>Options</source>
 			</trans-unit>
@@ -86,9 +83,6 @@
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_option.pricing">
 				<source>Pricing</source>
-			</trans-unit>
-			<trans-unit id="tx_ecompc_domain_model_option.price_old_basic">
-				<source>Price [old basic]</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_option.price_percental">
 				<source>Percental Price</source>

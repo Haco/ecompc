@@ -24,17 +24,17 @@ namespace TYPO3\CMS\Fluid\ViewHelpers\S3b0\Financial;
  * </output>
  *
  * <code title="All parameters">
- * <f:format.currency currencySign="$" decimalSeparator="." thousandsSeparator="," prependCurrency="TRUE" separateCurrency="FALSE" decimals="2">54321</f:format.currency>
+ * <f:format.currency decimals="2" signed="1" zeroLabel="0" usFormat="0">54321.9876</f:format.currency>
  * </code>
  * <output>
  * $54,321.00
  * </output>
  *
  * <code title="Inline notation">
- * {someNumber -> f:format.currency(thousandsSeparator: ',', currencySign: '€')}
+ * {someNumber -> f:format.currency(usFormat: 1)}
  * </code>
  * <output>
- * 54,321,00 €
+ * 54,321.00 €
  * (depending on the value of {someNumber})
  * </output>
  *

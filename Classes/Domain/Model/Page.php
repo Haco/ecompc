@@ -26,10 +26,8 @@ namespace S3b0\Ecompc\Domain\Model;
  ***************************************************************/
 
 /**
- * Page
- *
- * @package S3b0
- * @subpackage Ecompc
+ * Class Page
+ * @package S3b0\Ecompc\Domain\Model
  */
 class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 

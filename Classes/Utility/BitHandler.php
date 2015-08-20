@@ -23,7 +23,7 @@ class BitHandler {
 	/**
 	 * Gets the bits
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getBits() {
 		return $this->bits;
@@ -51,22 +51,22 @@ class BitHandler {
 	/**
 	 * Checks if flag (bit) is set
 	 *
-	 * @param  integer $bit The Bit to be checked against
-	 * @return boolean
+	 * @param  int  $bit The Bit to be checked against
+	 * @return bool
 	 */
 	public function isBitSet($bit) {
-		return (($this->bits & $bit) == $bit);
+		return ($this->bits & $bit) == $bit;
 	}
 
 	/**
-	 * @param integer $bit The Bit to be set
+	 * @param int $bit The Bit to be set
 	 */
 	public function setSingleBit($bit = 0) {
 		$this->bits |= $bit;
 	}
 
 	/**
-	 * @param integer $bit The Bit to be unset
+	 * @param int $bit The Bit to be unset
 	 */
 	public function unsetSingleBit($bit = 0) {
 		$this->bits &= ~$bit;

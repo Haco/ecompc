@@ -29,9 +29,6 @@ namespace S3b0\Ecompc\Domain\Repository;
 
 /**
  * The repository for Packages
- *
- * @package S3b0
- * @subpackage Ecompc
  */
 class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
@@ -40,14 +37,14 @@ class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 *
 	 * @var array $defaultOrderings
 	 */
-	protected $defaultOrderings = array(
+	protected $defaultOrderings = [
 		'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
-	);
+	];
 
 	/**
 	 * @param array $uidList
 	 *
-	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 * @return array|NULL|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
 	public function findPackagesByUidList(array $uidList) {
 		if ( !count($uidList) )
@@ -59,16 +56,16 @@ class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 		return $query->matching(
 			$query->in('uid', $db->cleanIntArray($uidList))
-		)->setOrderings(array(
+		)->setOrderings([
 			'sorting_in_code' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
 			'sorting' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
-		))->execute();
+		])->execute();
 	}
 
 	/**
 	 * @param array $uidList
 	 *
-	 * @return array|null|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 * @return array|NULL|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
 	public function findVisiblePackagesByUidList(array $uidList) {
 		if ( !count($uidList) )
@@ -79,10 +76,10 @@ class PackageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 		$query = $this->createQuery();
 
 		return $query->matching(
-			$query->logicalAnd(
+			$query->logicalAnd([
 				$query->in('uid', $db->cleanIntArray($uidList)),
 				$query->equals('visible_in_frontend', 1)
-			)
+			])
 		)->execute();
 	}
 

@@ -4,8 +4,7 @@
 CREATE TABLE tt_content (
 	tx_ecompc_packages text,
 	tx_ecompc_configurations int(11) unsigned DEFAULT '0',
-	tx_ecompc_base_price_default double(11,2) DEFAULT '0.00' NOT NULL,
-	tx_ecompc_pricing text NOT NULL,
+	tx_ecompc_pricing text NOT NULL
 );
 
 #
@@ -67,7 +66,6 @@ CREATE TABLE tx_ecompc_domain_model_option (
 	configuration_code_segment varchar(255) DEFAULT '' NOT NULL,
 	image int(11) unsigned NOT NULL default '0',
 	hint_text text NOT NULL,
-	price double(11,2) DEFAULT '0.00' NOT NULL,
 	price_percental double(11,2) DEFAULT '0.00' NOT NULL,
 	pricing text NOT NULL,
 	configuration_package int(11) unsigned DEFAULT '0',

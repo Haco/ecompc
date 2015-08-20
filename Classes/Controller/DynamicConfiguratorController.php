@@ -52,21 +52,21 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 			$this->currentPackage = $package;
 			if ( !$package instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 				$configurationData = self::getConfigurationData($this->cObj->getEcompcConfigurations()->toArray()[0], $this);
-				$this->view->assignMultiple(array(
+				$this->view->assignMultiple([
 					'configurationLabel' => $configurationData[0],
 					'configurationData' => $configurationData[1],
 					'configurationCode' => $configurationData[1],
 					'configurationSummary' => $configurationData[2],
 					'resultingConfiguration' => $this->cObj->getEcompcConfigurations()->toArray()[0]
-				));
+				]);
 			}
 		}
 		if ( $this->currentPackage instanceof \S3b0\Ecompc\Domain\Model\Package ) {
 			$this->currentPackage->setCurrent(TRUE);
-			$this->view->assignMultiple(array(
+			$this->view->assignMultiple([
 				'options' => self::getPackageOptions($this->currentPackage, $this),
 				'currentPackage' => $this->currentPackage
-			));
+			]);
 		}
 	}
 
@@ -74,10 +74,10 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 	 * @param \S3b0\Ecompc\Domain\Model\Package          $package
 	 * @param \S3b0\Ecompc\Controller\StandardController $controller
 	 *
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array|null
+	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array|NULL
 	 */
 	public static function getPackageOptions(\S3b0\Ecompc\Domain\Model\Package $package, \S3b0\Ecompc\Controller\StandardController $controller) {
-		$packageOptions = array();
+		$packageOptions = [ ];
 		// Fetch selectable options for current package
 		self::getSelectableOptions($package, $packageOptions, $controller);
 		if ( count($packageOptions) === 0 )
@@ -102,7 +102,7 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 		$options = $controller->optionRepository->findByConfigurationPackage($package); // Set basic settings
 
 		// Run dependency check
-		$selectableOptions = array();
+		$selectableOptions = [ ];
 		/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 		foreach ( $options as $option ) {
 			$option->setInConflictWithSelectedOptions(FALSE);
@@ -132,11 +132,11 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 		$configurationCode = new \ArrayObject();
 		$configurationSummary = new \ArrayObject();
 		if ( $configuration->hasConfigurationCodePrefix() ) {
-			$configurationCode->append(array(
+			$configurationCode->append([
 				'Prefix',
 				$configuration->getConfigurationCodePrefix(),
 				'pkg' => FALSE
-			));
+			]);
 		}
 
 		$price = !$controller->pricingEnabled ?: $controller->cObj->getPrice($controller->currency);
@@ -146,12 +146,10 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 			if ( $package->isMultipleSelect() ) {
 				continue;
 			}
-			/**
-			 * @array(1 => Option Label, 1 => Option Code segment, 'pkg' => Package Label)
-			 */
+			/** [ 0 => Option Label, 1 => Option Code segment, 'pkg' => Package Label ] */
 			if ( !$package->isVisibleInFrontend() ) {
 				if ( $package->isVisibleInSummary() ) {
-					$configurationSummary->offsetSet($package->getSorting(), array(
+					$configurationSummary->offsetSet($package->getSorting(), [
 						$package->getDefaultOption()->getFrontendLabel(),
 						$package->getDefaultOption()->getConfigurationCodeSegment(),
 						'pkg' => $package->getDefaultOption()->getConfigurationPackage()->getFrontendLabel(),
@@ -163,18 +161,18 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 							FALSE,
 							$controller->settings['usFormat']
 						)
-					));
+					]);
 				}
-				$configurationCode->append(array(
+				$configurationCode->append([
 					$package->getDefaultOption()->getFrontendLabel(),
 					$package->getDefaultOption()->getConfigurationCodeSegment(),
 					'pkg' => $package->isVisibleInNavigation() ? $package->getDefaultOption()->getConfigurationPackage()->getFrontendLabel() : NULL,
 					TRUE
-				));
+				]);
 			} elseif ( $option = $controller->optionRepository->findOptionsByUidList($controller->selectedConfiguration['options'], $package, TRUE) ) {
 				/** @var \S3b0\Ecompc\Domain\Model\Option $option */
 				if ( $option->getConfigurationPackage()->isVisibleInSummary() ) {
-					$configurationSummary->offsetSet($package->getSorting(), array(
+					$configurationSummary->offsetSet($package->getSorting(), [
 						$option->getFrontendLabel(),
 						$option->getConfigurationCodeSegment(),
 						'pkg' => $option->getConfigurationPackage()->getFrontendLabel(),
@@ -187,38 +185,38 @@ class DynamicConfiguratorController extends \S3b0\Ecompc\Controller\StandardCont
 							FALSE,
 							$controller->settings['usFormat']
 						)
-					));
+					]);
 				}
-				$configurationCode->append(array(
+				$configurationCode->append([
 					$option->getFrontendLabel(),
 					$option->getConfigurationCodeSegment(),
 					'pkg' => $option->getConfigurationPackage()->isVisibleInNavigation() ? $option->getConfigurationPackage()->getFrontendLabel() : NULL,
-				));
+				]);
 				$price += $option->getPricing($controller->currency, $price);
 			}
 		}
 
 		if ( $configuration->hasConfigurationCodeSuffix() ) {
-			$configurationCode->append(array(
+			$configurationCode->append([
 				'Suffix',
 				$configuration->getConfigurationCodeSuffix(),
 				'pkg' => FALSE
-			));
+			]);
 		}
 
 		$configurationSummary->ksort();
 
-		return array(
+		return [
 			$configurationLabel,
 			$configurationCode,
 			$configurationSummary
-		);
+		];
 	}
 
 	/**
 	 * Fetching selectable configurations
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|array|null $current actual setting
+	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|array|NULL $current actual setting
 	 * @return void
 	 */
 	public function setSelectableConfigurations(&$current = NULL) {

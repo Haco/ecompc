@@ -38,6 +38,17 @@
 					</config>
 				</TCEforms>
 			</usd>
+			<eur>
+				<TCEforms>
+					<label>EUR [€]</label>
+					<config>
+						<type>input</type>
+						<size>22</size>
+						<eval>double2</eval>
+						<default>0.00</default>
+					</config>
+				</TCEforms>
+			</eur>
 		</el>
 	</ROOT>
 </T3DataStructure>
