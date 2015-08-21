@@ -266,12 +266,14 @@ function buildSelector(result) {
 }
 
 function getConfigurationSummary(config, pricingEnabled) {
-	var table = "<table>";
+	var table = "<table>",
+		iterator = 0;
 	for ( var i=0; i<config.length; i++ ) {
+		iterator++;
 		if ( !config[i].pkg ) {
 			continue;
 		}
-		table += "<tr><td>" + config[i].pkg + "</td><td>" + config[i][0].replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2') + (config[i][1] != "" ? " [" + config[i][1] + "]" : "") + "</td><td>" + (config[i].pkgUid ? "<a data-package=\"" + config[i].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td>";
+		table += "<tr><td>" + iterator + "</td><td>" + config[i].pkg + "</td><td>" + config[i][0].replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2') + (config[i][1] != "" ? " [" + config[i][1] + "]" : "") + "</td><td>" + (config[i].pkgUid ? "<a data-package=\"" + config[i].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td>";
 		if ( pricingEnabled ) {
 			table += "<td class=\"align-right\">" + (config[i].pricing ? config[i].pricing : "") + "</td>";
 		}

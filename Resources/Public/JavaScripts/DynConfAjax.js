@@ -288,12 +288,14 @@ function getConfigurationCode(config) {
 }
 
 function getConfigurationSummary(config, pricingEnabled) {
-	var table = "<table>";
+	var table = "<table>",
+		iterator = 0;
 	for ( var key in config ) {
+		iterator++;
 		if ( !config[key].pkg ) {
 			continue;
 		}
-		table += "<tr><td>" + config[key].pkg + "</td><td>" + config[key][0] + (config[key][1] != "" ? " [" + config[key][1] + "]" : "") + "</td><td>" + (config[key].pkgUid ? "<a data-package=\"" + config[key].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td>";
+		table += "<tr><td>" + iterator + "</td><td>" + config[key].pkg + "</td><td>" + config[key][0] + (config[key][1] != "" ? " [" + config[key][1] + "]" : "") + "</td><td>" + (config[key].pkgUid ? "<a data-package=\"" + config[key].pkgUid + "\" class=\"ecom-configurator-package-select\"><i class=\"fa fa-edit\"></i></a>" : "") + "</td>";
 		if ( pricingEnabled ) {
 			table += "<td class=\"align-right\">" + (config[key].pricing ? config[key].pricing : "") + "</td>";
 		}

@@ -1,7 +1,8 @@
 <table>
-	<f:for each="{result}" as="codeSegment">
+	<f:for each="{result}" as="codeSegment" iteration="iterator">
 		<f:if condition="{codeSegment.pkg}">
 			<tr>
+				<td>{iterator.cycle}</td>
 				<td>{codeSegment.pkg}</td>
 				<td>{codeSegment.0 -> f:format.nl2br()}<f:if condition="{0:codeSegment.1} != {0:''}"> [{codeSegment.1}]</f:if></td>
 				<td><f:if condition="{codeSegment.pkgUid}"><a data-package="{codeSegment.pkgUid}" class="ecom-configurator-package-select"><i class="fa fa-edit"></i></a></f:if></td>
