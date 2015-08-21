@@ -35,15 +35,15 @@ return [
 			'endtime' => 'endtime',
 			'fe_group' => 'fe_group'
 		],
-		'searchFields' => 'backend_label,frontend_label,prompt,hint_text,icon,visible_in_frontend,visibility,multiple_select,default_option,',
+		'searchFields' => 'backend_label,frontend_label,prompt,hint_text,dependency_notes,icon,visible_in_frontend,visibility,multiple_select,default_option,',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_package.png'
 	],
 	'interface' => [
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, icon, sorting_in_code, visible_in_frontend, visibility, multiple_select, default_option'
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, prompt, hint_text, dependency_notes, icon, sorting_in_code, visible_in_frontend, visibility, multiple_select, default_option'
 	],
 	'types' => [
 		'0' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, --palette--;;3, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group' ],
-		'1' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, prompt, hint_text;;;wizards[t3editorHtml], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, icon, --palette--;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group' ]
+		'1' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;4, prompt, hint_text;;;wizards[t3editorHtml], dependency_notes;;;wizards[t3editorHtml], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance, icon, --palette--;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group' ]
 	],
 	'palettes' => [
 		'1' => [ 'showitem' => '' ],
@@ -217,6 +217,30 @@ return [
 							'format' => 'html'
 						]
 					]
+				]
+			]
+		],
+		'dependency_notes' => [
+			'exclude' => 1,
+			'label' => $translate . 'tx_ecompc_domain_model_package.dependency_notes',
+			'config' => [
+				'type' => 'inline',
+				'foreign_table' => 'tx_ecompc_domain_model_dependencynote',
+				'foreign_field' => 'ref_package',
+				'appearance' => [
+					'collapseAll' => 0,
+					'newRecordLinkAddTitle' => 0,
+					'newRecordLinkTitle' => $translate . 'tx_ecompc_domain_model_package.dependency_notes.inlineElementAddTitle',
+					'levelLinksPosition' => 'bottom',
+					'showPossibleLocalizationRecords' => 1,
+					'showAllLocalizationLink' => 1,
+					'showSynchronizationLink' => 1
+				],
+				'behaviour' => [
+					'localizationMode' => 'select',
+					'localizeChildrenAtParentLocalization' => 1,
+					'disableMovingChildrenWithParent' => 0,
+					'enableCascadingDelete' => 1
 				]
 			]
 		],

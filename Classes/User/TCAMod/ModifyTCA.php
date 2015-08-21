@@ -486,6 +486,62 @@ class ModifyTCA extends \TYPO3\CMS\Backend\Form\FormEngine {
 	}
 
 	/**
+	 * itemsProcFuncTxEcompcDomainModelDependencyNoteDependentOptions function.
+	 *
+	 * @param array                                                                       $PA
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine|\TYPO3\CMS\Backend\Form\DataPreprocessor $pObj
+	 *
+	 * @return void
+	 */
+	function itemsProcFuncTxEcompcDomainModelDependencyNoteDependentOptions(array &$PA, $pObj = NULL)  {
+		// Adding an item!
+		//$PA['items'][] = array($pObj->sL('Added label by PHP function|Tilfjet Dansk tekst med PHP funktion'), 999);
+
+		if ( sizeof($PA['items']) ) {
+			$configurationPackages = [ ];
+			$referringPackage = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_package', $PA['row']['ref_package'], 'pid, sorting');
+
+			foreach ( $PA['items'] as $item ) {
+				$data = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_option', $item[1], '*');
+				$package = BackendUtility\BackendUtility::getRecord('tx_ecompc_domain_model_package', $data['configuration_package'], 'frontend_label, backend_label, sorting, visible_in_frontend');
+				if ( !sizeof($data) || $data['pid'] !== $referringPackage['pid'] || $package['sorting'] >= $referringPackage['sorting'] || !$package['visible_in_frontend'] ) {
+					continue;
+				}
+
+				$item[2] = 'clear.gif';
+				$configurationPackages[0]['label'] = '-- not assigned --';
+				if ( CoreUtility\MathUtility::canBeInterpretedAsInteger($data['configuration_package']) ) {
+					if ( !array_key_exists($data['configuration_package'], $configurationPackages) ) {
+						$configurationPackages[$data['configuration_package']]['label'] = $package['backend_label'] ? $package['backend_label'] : $package['frontend_label'];
+					}
+					$configurationPackages[$data['configuration_package']]['items'][] = $item;
+				} else {
+					$configurationPackages[0]['items'][] = $item;
+				}
+
+			}
+			//usort($configurationPackages, 'self::cmp'); // Sort Alphabetically @package label
+			ksort($configurationPackages); // Order by uid @package
+
+			$PA['items'] = [ ];
+			foreach ( $configurationPackages as $configurationPackage ) {
+				if ( !is_array($configurationPackage['items']) ) {
+					continue;
+				}
+				$PA['items'][] = [
+					$configurationPackage['label'],
+					'--div--'
+				];
+				$PA['items'] = array_merge($PA['items'], $configurationPackage['items']);
+			}
+		} elseif ( !$PA['row']['packages'] ) {
+			$PA['items'] = [ ];
+		}
+
+		// No return - the $PA and $pObj variables are passed by reference, so just change content in then and it is passed back automatically...
+	}
+
+	/**
 	 * labelUserFuncTxEcompcDomainModelOption function.
 	 *
 	 * @param array                              $PA

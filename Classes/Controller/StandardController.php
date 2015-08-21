@@ -63,7 +63,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	protected $selectedConfiguration = [ ];
 
 	/**
-	 * @var array (base price, configuration price, config price BEFORE breakpoint, config price AT breakpoint, config price AFTER breakpoint)
+	 * @var array (base price, configuration price, config price BEFORE breakpoint, config price AT breakpoint, config
+	 *      price AFTER breakpoint)
 	 */
 	protected $selectedConfigurationPrice = [ 0.0, 0.0, 0.0, 0.0, 0.0 ];
 
@@ -502,7 +503,8 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 *
 	 * @param \S3b0\Ecompc\Domain\Model\Package $breakPoint
 	 * @param bool                              $render
-	 * @param int                               $tellMeWhatToRender Array pointer to enable rendering of several values calculated [0-4]
+	 * @param int                               $tellMeWhatToRender Array pointer to enable rendering of several values
+	 *                                                              calculated [0-4]
 	 *
 	 * @return array
 	 */
@@ -666,6 +668,23 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					$invisible++;
 					$cycle++;
 					continue;
+				}
+				/**
+				 * Add dependency notes, if set
+				 */
+				if ( $package->getDependencyNotes()->count() ) {
+					/** @var \S3b0\Ecompc\Domain\Model\DependencyNote $dependencyNote */
+					foreach ( $package->getDependencyNotes() as $dependencyNote ) {
+						if ( $dependencyNote->getDependentOptions()->count() ) {
+							/** @var \S3b0\Ecompc\Domain\Model\Option $dependentOption */
+							foreach ( $dependencyNote->getDependentOptions() as $dependentOption ) {
+								if ( in_array($dependentOption->getUid(), $this->selectedConfiguration['options']) ) {
+									$package->addDependencyNotesFluidParsedMessage($dependencyNote->getNote());
+									break;
+								}
+							}
+						}
+					}
 				}
 				/**
 				 * Check for active packages

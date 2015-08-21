@@ -64,6 +64,16 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $hintText = '';
 
 	/**
+	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\DependencyNote>
+	 */
+	protected $dependencyNotes = NULL;
+
+	/**
+	 * @var array
+	 */
+	protected $dependencyNotesFluidParsedMessage = [ ];
+
+	/**
 	 * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
 	 */
 	protected $icon = NULL;
@@ -140,7 +150,8 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	protected function initStorageObjects() {
-		$this->options = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$this->options         = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$this->dependencyNotes = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 	}
 
 	/**
@@ -225,6 +236,27 @@ class Package extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setHintText($hintText) {
 		$this->hintText = $hintText;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<DependencyNote>
+	 */
+	public function getDependencyNotes() {
+		return $this->dependencyNotes;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDependencyNotesFluidParsedMessage() {
+		return implode('<br />', $this->dependencyNotesFluidParsedMessage);
+	}
+
+	/**
+	 * @param string $dependencyNotesFluidParsedMessage
+	 */
+	public function addDependencyNotesFluidParsedMessage($dependencyNotesFluidParsedMessage) {
+		$this->dependencyNotesFluidParsedMessage[] = $dependencyNotesFluidParsedMessage;
 	}
 
 	/**

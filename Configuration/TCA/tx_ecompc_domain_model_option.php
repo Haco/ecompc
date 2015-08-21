@@ -36,7 +36,7 @@ return [
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, backend_label, frontend_label, configuration_code_segment, image, hint_text, pricing, price_percental, configuration_package, dependency'
 	],
 	'types' => [
-		'1' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;2, configuration_package, configuration_code_segment, --div--;' . $translate . 'tabs.referral, image, dependency, --div--;LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tabs.pricing, pricing, price_percental, --div--;LLL:EXT:cms/locallang_tca.xlf:pages.tabs.extended, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group' ]
+		'1' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, frontend_label;;2, configuration_package, configuration_code_segment, --div--;' . $translate . 'tabs.referral, image, dependency, --div--;' . $translate . 'tabs.pricing, pricing, price_percental, --div--;LLL:EXT:cms/locallang_tca.xlf:pages.tabs.extended, hint_text;;;richtext:rte_transform[mode=ts_links], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime, --linebreak--, fe_group' ]
 	],
 	'palettes' => [
 		'1' => [ 'showitem' => '' ],
@@ -291,7 +291,7 @@ return [
 		'dependency' => [
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_option.dependency',
+			'label' => $translate . 'tx_ecompc_domain_model_option.dependency',
 			'config' => [
 				'type' => 'inline',
 				'foreign_table' => 'tx_ecompc_domain_model_dependency',
@@ -300,7 +300,7 @@ return [
 				'appearance' => [
 					'collapseAll' => 0,
 					'newRecordLinkAddTitle' => 0,
-					'newRecordLinkTitle' => 'LLL:EXT:ecompc/Resources/Private/Language/locallang_db.xlf:tx_ecompc_domain_model_option.dependency.inlineElementAddTitle',
+					'newRecordLinkTitle' => $translate . 'tx_ecompc_domain_model_option.dependency.inlineElementAddTitle',
 					'levelLinksPosition' => 'bottom'
 				],
 				'behaviour' => [

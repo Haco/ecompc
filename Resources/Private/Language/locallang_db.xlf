@@ -111,6 +111,12 @@
 			<trans-unit id="tx_ecompc_domain_model_package.hint_text">
 				<source>Hint Text</source>
 			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.dependency_notes">
+				<source>Dependency notes</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_package.dependency_notes.inlineElementAddTitle">
+				<source>Add dependency note</source>
+			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_package.icon">
 				<source>Icon</source>
 			</trans-unit>
@@ -137,6 +143,15 @@
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_package.default_option">
 				<source>Default Option</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_dependency_note">
+				<source>Dependency notes</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_dependency_note.note">
+				<source>Text</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_dependency_note.dependent_options">
+				<source>Show if one of the following options was checked</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_dependency">
 				<source>Product Configurator Dependency</source>

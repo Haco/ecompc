@@ -2,5 +2,8 @@
 	<f:if condition="{package}">
 		<h2>{package.frontendLabel}</h2>
 		<p>{package.hintText -> f:format.html()}</p>
+		<f:if condition="{package.dependencyNotesFluidParsedMessage}">
+			<p>{package.dependencyNotesFluidParsedMessage -> f:format.html()}</p>
+		</f:if>
 	</f:if>
 </div>

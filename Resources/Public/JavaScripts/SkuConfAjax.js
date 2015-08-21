@@ -37,9 +37,11 @@ function txEcompcSetOption() {
 			removeAjaxLoader('ecom-configurator-ajax-loader');
 			updateProgressIndicators(result.progress);
 			if ( result.currentPackage instanceof Object ) {
+				/* Add dependency notes */
+				var addDN = result.currentPackage.dependencyNotesFluidParsedMessage ? '<p>' + result.currentPackage.dependencyNotesFluidParsedMessage + '</p>' : '';
 				pkgInfoDiv.html(
 					'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
-					'<p>' + result.currentPackage.hintText + '</p>'
+					'<p>' + result.currentPackage.hintText + '</p>' + addDN
 				).show();
 			}
 			if ( result.showResult ) {
@@ -91,9 +93,11 @@ function txEcompcIndex() {
 				resultDiv = $('#ecom-configurator-result-canvas');
 			removeAjaxLoader('ecom-configurator-ajax-loader');
 			if ( result.currentPackage instanceof Object ) {
+				/* Add dependency notes */
+				var addDN = result.currentPackage['dependencyNotesFluidParsedMessage'].length ? '<p>' + result.currentPackage.dependencyNotesFluidParsedMessage + '</p>' : '';
 				pkgInfoDiv.html(
 					'<h2>' + result.currentPackage.frontendLabel + '</h2>' +
-					'<p>' + result.currentPackage.hintText + '</p>'
+					'<p>' + result.currentPackage.hintText + '</p>' + addDN
 				).show();
 			}
 			if ( result.showResult ) {
