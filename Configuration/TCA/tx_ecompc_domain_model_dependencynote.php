@@ -17,6 +17,9 @@ return [
 		'dividers2tabs' => TRUE,
 		'versioningWS' => 2,
 		'versioning_followPages' => TRUE,
+		'languageField' => 'sys_language_uid',
+		'transOrigPointerField' => 'l10n_parent',
+		'transOrigDiffSourceField' => 'l10n_diffsource',
 		'hideTable' => 1,
 		'delete' => 'deleted',
 		'enablecolumns' => [
@@ -31,13 +34,45 @@ return [
 		'showRecordFieldList' => 'hidden, mode, options'
 	],
 	'types' => [
-		'1' => [ 'showitem' => 'hidden;;1;;1-1-1, note;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime' ]
+		'1' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden, note;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime' ]
 	],
 	'palettes' => [
 		'1' => [ 'showitem' => '' ],
 		'2' => [ 'showitem' => 'dependent_options', 'canNotCollapse' => 1 ]
 	],
 	'columns' => [
+
+		'sys_language_uid' => [
+			'exclude' => 1,
+			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
+			'config' => [
+				'type' => 'select',
+				'foreign_table' => 'sys_language',
+				'foreign_table_where' => 'ORDER BY sys_language.title',
+				'items' => [
+					[ 'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1 ],
+					[ 'LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0 ]
+				]
+			]
+		],
+		'l10n_parent' => [
+			'displayCond' => 'FIELD:sys_language_uid:>:0',
+			'exclude' => 1,
+			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
+			'config' => [
+				'type' => 'select',
+				'items' => [
+					[ '', 0 ],
+				],
+				'foreign_table' => 'tx_ecompc_domain_model_dependencynote',
+				'foreign_table_where' => 'AND tx_ecompc_domain_model_dependencynote.pid=###CURRENT_PID### AND tx_ecompc_domain_model_dependencynote.sys_language_uid IN (-1,0)'
+			]
+		],
+		'l10n_diffsource' => [
+			'config' => [
+				'type' => 'passthrough'
+			]
+		],
 
 		't3ver_label' => [
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
@@ -89,7 +124,7 @@ return [
 		],
 
 		'note' => [
-			'l10n_mode' => 'mergeIfNotBlank',
+			'l10n_mode' => 'prefixLangTitle',
 			'exclude' => 1,
 			'label' => $translate . 'tx_ecompc_domain_model_dependency_note.note',
 			'config' => [
@@ -128,10 +163,10 @@ return [
 				'disableNoMatchingValueElement' => 1
 			]
 		],
-		'ref_option' => [
+		'ref_package' => [
 			'config' => [
 				'type' => 'select',
-				'foreign_table' => 'tx_ecompc_domain_model_option'
+				'foreign_table' => 'tx_ecompc_domain_model_package'
 			]
 		]
 	]
