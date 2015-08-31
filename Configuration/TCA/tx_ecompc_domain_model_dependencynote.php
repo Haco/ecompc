@@ -28,7 +28,7 @@ return [
 			'endtime' => 'endtime'
 		],
 		'searchFields' => 'mode,options,',
-		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ecompc') . 'Resources/Public/Icons/tx_ecompc_domain_model_dependency_note.png'
+		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('sys_note') . 'ext_icon.gif'
 	],
 	'interface' => [
 		'showRecordFieldList' => 'hidden, mode, options'
@@ -38,7 +38,7 @@ return [
 	],
 	'palettes' => [
 		'1' => [ 'showitem' => '' ],
-		'2' => [ 'showitem' => 'dependent_options', 'canNotCollapse' => 1 ]
+		'2' => [ 'showitem' => 'dep_options, --linebreak--, dep_logical_and, ref_package', 'canNotCollapse' => 1 ]
 	],
 	'columns' => [
 
@@ -144,10 +144,19 @@ return [
 				]
 			]
 		],
-		'dependent_options' => [
+		'dep_logical_and' => [
 			'l10n_mode' => 'exclude',
 			'exclude' => 1,
-			'label' => $translate . 'tx_ecompc_domain_model_dependency_note.dependent_options',
+			'label' => '',
+			'config' => [
+				'type' => 'check',
+				'items' => [ [ $translate . 'tx_ecompc_domain_model_dependency_note.dep_logical_and' ] ]
+			]
+		],
+		'dep_options' => [
+			'l10n_mode' => 'exclude',
+			'exclude' => 1,
+			'label' => $translate . 'tx_ecompc_domain_model_dependency_note.dep_options',
 			'config' => [
 				'type' => 'select',
 				'foreign_table' => 'tx_ecompc_domain_model_option',
@@ -166,6 +175,7 @@ return [
 		'ref_package' => [
 			'config' => [
 				'type' => 'select',
+				'readOnly' => 1,
 				'foreign_table' => 'tx_ecompc_domain_model_package'
 			]
 		]

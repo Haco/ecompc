@@ -39,9 +39,14 @@ class DependencyNote extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	protected $note = '';
 
 	/**
+	 * @var bool
+	 */
+	protected $depLogicalAnd = FALSE;
+
+	/**
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\S3b0\Ecompc\Domain\Model\Option>
 	 */
-	protected $dependentOptions = NULL;
+	protected $depOptions = NULL;
 
 	/**
 	 * __construct
@@ -60,7 +65,7 @@ class DependencyNote extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	protected function initStorageObjects() {
-		$this->dependentOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$this->depOptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 	}
 
 	/**
@@ -71,10 +76,17 @@ class DependencyNote extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function isDependencyLogicalAnd() {
+		return $this->depLogicalAnd;
+	}
+
+	/**
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
 	 */
 	public function getDependentOptions() {
-		return $this->dependentOptions;
+		return $this->depOptions;
 	}
 
 }

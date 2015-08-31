@@ -676,12 +676,24 @@ class StandardController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 					/** @var \S3b0\Ecompc\Domain\Model\DependencyNote $dependencyNote */
 					foreach ( $package->getDependencyNotes() as $dependencyNote ) {
 						if ( $dependencyNote->getDependentOptions()->count() ) {
+							$logicalAnd = $dependencyNote->isDependencyLogicalAnd();
+							$addMessage = FALSE;
 							/** @var \S3b0\Ecompc\Domain\Model\Option $dependentOption */
 							foreach ( $dependencyNote->getDependentOptions() as $dependentOption ) {
 								if ( in_array($dependentOption->getUid(), $this->selectedConfiguration['options']) ) {
-									$package->addDependencyNotesFluidParsedMessage($dependencyNote->getNote());
-									break;
+									$addMessage = TRUE;
+									if ( !$logicalAnd ) {
+										break;
+									}
+								} else {
+									if ( $logicalAnd ) {
+										$addMessage = FALSE;
+										break;
+									}
 								}
+							}
+							if ( $addMessage ) {
+								$package->addDependencyNotesFluidParsedMessage($dependencyNote->getNote());
 							}
 						}
 					}

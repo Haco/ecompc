@@ -150,7 +150,10 @@
 			<trans-unit id="tx_ecompc_domain_model_dependency_note.note">
 				<source>Text</source>
 			</trans-unit>
-			<trans-unit id="tx_ecompc_domain_model_dependency_note.dependent_options">
+			<trans-unit id="tx_ecompc_domain_model_dependency_note.dep_logical_and">
+				<source>Use logical AND for dependency check</source>
+			</trans-unit>
+			<trans-unit id="tx_ecompc_domain_model_dependency_note.dep_options">
 				<source>Show if one of the following options was checked</source>
 			</trans-unit>
 			<trans-unit id="tx_ecompc_domain_model_dependency">
