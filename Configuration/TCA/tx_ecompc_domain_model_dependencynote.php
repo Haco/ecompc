@@ -34,7 +34,7 @@ return [
 		'showRecordFieldList' => 'hidden, mode, options'
 	],
 	'types' => [
-		'1' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden, note;;2, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime' ]
+		'1' => [ 'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden, note;;2;wizards[t3editorHtml], --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime' ]
 	],
 	'palettes' => [
 		'1' => [ 'showitem' => '' ],
